@@ -427,6 +427,9 @@ export function Calculator() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={copySummary} disabled={!result}>
+                    <Copy className="mr-2 h-4 w-4" /> Salin ringkasan
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={shareLink} disabled={!result}>
                     <Link2 className="mr-2 h-4 w-4" /> Salin link
                   </DropdownMenuItem>
