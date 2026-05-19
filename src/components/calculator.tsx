@@ -62,10 +62,33 @@ import html2canvas from "html2canvas";
 const HISTORY_KEY = "idxavg-history-v1";
 const THEME_KEY = "idxavg-theme";
 
+const MAX_PRICE = 1_000_000;
+const MAX_LOT = 1_000_000;
+
 function todayISO() {
   const d = new Date();
   const tz = d.getTimezoneOffset() * 60000;
   return new Date(d.getTime() - tz).toISOString().split("T")[0];
+}
+
+function validatePrice(v: string): string | null {
+  if (!v) return null;
+  const n = parseFloat(v);
+  if (!isFinite(n) || n <= 0) return "Harus angka > 0";
+  if (n > MAX_PRICE) return `Maks ${formatRupiah(MAX_PRICE)}`;
+  const tick = getTickSize(n);
+  if (Math.abs(n - Math.round(n / tick) * tick) > 1e-9) {
+    return `Kelipatan ${tick}`;
+  }
+  return null;
+}
+
+function validateLot(v: string): string | null {
+  if (!v) return null;
+  const n = Number(v);
+  if (!Number.isInteger(n) || n <= 0) return "Bilangan bulat > 0";
+  if (n > MAX_LOT) return `Maks ${MAX_LOT.toLocaleString("id-ID")} lot`;
+  return null;
 }
 
 export function Calculator() {
