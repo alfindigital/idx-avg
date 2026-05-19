@@ -86,6 +86,8 @@ export function Calculator() {
   const [historyOpen, setHistoryOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
+  const mobileResultRef = useRef<HTMLDivElement>(null);
+  const [barOpen, setBarOpen] = useState(false);
 
   // Init: theme, history, URL params
   useEffect(() => {
