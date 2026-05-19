@@ -253,7 +253,7 @@ export function Calculator() {
   };
 
   const saveImage = async () => {
-    if (!resultRef.current) return;
+    if (!result) return;
     const node =
       resultRef.current?.offsetParent ? resultRef.current : mobileResultRef.current;
     if (!node) return;
