@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { type RefObject, useEffect, useMemo, useRef, useState } from "react";
 import {
   Menu,
   Moon,
@@ -15,6 +15,7 @@ import {
   Check,
   X,
   Info,
+  ChevronUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,6 +28,13 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -78,6 +86,8 @@ export function Calculator() {
   const [historyOpen, setHistoryOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
+  const mobileResultRef = useRef<HTMLDivElement>(null);
+  const [barOpen, setBarOpen] = useState(false);
 
   // Init: theme, history, URL params
   useEffect(() => {
@@ -243,9 +253,12 @@ export function Calculator() {
   };
 
   const saveImage = async () => {
-    if (!resultRef.current) return;
+    if (!result) return;
+    const node =
+      resultRef.current?.offsetParent ? resultRef.current : mobileResultRef.current;
+    if (!node) return;
     try {
-      const canvas = await html2canvas(resultRef.current, {
+      const canvas = await html2canvas(node, {
         backgroundColor: isDark ? "#0b1220" : "#ffffff",
         scale: 2,
         logging: false,
@@ -401,7 +414,7 @@ export function Calculator() {
         </header>
 
         {/* Main */}
-        <main className="mx-auto max-w-2xl px-3 pb-10 pt-3">
+        <main className="mx-auto max-w-2xl px-3 pt-3 pb-28 sm:pb-10">
           {/* Position */}
           <section className="space-y-2.5">
             <div className="flex items-center gap-1.5">
@@ -556,10 +569,10 @@ export function Calculator() {
           </section>
 
           {/* Result */}
-          {result && (
-            <section className="mt-5">
+          {result && (() => {
+            const resultCard = (ref: RefObject<HTMLDivElement | null>) => (
               <div
-                ref={resultRef}
+                ref={ref}
                 data-result-card
                 className="rounded-lg border border-border bg-card p-4"
               >
@@ -608,7 +621,9 @@ export function Calculator() {
                   </div>
                 </div>
               </div>
+            );
 
+            const actions = (
               <div className="mt-3 grid grid-cols-3 gap-2">
                 <Button variant="outline" size="sm" onClick={shareLink} className="h-9">
                   <Link2 className="mr-1.5 h-3.5 w-3.5" /> Link
@@ -620,8 +635,69 @@ export function Calculator() {
                   <X className="mr-1.5 h-3.5 w-3.5" /> Reset
                 </Button>
               </div>
-            </section>
-          )}
+            );
+
+            return (
+              <>
+                {/* Desktop: inline */}
+                <section className="mt-5 hidden sm:block">
+                  {resultCard(resultRef)}
+                  {actions}
+                </section>
+
+                {/* Mobile: sticky bottom bar + drawer */}
+                <Drawer open={barOpen} onOpenChange={setBarOpen}>
+                  <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 backdrop-blur sm:hidden">
+                    <DrawerTrigger asChild>
+                      <button
+                        type="button"
+                        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left active:bg-accent/50"
+                        aria-label="Lihat detail hasil"
+                      >
+                        <div className="min-w-0">
+                          <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                            {result.stockName} · {result.mode === "new-avg" ? "Avg Baru" : "Lot Diperlukan"}
+                          </p>
+                          <p className="text-lg font-bold tabular leading-tight">
+                            {formatRupiah(result.newAvgPrice)}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Badge
+                            variant="secondary"
+                            className={cn(
+                              "gap-1 text-[11px]",
+                              result.status === "down" &&
+                                "bg-destructive/10 text-destructive hover:bg-destructive/10",
+                              result.status === "up" &&
+                                "bg-[color:var(--success)]/15 text-[color:var(--success)] hover:bg-[color:var(--success)]/15"
+                            )}
+                          >
+                            {result.status === "down" ? (
+                              <TrendingDown className="h-3 w-3" />
+                            ) : (
+                              <TrendingUp className="h-3 w-3" />
+                            )}
+                            {result.percentage.toFixed(2)}%
+                          </Badge>
+                          <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                        </div>
+                      </button>
+                    </DrawerTrigger>
+                  </div>
+                  <DrawerContent className="sm:hidden">
+                    <DrawerHeader className="pb-2">
+                      <DrawerTitle className="text-sm">Hasil Perhitungan</DrawerTitle>
+                    </DrawerHeader>
+                    <div className="px-4 pb-6">
+                      {resultCard(mobileResultRef)}
+                      {actions}
+                    </div>
+                  </DrawerContent>
+                </Drawer>
+              </>
+            );
+          })()}
 
           <footer className="mt-8 text-center text-[10px] text-muted-foreground">
             made with <span className="text-destructive">♥</span> · IDXAvg
