@@ -152,33 +152,28 @@ export function Calculator() {
   }, [lotTambah, targetAvg]);
 
   const canCalculate = useMemo(() => {
-    const a = parseFloat(avgPrice);
-    const l = parseInt(totalLot);
-    const h = parseFloat(hargaAvg);
-    if (!isFinite(a) || a <= 0 || !isFinite(l) || l <= 0 || !isFinite(h) || h <= 0) return false;
-    if (mode === "new-avg") {
-      const lt = parseInt(lotTambah);
-      return isFinite(lt) && lt > 0;
-    }
-    if (mode === "lots-needed") {
-      const t = parseFloat(targetAvg);
-      return isFinite(t) && t > 0;
-    }
+  const errAvg = useMemo(() => validatePrice(avgPrice), [avgPrice]);
+  const errHarga = useMemo(() => validatePrice(hargaAvg), [hargaAvg]);
+  const errTarget = useMemo(() => validatePrice(targetAvg), [targetAvg]);
+  const errLot = useMemo(() => validateLot(totalLot), [totalLot]);
+  const errLotTambah = useMemo(() => validateLot(lotTambah), [lotTambah]);
+
+  const canCalculate = useMemo(() => {
+    if (!avgPrice || !totalLot || !hargaAvg) return false;
+    if (errAvg || errLot || errHarga) return false;
+    if (mode === "new-avg") return !!lotTambah && !errLotTambah;
+    if (mode === "lots-needed") return !!targetAvg && !errTarget;
     return false;
-  }, [avgPrice, totalLot, hargaAvg, lotTambah, targetAvg, mode]);
+  }, [avgPrice, totalLot, hargaAvg, lotTambah, targetAvg, mode, errAvg, errLot, errHarga, errLotTambah, errTarget]);
 
   const handlePriceBlur = (
     value: string,
-    setter: (v: string) => void,
-    label: string
+    setter: (v: string) => void
   ) => {
     const n = parseFloat(value);
-    if (!isFinite(n) || n <= 0) return;
+    if (!isFinite(n) || n <= 0 || n > MAX_PRICE) return;
     const rounded = roundToTick(n);
-    if (rounded !== n) {
-      setter(String(rounded));
-      toast(`${label}: dibulatkan ke ${formatRupiah(rounded)}`, { duration: 1500 });
-    }
+    if (rounded !== n) setter(String(rounded));
   };
 
   const intOnly = (v: string) => v.replace(/[^\d]/g, "");
