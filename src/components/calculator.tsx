@@ -8,6 +8,7 @@ import {
   History,
   Trash2,
   Link2,
+  Copy,
   Download,
   RotateCcw,
   TrendingDown,
@@ -262,6 +263,25 @@ export function Calculator() {
     }
   };
 
+  const copySummary = async () => {
+    if (!result) return;
+    const arrow = result.status === "down" ? "↓" : result.status === "up" ? "↑" : "→";
+    const head =
+      result.mode === "new-avg" ? "Avg Baru" : "Lot Diperlukan";
+    const lines = [
+      `${result.stockName} · ${result.date}`,
+      `${head}: ${formatRupiah(result.newAvgPrice)} (${arrow} ${result.percentage.toFixed(2)}%)`,
+      `Lot Baru: ${result.totalLotBaru} (+${result.lotDelta})`,
+      `Modal Tambahan: ${formatRupiah(result.modalTambahan)}`,
+      `Total Modal: ${formatRupiah(result.totalModal)}`,
+    ];
+    try {
+      await navigator.clipboard.writeText(lines.join("\n"));
+      toast.success("Ringkasan disalin");
+    } catch {
+      toast.error("Gagal menyalin");
+    }
+  };
   const saveImage = async () => {
     if (!result) return;
     const node =
@@ -407,6 +427,9 @@ export function Calculator() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={copySummary} disabled={!result}>
+                    <Copy className="mr-2 h-4 w-4" /> Salin ringkasan
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={shareLink} disabled={!result}>
                     <Link2 className="mr-2 h-4 w-4" /> Salin link
                   </DropdownMenuItem>
@@ -653,7 +676,10 @@ export function Calculator() {
             );
 
             const actions = (
-              <div className="mt-3 grid grid-cols-3 gap-2">
+              <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                <Button variant="outline" size="sm" onClick={copySummary} className="h-9">
+                  <Copy className="mr-1.5 h-3.5 w-3.5" /> Salin
+                </Button>
                 <Button variant="outline" size="sm" onClick={shareLink} className="h-9">
                   <Link2 className="mr-1.5 h-3.5 w-3.5" /> Link
                 </Button>
