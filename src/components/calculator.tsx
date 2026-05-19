@@ -254,8 +254,11 @@ export function Calculator() {
 
   const saveImage = async () => {
     if (!resultRef.current) return;
+    const node =
+      resultRef.current?.offsetParent ? resultRef.current : mobileResultRef.current;
+    if (!node) return;
     try {
-      const canvas = await html2canvas(resultRef.current, {
+      const canvas = await html2canvas(node, {
         backgroundColor: isDark ? "#0b1220" : "#ffffff",
         scale: 2,
         logging: false,
