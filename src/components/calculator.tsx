@@ -473,7 +473,7 @@ export function Calculator() {
                   inputMode="decimal"
                   value={avgPrice}
                   onChange={(e) => setAvgPrice(numOnly(e.target.value))}
-                  onBlur={(e) => handlePriceBlur(e.target.value, setAvgPrice, "Avg")}
+                  onBlur={(e) => handlePriceBlur(e.target.value, setAvgPrice)}
                   placeholder="0"
                   className="h-9 tabular"
                   tabIndex={2}
@@ -534,7 +534,7 @@ export function Calculator() {
                 inputMode="decimal"
                 value={hargaAvg}
                 onChange={(e) => setHargaAvg(numOnly(e.target.value))}
-                onBlur={(e) => handlePriceBlur(e.target.value, setHargaAvg, "Harga")}
+                onBlur={(e) => handlePriceBlur(e.target.value, setHargaAvg)}
                 placeholder="0"
                 className="h-9 tabular"
                 tabIndex={4}
@@ -564,7 +564,7 @@ export function Calculator() {
                   inputMode="decimal"
                   value={targetAvg}
                   onChange={(e) => setTargetAvg(numOnly(e.target.value))}
-                  onBlur={(e) => handlePriceBlur(e.target.value, setTargetAvg, "Target")}
+                  onBlur={(e) => handlePriceBlur(e.target.value, setTargetAvg)}
                   placeholder="0"
                   className="h-9 tabular"
                   disabled={targetAvgDisabled}
