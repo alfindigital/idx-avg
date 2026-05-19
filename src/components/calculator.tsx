@@ -431,6 +431,7 @@ export function Calculator() {
                   placeholder="BBRI"
                   className="h-9 uppercase"
                   autoFocus
+                  tabIndex={1}
                 />
               </div>
               <div>
@@ -442,6 +443,7 @@ export function Calculator() {
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
                   className="h-9"
+                  tabIndex={8}
                 />
               </div>
             </div>
