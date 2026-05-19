@@ -262,6 +262,25 @@ export function Calculator() {
     }
   };
 
+  const copySummary = async () => {
+    if (!result) return;
+    const arrow = result.status === "down" ? "↓" : result.status === "up" ? "↑" : "→";
+    const head =
+      result.mode === "new-avg" ? "Avg Baru" : "Lot Diperlukan";
+    const lines = [
+      `${result.stockName} · ${result.date}`,
+      `${head}: ${formatRupiah(result.newAvgPrice)} (${arrow} ${result.percentage.toFixed(2)}%)`,
+      `Lot Baru: ${result.totalLotBaru} (+${result.lotDelta})`,
+      `Modal Tambahan: ${formatRupiah(result.modalTambahan)}`,
+      `Total Modal: ${formatRupiah(result.totalModal)}`,
+    ];
+    try {
+      await navigator.clipboard.writeText(lines.join("\n"));
+      toast.success("Ringkasan disalin");
+    } catch {
+      toast.error("Gagal menyalin");
+    }
+  };
   const saveImage = async () => {
     if (!result) return;
     const node =
