@@ -221,11 +221,7 @@ export function Calculator() {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (canCalculate) {
-      runCalc();
-    } else {
-      toast("Lengkapi data dulu", { duration: 1500 });
-    }
+    if (canCalculate) runCalc();
   };
 
   const toggleTheme = () => {
