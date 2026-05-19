@@ -146,5 +146,11 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-feature-settings: "cv11", "ss01";
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
   }
 }
+
