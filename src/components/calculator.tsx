@@ -50,7 +50,7 @@ import {
 } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { formatRupiah, roundToTick } from "@/lib/idx-tick";
+import { formatRupiah, getTickSize, roundToTick } from "@/lib/idx-tick";
 import {
   type CalcMode,
   type CalcResult,
