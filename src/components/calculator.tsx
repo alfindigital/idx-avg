@@ -50,7 +50,7 @@ import {
 } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { formatRupiah, roundToTick } from "@/lib/idx-tick";
+import { formatRupiah, getTickSize, roundToTick } from "@/lib/idx-tick";
 import {
   type CalcMode,
   type CalcResult,
@@ -62,10 +62,33 @@ import html2canvas from "html2canvas";
 const HISTORY_KEY = "idxavg-history-v1";
 const THEME_KEY = "idxavg-theme";
 
+const MAX_PRICE = 1_000_000;
+const MAX_LOT = 1_000_000;
+
 function todayISO() {
   const d = new Date();
   const tz = d.getTimezoneOffset() * 60000;
   return new Date(d.getTime() - tz).toISOString().split("T")[0];
+}
+
+function validatePrice(v: string): string | null {
+  if (!v) return null;
+  const n = parseFloat(v);
+  if (!isFinite(n) || n <= 0) return "Harus angka > 0";
+  if (n > MAX_PRICE) return `Maks ${formatRupiah(MAX_PRICE)}`;
+  const tick = getTickSize(n);
+  if (Math.abs(n - Math.round(n / tick) * tick) > 1e-9) {
+    return `Kelipatan ${tick}`;
+  }
+  return null;
+}
+
+function validateLot(v: string): string | null {
+  if (!v) return null;
+  const n = Number(v);
+  if (!Number.isInteger(n) || n <= 0) return "Bilangan bulat > 0";
+  if (n > MAX_LOT) return `Maks ${MAX_LOT.toLocaleString("id-ID")} lot`;
+  return null;
 }
 
 export function Calculator() {
@@ -128,34 +151,28 @@ export function Calculator() {
     return null;
   }, [lotTambah, targetAvg]);
 
+  const errAvg = useMemo(() => validatePrice(avgPrice), [avgPrice]);
+  const errHarga = useMemo(() => validatePrice(hargaAvg), [hargaAvg]);
+  const errTarget = useMemo(() => validatePrice(targetAvg), [targetAvg]);
+  const errLot = useMemo(() => validateLot(totalLot), [totalLot]);
+  const errLotTambah = useMemo(() => validateLot(lotTambah), [lotTambah]);
+
   const canCalculate = useMemo(() => {
-    const a = parseFloat(avgPrice);
-    const l = parseInt(totalLot);
-    const h = parseFloat(hargaAvg);
-    if (!isFinite(a) || a <= 0 || !isFinite(l) || l <= 0 || !isFinite(h) || h <= 0) return false;
-    if (mode === "new-avg") {
-      const lt = parseInt(lotTambah);
-      return isFinite(lt) && lt > 0;
-    }
-    if (mode === "lots-needed") {
-      const t = parseFloat(targetAvg);
-      return isFinite(t) && t > 0;
-    }
+    if (!avgPrice || !totalLot || !hargaAvg) return false;
+    if (errAvg || errLot || errHarga) return false;
+    if (mode === "new-avg") return !!lotTambah && !errLotTambah;
+    if (mode === "lots-needed") return !!targetAvg && !errTarget;
     return false;
-  }, [avgPrice, totalLot, hargaAvg, lotTambah, targetAvg, mode]);
+  }, [avgPrice, totalLot, hargaAvg, lotTambah, targetAvg, mode, errAvg, errLot, errHarga, errLotTambah, errTarget]);
 
   const handlePriceBlur = (
     value: string,
-    setter: (v: string) => void,
-    label: string
+    setter: (v: string) => void
   ) => {
     const n = parseFloat(value);
-    if (!isFinite(n) || n <= 0) return;
+    if (!isFinite(n) || n <= 0 || n > MAX_PRICE) return;
     const rounded = roundToTick(n);
-    if (rounded !== n) {
-      setter(String(rounded));
-      toast(`${label}: dibulatkan ke ${formatRupiah(rounded)}`, { duration: 1500 });
-    }
+    if (rounded !== n) setter(String(rounded));
   };
 
   const intOnly = (v: string) => v.replace(/[^\d]/g, "");
@@ -204,11 +221,7 @@ export function Calculator() {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (canCalculate) {
-      runCalc();
-    } else {
-      toast("Lengkapi data dulu", { duration: 1500 });
-    }
+    if (canCalculate) runCalc();
   };
 
   const toggleTheme = () => {
@@ -456,11 +469,13 @@ export function Calculator() {
                   inputMode="decimal"
                   value={avgPrice}
                   onChange={(e) => setAvgPrice(numOnly(e.target.value))}
-                  onBlur={(e) => handlePriceBlur(e.target.value, setAvgPrice, "Avg")}
+                  onBlur={(e) => handlePriceBlur(e.target.value, setAvgPrice)}
                   placeholder="0"
-                  className="h-9 tabular"
+                  aria-invalid={!!errAvg}
+                  className={cn("h-9 tabular", errAvg && "border-destructive focus-visible:ring-destructive")}
                   tabIndex={2}
                 />
+                {errAvg && <p className="mt-1 text-[10px] text-destructive">{errAvg}</p>}
               </div>
               <div>
                 <Label className="mb-1 block text-[11px] text-muted-foreground">
@@ -471,9 +486,11 @@ export function Calculator() {
                   value={totalLot}
                   onChange={(e) => setTotalLot(intOnly(e.target.value))}
                   placeholder="0"
-                  className="h-9 tabular"
+                  aria-invalid={!!errLot}
+                  className={cn("h-9 tabular", errLot && "border-destructive focus-visible:ring-destructive")}
                   tabIndex={3}
                 />
+                {errLot && <p className="mt-1 text-[10px] text-destructive">{errLot}</p>}
               </div>
             </div>
             <div className="flex items-center justify-between rounded-md bg-muted/60 px-3 py-2 text-sm">
@@ -517,11 +534,13 @@ export function Calculator() {
                 inputMode="decimal"
                 value={hargaAvg}
                 onChange={(e) => setHargaAvg(numOnly(e.target.value))}
-                onBlur={(e) => handlePriceBlur(e.target.value, setHargaAvg, "Harga")}
+                onBlur={(e) => handlePriceBlur(e.target.value, setHargaAvg)}
                 placeholder="0"
-                className="h-9 tabular"
+                aria-invalid={!!errHarga}
+                className={cn("h-9 tabular", errHarga && "border-destructive focus-visible:ring-destructive")}
                 tabIndex={4}
               />
+              {errHarga && <p className="mt-1 text-[10px] text-destructive">{errHarga}</p>}
             </div>
 
             <div className="grid grid-cols-2 gap-2">
@@ -534,10 +553,12 @@ export function Calculator() {
                   value={lotTambah}
                   onChange={(e) => setLotTambah(intOnly(e.target.value))}
                   placeholder="0"
-                  className="h-9 tabular"
+                  aria-invalid={!!errLotTambah}
+                  className={cn("h-9 tabular", errLotTambah && "border-destructive focus-visible:ring-destructive")}
                   disabled={lotTambahDisabled}
                   tabIndex={5}
                 />
+                {errLotTambah && <p className="mt-1 text-[10px] text-destructive">{errLotTambah}</p>}
               </div>
               <div className={cn(targetAvgDisabled && "opacity-50")}>
                 <Label className="mb-1 block text-[11px] text-muted-foreground">
@@ -547,12 +568,14 @@ export function Calculator() {
                   inputMode="decimal"
                   value={targetAvg}
                   onChange={(e) => setTargetAvg(numOnly(e.target.value))}
-                  onBlur={(e) => handlePriceBlur(e.target.value, setTargetAvg, "Target")}
+                  onBlur={(e) => handlePriceBlur(e.target.value, setTargetAvg)}
                   placeholder="0"
-                  className="h-9 tabular"
+                  aria-invalid={!!errTarget}
+                  className={cn("h-9 tabular", errTarget && "border-destructive focus-visible:ring-destructive")}
                   disabled={targetAvgDisabled}
                   tabIndex={6}
                 />
+                {errTarget && <p className="mt-1 text-[10px] text-destructive">{errTarget}</p>}
               </div>
             </div>
 
