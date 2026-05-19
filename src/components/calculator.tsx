@@ -471,9 +471,11 @@ export function Calculator() {
                   onChange={(e) => setAvgPrice(numOnly(e.target.value))}
                   onBlur={(e) => handlePriceBlur(e.target.value, setAvgPrice)}
                   placeholder="0"
-                  className="h-9 tabular"
+                  aria-invalid={!!errAvg}
+                  className={cn("h-9 tabular", errAvg && "border-destructive focus-visible:ring-destructive")}
                   tabIndex={2}
                 />
+                {errAvg && <p className="mt-1 text-[10px] text-destructive">{errAvg}</p>}
               </div>
               <div>
                 <Label className="mb-1 block text-[11px] text-muted-foreground">
@@ -484,9 +486,11 @@ export function Calculator() {
                   value={totalLot}
                   onChange={(e) => setTotalLot(intOnly(e.target.value))}
                   placeholder="0"
-                  className="h-9 tabular"
+                  aria-invalid={!!errLot}
+                  className={cn("h-9 tabular", errLot && "border-destructive focus-visible:ring-destructive")}
                   tabIndex={3}
                 />
+                {errLot && <p className="mt-1 text-[10px] text-destructive">{errLot}</p>}
               </div>
             </div>
             <div className="flex items-center justify-between rounded-md bg-muted/60 px-3 py-2 text-sm">
