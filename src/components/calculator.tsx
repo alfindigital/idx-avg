@@ -202,17 +202,14 @@ export function Calculator() {
     }
   };
 
-  // Enter shortcut
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Enter" && canCalculate) {
-        const tag = (e.target as HTMLElement)?.tagName;
-        if (tag === "INPUT" || tag === "BUTTON") runCalc();
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  });
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (canCalculate) {
+      runCalc();
+    } else {
+      toast("Lengkapi data dulu", { duration: 1500 });
+    }
+  };
 
   const toggleTheme = () => {
     const n = !isDark;
