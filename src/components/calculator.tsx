@@ -151,7 +151,6 @@ export function Calculator() {
     return null;
   }, [lotTambah, targetAvg]);
 
-  const canCalculate = useMemo(() => {
   const errAvg = useMemo(() => validatePrice(avgPrice), [avgPrice]);
   const errHarga = useMemo(() => validatePrice(hargaAvg), [hargaAvg]);
   const errTarget = useMemo(() => validatePrice(targetAvg), [targetAvg]);
