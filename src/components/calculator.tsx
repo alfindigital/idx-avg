@@ -1,6 +1,6 @@
 "use client";
 
-import { type RefObject, useEffect, useMemo, useRef, useState } from "react";
+import { type FormEvent, type RefObject, useEffect, useMemo, useRef, useState } from "react";
 import {
   Menu,
   Moon,
