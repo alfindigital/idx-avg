@@ -536,9 +536,11 @@ export function Calculator() {
                 onChange={(e) => setHargaAvg(numOnly(e.target.value))}
                 onBlur={(e) => handlePriceBlur(e.target.value, setHargaAvg)}
                 placeholder="0"
-                className="h-9 tabular"
+                aria-invalid={!!errHarga}
+                className={cn("h-9 tabular", errHarga && "border-destructive focus-visible:ring-destructive")}
                 tabIndex={4}
               />
+              {errHarga && <p className="mt-1 text-[10px] text-destructive">{errHarga}</p>}
             </div>
 
             <div className="grid grid-cols-2 gap-2">
@@ -551,10 +553,12 @@ export function Calculator() {
                   value={lotTambah}
                   onChange={(e) => setLotTambah(intOnly(e.target.value))}
                   placeholder="0"
-                  className="h-9 tabular"
+                  aria-invalid={!!errLotTambah}
+                  className={cn("h-9 tabular", errLotTambah && "border-destructive focus-visible:ring-destructive")}
                   disabled={lotTambahDisabled}
                   tabIndex={5}
                 />
+                {errLotTambah && <p className="mt-1 text-[10px] text-destructive">{errLotTambah}</p>}
               </div>
               <div className={cn(targetAvgDisabled && "opacity-50")}>
                 <Label className="mb-1 block text-[11px] text-muted-foreground">
@@ -566,10 +570,12 @@ export function Calculator() {
                   onChange={(e) => setTargetAvg(numOnly(e.target.value))}
                   onBlur={(e) => handlePriceBlur(e.target.value, setTargetAvg)}
                   placeholder="0"
-                  className="h-9 tabular"
+                  aria-invalid={!!errTarget}
+                  className={cn("h-9 tabular", errTarget && "border-destructive focus-visible:ring-destructive")}
                   disabled={targetAvgDisabled}
                   tabIndex={6}
                 />
+                {errTarget && <p className="mt-1 text-[10px] text-destructive">{errTarget}</p>}
               </div>
             </div>
 
