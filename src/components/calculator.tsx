@@ -570,7 +570,7 @@ export function Calculator() {
 
           {/* Result */}
           {result && (() => {
-            const resultCard = (ref: React.RefObject<HTMLDivElement | null>) => (
+            const resultCard = (ref: RefObject<HTMLDivElement | null>) => (
               <div
                 ref={ref}
                 data-result-card
