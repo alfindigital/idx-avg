@@ -550,9 +550,9 @@ export function Calculator() {
             </div>
 
             <Button
+              type="submit"
               className="h-10 w-full text-sm font-semibold tracking-wide"
               disabled={!canCalculate}
-              onClick={runCalc}
             >
               HITUNG
               <span className="ml-2 hidden text-[10px] opacity-60 sm:inline">
@@ -565,6 +565,7 @@ export function Calculator() {
               </p>
             )}
           </section>
+          </form>
 
           {/* Result */}
           {result && (() => {
