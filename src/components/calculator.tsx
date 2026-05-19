@@ -414,7 +414,7 @@ export function Calculator() {
         </header>
 
         {/* Main */}
-        <main className="mx-auto max-w-2xl px-3 pb-10 pt-3">
+        <main className="mx-auto max-w-2xl px-3 pt-3 pb-28 sm:pb-10">
           {/* Position */}
           <section className="space-y-2.5">
             <div className="flex items-center gap-1.5">
