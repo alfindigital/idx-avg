@@ -520,6 +520,7 @@ export function Calculator() {
                 onBlur={(e) => handlePriceBlur(e.target.value, setHargaAvg, "Harga")}
                 placeholder="0"
                 className="h-9 tabular"
+                tabIndex={4}
               />
             </div>
 
@@ -535,6 +536,7 @@ export function Calculator() {
                   placeholder="0"
                   className="h-9 tabular"
                   disabled={lotTambahDisabled}
+                  tabIndex={5}
                 />
               </div>
               <div className={cn(targetAvgDisabled && "opacity-50")}>
@@ -549,6 +551,7 @@ export function Calculator() {
                   placeholder="0"
                   className="h-9 tabular"
                   disabled={targetAvgDisabled}
+                  tabIndex={6}
                 />
               </div>
             </div>
