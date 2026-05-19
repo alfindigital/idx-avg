@@ -202,7 +202,7 @@ export function Calculator() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (canCalculate) {
       runCalc();
