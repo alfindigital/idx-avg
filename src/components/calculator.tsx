@@ -1,6 +1,6 @@
 "use client";
 
-import { type RefObject, useEffect, useMemo, useRef, useState } from "react";
+import { type FormEvent, type RefObject, useEffect, useMemo, useRef, useState } from "react";
 import {
   Menu,
   Moon,
@@ -202,17 +202,14 @@ export function Calculator() {
     }
   };
 
-  // Enter shortcut
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Enter" && canCalculate) {
-        const tag = (e.target as HTMLElement)?.tagName;
-        if (tag === "INPUT" || tag === "BUTTON") runCalc();
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  });
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    if (canCalculate) {
+      runCalc();
+    } else {
+      toast("Lengkapi data dulu", { duration: 1500 });
+    }
+  };
 
   const toggleTheme = () => {
     const n = !isDark;
@@ -415,6 +412,7 @@ export function Calculator() {
 
         {/* Main */}
         <main className="mx-auto max-w-2xl px-3 pt-3 pb-28 sm:pb-10">
+          <form onSubmit={handleSubmit} noValidate>
           {/* Position */}
           <section className="space-y-2.5">
             <div className="flex items-center gap-1.5">
@@ -433,6 +431,7 @@ export function Calculator() {
                   placeholder="BBRI"
                   className="h-9 uppercase"
                   autoFocus
+                  tabIndex={1}
                 />
               </div>
               <div>
@@ -444,6 +443,7 @@ export function Calculator() {
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
                   className="h-9"
+                  tabIndex={8}
                 />
               </div>
             </div>
@@ -459,6 +459,7 @@ export function Calculator() {
                   onBlur={(e) => handlePriceBlur(e.target.value, setAvgPrice, "Avg")}
                   placeholder="0"
                   className="h-9 tabular"
+                  tabIndex={2}
                 />
               </div>
               <div>
@@ -471,6 +472,7 @@ export function Calculator() {
                   onChange={(e) => setTotalLot(intOnly(e.target.value))}
                   placeholder="0"
                   className="h-9 tabular"
+                  tabIndex={3}
                 />
               </div>
             </div>
@@ -518,6 +520,7 @@ export function Calculator() {
                 onBlur={(e) => handlePriceBlur(e.target.value, setHargaAvg, "Harga")}
                 placeholder="0"
                 className="h-9 tabular"
+                tabIndex={4}
               />
             </div>
 
@@ -533,6 +536,7 @@ export function Calculator() {
                   placeholder="0"
                   className="h-9 tabular"
                   disabled={lotTambahDisabled}
+                  tabIndex={5}
                 />
               </div>
               <div className={cn(targetAvgDisabled && "opacity-50")}>
@@ -547,14 +551,15 @@ export function Calculator() {
                   placeholder="0"
                   className="h-9 tabular"
                   disabled={targetAvgDisabled}
+                  tabIndex={6}
                 />
               </div>
             </div>
 
             <Button
+              type="submit"
               className="h-10 w-full text-sm font-semibold tracking-wide"
               disabled={!canCalculate}
-              onClick={runCalc}
             >
               HITUNG
               <span className="ml-2 hidden text-[10px] opacity-60 sm:inline">
@@ -567,6 +572,7 @@ export function Calculator() {
               </p>
             )}
           </section>
+          </form>
 
           {/* Result */}
           {result && (() => {
