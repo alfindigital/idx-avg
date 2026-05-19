@@ -459,6 +459,7 @@ export function Calculator() {
                   onBlur={(e) => handlePriceBlur(e.target.value, setAvgPrice, "Avg")}
                   placeholder="0"
                   className="h-9 tabular"
+                  tabIndex={2}
                 />
               </div>
               <div>
@@ -471,6 +472,7 @@ export function Calculator() {
                   onChange={(e) => setTotalLot(intOnly(e.target.value))}
                   placeholder="0"
                   className="h-9 tabular"
+                  tabIndex={3}
                 />
               </div>
             </div>
