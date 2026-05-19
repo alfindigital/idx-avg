@@ -673,7 +673,10 @@ export function Calculator() {
             );
 
             const actions = (
-              <div className="mt-3 grid grid-cols-3 gap-2">
+              <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                <Button variant="outline" size="sm" onClick={copySummary} className="h-9">
+                  <Copy className="mr-1.5 h-3.5 w-3.5" /> Salin
+                </Button>
                 <Button variant="outline" size="sm" onClick={shareLink} className="h-9">
                   <Link2 className="mr-1.5 h-3.5 w-3.5" /> Link
                 </Button>
