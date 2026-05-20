@@ -456,44 +456,32 @@ export function Calculator() {
         <main className="mx-auto w-full max-w-[480px] px-4 pt-4 pb-40 sm:pb-32">
           <form onSubmit={handleSubmit} noValidate className="space-y-5">
           {/* Position */}
-          <section className="space-y-2.5">
-            <div className="flex items-center gap-1.5">
-              <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Posisi Saat Ini
-              </h2>
-            </div>
-            <div className="grid grid-cols-3 gap-2">
-              <div className="col-span-2">
-                <Label className="mb-1 block text-[11px] text-muted-foreground">
-                  Kode Saham
-                </Label>
+          <section className={cardCls}>
+            <h2 className={sectionHead}>Posisi Saat Ini</h2>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label className={labelCls}>Kode Saham</Label>
                 <Input
                   value={stockName}
                   onChange={(e) => setStockName(e.target.value.toUpperCase().slice(0, 6))}
                   placeholder="BBRI"
-                  className="h-9 uppercase"
+                  className={cn(inputCls, "font-display uppercase tracking-wide")}
                   autoFocus
                   tabIndex={1}
                 />
               </div>
               <div>
-                <Label className="mb-1 block text-[11px] text-muted-foreground">
-                  Tanggal
-                </Label>
+                <Label className={labelCls}>Tanggal</Label>
                 <Input
                   type="date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className="h-9"
+                  className={cn(inputCls, "text-base font-semibold")}
                   tabIndex={8}
                 />
               </div>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
               <div>
-                <Label className="mb-1 block text-[11px] text-muted-foreground">
-                  Avg Sekarang (Rp)
-                </Label>
+                <Label className={labelCls}>Avg Sekarang (Rp)</Label>
                 <Input
                   inputMode="decimal"
                   value={avgPrice}
@@ -501,52 +489,48 @@ export function Calculator() {
                   onBlur={(e) => handlePriceBlur(e.target.value, setAvgPrice)}
                   placeholder="0"
                   aria-invalid={!!errAvg}
-                  className={cn("h-9 tabular", errAvg && "border-destructive focus-visible:ring-destructive")}
+                  className={cn(inputCls, "tabular", errAvg && "border-destructive focus-visible:border-destructive")}
                   tabIndex={2}
                 />
-                {errAvg && <p className="mt-1 text-[10px] text-destructive">{errAvg}</p>}
+                {errAvg && <p className="mt-1.5 ml-1 text-xs font-medium text-destructive">{errAvg}</p>}
               </div>
               <div>
-                <Label className="mb-1 block text-[11px] text-muted-foreground">
-                  Total Lot
-                </Label>
+                <Label className={labelCls}>Total Lot</Label>
                 <Input
                   inputMode="numeric"
                   value={totalLot}
                   onChange={(e) => setTotalLot(intOnly(e.target.value))}
                   placeholder="0"
                   aria-invalid={!!errLot}
-                  className={cn("h-9 tabular", errLot && "border-destructive focus-visible:ring-destructive")}
+                  className={cn(inputCls, "tabular", errLot && "border-destructive focus-visible:border-destructive")}
                   tabIndex={3}
                 />
-                {errLot && <p className="mt-1 text-[10px] text-destructive">{errLot}</p>}
+                {errLot && <p className="mt-1.5 ml-1 text-xs font-medium text-destructive">{errLot}</p>}
               </div>
             </div>
-            <div className="flex items-center justify-between rounded-md bg-muted/60 px-3 py-2 text-sm">
-              <span className="flex items-center gap-1 text-muted-foreground">
+            <div className="mt-4 flex items-center justify-between rounded-2xl border border-white/70 bg-card/60 px-4 py-3 dark:border-white/5">
+              <span className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
                 Modal Awal
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Info className="h-3 w-3 cursor-help" />
+                    <Info className="h-3.5 w-3.5 cursor-help" />
                   </TooltipTrigger>
                   <TooltipContent side="top" className="text-xs">
                     Avg × Lot × 100
                   </TooltipContent>
                 </Tooltip>
               </span>
-              <span className="font-semibold tabular">{formatRupiah(modalAwal)}</span>
+              <span className="font-display text-lg font-extrabold tabular">{formatRupiah(modalAwal)}</span>
             </div>
           </section>
 
           {/* Averaging */}
-          <section className="mt-5 space-y-2.5">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Averaging
-              </h2>
+          <section className={cardCls}>
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className={cn(sectionHead, "mb-0")}>Averaging</h2>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Info className="h-3 w-3 cursor-help text-muted-foreground" />
+                  <Info className="h-4 w-4 cursor-help text-muted-foreground" />
                 </TooltipTrigger>
                 <TooltipContent side="left" className="max-w-[220px] text-xs">
                   Isi <b>Lot Tambah</b> untuk hitung avg baru, atau <b>Target Avg</b> untuk
@@ -555,74 +539,70 @@ export function Calculator() {
               </Tooltip>
             </div>
 
-            <div>
-              <Label className="mb-1 block text-[11px] text-muted-foreground">
-                Harga Averaging (Rp)
-              </Label>
-              <Input
-                inputMode="decimal"
-                value={hargaAvg}
-                onChange={(e) => setHargaAvg(numOnly(e.target.value))}
-                onBlur={(e) => handlePriceBlur(e.target.value, setHargaAvg)}
-                placeholder="0"
-                aria-invalid={!!errHarga}
-                className={cn("h-9 tabular", errHarga && "border-destructive focus-visible:ring-destructive")}
-                tabIndex={4}
-              />
-              {errHarga && <p className="mt-1 text-[10px] text-destructive">{errHarga}</p>}
-            </div>
-
-            <div className="grid grid-cols-2 gap-2">
-              <div className={cn(lotTambahDisabled && "opacity-50")}>
-                <Label className="mb-1 block text-[11px] text-muted-foreground">
-                  Lot Tambah
-                </Label>
-                <Input
-                  inputMode="numeric"
-                  value={lotTambah}
-                  onChange={(e) => setLotTambah(intOnly(e.target.value))}
-                  placeholder="0"
-                  aria-invalid={!!errLotTambah}
-                  className={cn("h-9 tabular", errLotTambah && "border-destructive focus-visible:ring-destructive")}
-                  disabled={lotTambahDisabled}
-                  tabIndex={5}
-                />
-                {errLotTambah && <p className="mt-1 text-[10px] text-destructive">{errLotTambah}</p>}
-              </div>
-              <div className={cn(targetAvgDisabled && "opacity-50")}>
-                <Label className="mb-1 block text-[11px] text-muted-foreground">
-                  Target Avg (Rp)
-                </Label>
+            <div className="space-y-3">
+              <div>
+                <Label className={labelCls}>Harga Averaging (Rp)</Label>
                 <Input
                   inputMode="decimal"
-                  value={targetAvg}
-                  onChange={(e) => setTargetAvg(numOnly(e.target.value))}
-                  onBlur={(e) => handlePriceBlur(e.target.value, setTargetAvg)}
+                  value={hargaAvg}
+                  onChange={(e) => setHargaAvg(numOnly(e.target.value))}
+                  onBlur={(e) => handlePriceBlur(e.target.value, setHargaAvg)}
                   placeholder="0"
-                  aria-invalid={!!errTarget}
-                  className={cn("h-9 tabular", errTarget && "border-destructive focus-visible:ring-destructive")}
-                  disabled={targetAvgDisabled}
-                  tabIndex={6}
+                  aria-invalid={!!errHarga}
+                  className={cn(inputCls, "tabular", errHarga && "border-destructive focus-visible:border-destructive")}
+                  tabIndex={4}
                 />
-                {errTarget && <p className="mt-1 text-[10px] text-destructive">{errTarget}</p>}
+                {errHarga && <p className="mt-1.5 ml-1 text-xs font-medium text-destructive">{errHarga}</p>}
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className={cn(lotTambahDisabled && "opacity-50")}>
+                  <Label className={labelCls}>Lot Tambah</Label>
+                  <Input
+                    inputMode="numeric"
+                    value={lotTambah}
+                    onChange={(e) => setLotTambah(intOnly(e.target.value))}
+                    placeholder="0"
+                    aria-invalid={!!errLotTambah}
+                    className={cn(inputCls, "tabular", errLotTambah && "border-destructive focus-visible:border-destructive")}
+                    disabled={lotTambahDisabled}
+                    tabIndex={5}
+                  />
+                  {errLotTambah && <p className="mt-1.5 ml-1 text-xs font-medium text-destructive">{errLotTambah}</p>}
+                </div>
+                <div className={cn(targetAvgDisabled && "opacity-50")}>
+                  <Label className={labelCls}>Target Avg (Rp)</Label>
+                  <Input
+                    inputMode="decimal"
+                    value={targetAvg}
+                    onChange={(e) => setTargetAvg(numOnly(e.target.value))}
+                    onBlur={(e) => handlePriceBlur(e.target.value, setTargetAvg)}
+                    placeholder="0"
+                    aria-invalid={!!errTarget}
+                    className={cn(inputCls, "tabular", errTarget && "border-destructive focus-visible:border-destructive")}
+                    disabled={targetAvgDisabled}
+                    tabIndex={6}
+                  />
+                  {errTarget && <p className="mt-1.5 ml-1 text-xs font-medium text-destructive">{errTarget}</p>}
+                </div>
               </div>
             </div>
+          </section>
 
-            <Button
-              type="submit"
-              className="h-10 w-full text-sm font-semibold tracking-wide"
-              disabled={!canCalculate}
-            >
-              HITUNG
-              <span className="ml-2 hidden text-[10px] opacity-60 sm:inline">
-                (Enter)
-              </span>
-            </Button>
-            {!mode && (hargaAvg || avgPrice) && (
-              <p className="text-center text-[11px] text-muted-foreground">
-                Isi <b>Lot Tambah</b> atau <b>Target Avg</b>
-              </p>
-            )}
+          <Button
+            type="submit"
+            className="font-display h-auto w-full rounded-3xl py-5 text-lg font-extrabold uppercase tracking-[0.15em] shadow-xl shadow-primary/25 transition-all active:scale-[0.98]"
+            disabled={!canCalculate}
+          >
+            Hitung
+            <span className="ml-2 text-xs font-medium normal-case opacity-70 tracking-normal">(Enter)</span>
+          </Button>
+          {!mode && (hargaAvg || avgPrice) && (
+            <p className="text-center text-xs font-medium text-muted-foreground">
+              Isi <b>Lot Tambah</b> atau <b>Target Avg</b>
+            </p>
+          )}
+
           </section>
           </form>
 
