@@ -333,122 +333,128 @@ export function Calculator() {
   const lotTambahDisabled = !!targetAvg;
   const targetAvgDisabled = !!lotTambah;
 
+  const inputCls =
+    "h-auto rounded-2xl border-2 border-transparent bg-card px-4 py-3.5 text-lg font-bold text-foreground shadow-none transition-all focus-visible:border-primary focus-visible:ring-0 placeholder:text-muted-foreground/50 md:text-lg";
+  const labelCls = "mb-1.5 ml-1 block text-sm font-semibold text-foreground/70";
+  const sectionHead =
+    "mb-4 font-display text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground";
+  const cardCls =
+    "rounded-3xl border border-white/70 bg-secondary/60 p-5 shadow-sm dark:border-white/5";
+
   return (
     <TooltipProvider delayDuration={150}>
       <div className="min-h-screen bg-background text-foreground">
         {/* Header */}
-        <header className="sticky top-0 z-20 border-b border-border bg-background/80 backdrop-blur">
-          <div className="mx-auto flex max-w-2xl items-center justify-between px-3 py-2">
-            <div className="flex items-center gap-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-primary-foreground">
-                <TrendingUp className="h-4 w-4" />
-              </div>
-              <div className="leading-tight">
-                <h1 className="text-sm font-semibold">IDXAvg</h1>
-                <p className="text-[10px] text-muted-foreground">
-                  Hitung avg sebelum beli
-                </p>
-              </div>
+        <header className="mx-auto flex w-full max-w-[480px] items-center justify-between px-4 pt-6 pb-2 sm:pt-8">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/25">
+              <TrendingUp className="h-5 w-5" strokeWidth={2.5} />
             </div>
+            <div className="leading-tight">
+              <h1 className="font-display text-2xl font-extrabold tracking-tight">IDXAvg</h1>
+              <p className="text-xs font-medium text-muted-foreground">
+                Hitung avg sebelum beli
+              </p>
+            </div>
+          </div>
 
-            <div className="flex items-center gap-1">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                onClick={toggleTheme}
-                aria-label="Toggle theme"
-              >
-                {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-              </Button>
-              <Sheet open={historyOpen} onOpenChange={setHistoryOpen}>
-                <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="History">
-                    <History className="h-4 w-4" />
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="right" className="w-[88vw] sm:w-96">
-                  <SheetHeader>
-                    <SheetTitle className="flex items-center justify-between">
-                      Riwayat
-                      {history.length > 0 && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={clearHistory}
-                          className="h-7 text-xs text-destructive"
-                        >
-                          <Trash2 className="mr-1 h-3 w-3" /> Hapus
-                        </Button>
-                      )}
-                    </SheetTitle>
-                  </SheetHeader>
-                  <div className="mt-3 space-y-2">
-                    {history.length === 0 ? (
-                      <p className="text-sm text-muted-foreground">Belum ada riwayat.</p>
-                    ) : (
-                      history.map((h) => (
-                        <button
-                          key={h.id}
-                          onClick={() => loadHistory(h)}
-                          className="w-full rounded-md border border-border p-2 text-left hover:bg-accent"
-                        >
-                          <div className="flex items-center justify-between text-xs">
-                            <span className="font-semibold">{h.stockName}</span>
-                            <span className="text-muted-foreground">
-                              {new Date(h.timestamp).toLocaleDateString("id-ID")}
-                            </span>
-                          </div>
-                          <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground tabular">
-                            <span>
-                              {formatRupiah(h.avgSekarang)} → {formatRupiah(h.newAvgPrice)}
-                            </span>
-                            <span
-                              className={cn(
-                                "font-medium",
-                                h.status === "down" && "text-destructive",
-                                h.status === "up" && "text-[color:var(--success)]"
-                              )}
-                            >
-                              {h.status === "down" ? "↓" : h.status === "up" ? "↑" : "→"}{" "}
-                              {h.percentage.toFixed(2)}%
-                            </span>
-                          </div>
-                        </button>
-                      ))
+          <div className="flex items-center gap-0.5 text-muted-foreground">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-10 w-10 rounded-xl hover:bg-secondary hover:text-primary"
+              onClick={toggleTheme}
+              aria-label="Toggle theme"
+            >
+              {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </Button>
+            <Sheet open={historyOpen} onOpenChange={setHistoryOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-secondary hover:text-primary" aria-label="History">
+                  <History className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[88vw] sm:w-96">
+                <SheetHeader>
+                  <SheetTitle className="flex items-center justify-between font-display">
+                    Riwayat
+                    {history.length > 0 && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={clearHistory}
+                        className="h-8 text-xs text-destructive"
+                      >
+                        <Trash2 className="mr-1 h-3.5 w-3.5" /> Hapus
+                      </Button>
                     )}
-                  </div>
-                </SheetContent>
-              </Sheet>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Menu">
-                    <Menu className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={copySummary} disabled={!result}>
-                    <Copy className="mr-2 h-4 w-4" /> Salin ringkasan
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={shareLink} disabled={!result}>
-                    <Link2 className="mr-2 h-4 w-4" /> Salin link
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={saveImage} disabled={!result}>
-                    <Download className="mr-2 h-4 w-4" /> Simpan gambar
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={resetAvg}>
-                    <RotateCcw className="mr-2 h-4 w-4" /> Reset
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+                  </SheetTitle>
+                </SheetHeader>
+                <div className="mt-4 space-y-2">
+                  {history.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">Belum ada riwayat.</p>
+                  ) : (
+                    history.map((h) => (
+                      <button
+                        key={h.id}
+                        onClick={() => loadHistory(h)}
+                        className="w-full rounded-2xl border border-border bg-card p-3 text-left transition-colors hover:border-primary/40 hover:bg-accent"
+                      >
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="font-display font-bold">{h.stockName}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(h.timestamp).toLocaleDateString("id-ID")}
+                          </span>
+                        </div>
+                        <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground tabular">
+                          <span>
+                            {formatRupiah(h.avgSekarang)} → {formatRupiah(h.newAvgPrice)}
+                          </span>
+                          <span
+                            className={cn(
+                              "font-semibold",
+                              h.status === "down" && "text-destructive",
+                              h.status === "up" && "text-[color:var(--success)]"
+                            )}
+                          >
+                            {h.status === "down" ? "↓" : h.status === "up" ? "↑" : "→"}{" "}
+                            {h.percentage.toFixed(2)}%
+                          </span>
+                        </div>
+                      </button>
+                    ))
+                  )}
+                </div>
+              </SheetContent>
+            </Sheet>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-secondary hover:text-primary" aria-label="Menu">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={copySummary} disabled={!result}>
+                  <Copy className="mr-2 h-4 w-4" /> Salin ringkasan
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={shareLink} disabled={!result}>
+                  <Link2 className="mr-2 h-4 w-4" /> Salin link
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={saveImage} disabled={!result}>
+                  <Download className="mr-2 h-4 w-4" /> Simpan gambar
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={resetAvg}>
+                  <RotateCcw className="mr-2 h-4 w-4" /> Reset
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </header>
 
         {/* Main */}
-        <main className="mx-auto max-w-2xl px-3 pt-3 pb-28 sm:pb-10">
-          <form onSubmit={handleSubmit} noValidate>
+        <main className="mx-auto w-full max-w-[480px] px-4 pt-4 pb-40 sm:pb-32">
+          <form onSubmit={handleSubmit} noValidate className="space-y-5">
           {/* Position */}
           <section className="space-y-2.5">
             <div className="flex items-center gap-1.5">
