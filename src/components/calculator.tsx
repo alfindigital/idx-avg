@@ -612,21 +612,21 @@ export function Calculator() {
               <div
                 ref={ref}
                 data-result-card
-                className="rounded-lg border border-border bg-card p-4"
+                className="rounded-3xl border border-white/70 bg-card p-5 shadow-sm dark:border-white/5"
               >
-                <div className="mb-3 flex items-center justify-between">
+                <div className="mb-4 flex items-start justify-between gap-3">
                   <div>
-                    <p className="text-[11px] uppercase tracking-wider text-muted-foreground">
+                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">
                       {result.stockName} · {result.mode === "new-avg" ? "Avg Baru" : "Lot Diperlukan"}
                     </p>
-                    <p className="mt-0.5 text-2xl font-bold tabular">
+                    <p className="mt-1 font-display text-3xl font-extrabold tabular">
                       {formatRupiah(result.newAvgPrice)}
                     </p>
                   </div>
                   <Badge
                     variant="secondary"
                     className={cn(
-                      "gap-1 text-xs",
+                      "gap-1 rounded-full px-2.5 py-1 text-xs font-semibold",
                       result.status === "down" &&
                         "bg-destructive/10 text-destructive hover:bg-destructive/10",
                       result.status === "up" &&
@@ -634,28 +634,28 @@ export function Calculator() {
                     )}
                   >
                     {result.status === "down" ? (
-                      <TrendingDown className="h-3 w-3" />
+                      <TrendingDown className="h-3.5 w-3.5" />
                     ) : (
-                      <TrendingUp className="h-3 w-3" />
+                      <TrendingUp className="h-3.5 w-3.5" />
                     )}
-                    {result.status === "down" ? "Down" : "Up"} {result.percentage.toFixed(2)}%
+                    {result.percentage.toFixed(2)}%
                   </Badge>
                 </div>
 
-                <div className="grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
-                  <div className="flex justify-between border-t border-border pt-2 col-span-2">
+                <div className="space-y-2 border-t border-border/70 pt-3 text-sm">
+                  <div className="flex justify-between">
                     <span className="text-muted-foreground">Lot Baru</span>
-                    <span className="font-medium tabular">
+                    <span className="font-semibold tabular">
                       {result.totalLotBaru} <span className="text-muted-foreground">(+{result.lotDelta})</span>
                     </span>
                   </div>
-                  <div className="flex justify-between col-span-2">
+                  <div className="flex justify-between">
                     <span className="text-muted-foreground">Modal Tambahan</span>
-                    <span className="font-medium tabular">{formatRupiah(result.modalTambahan)}</span>
+                    <span className="font-semibold tabular">{formatRupiah(result.modalTambahan)}</span>
                   </div>
-                  <div className="flex justify-between col-span-2">
+                  <div className="flex justify-between">
                     <span className="text-muted-foreground">Total Modal</span>
-                    <span className="font-semibold tabular">{formatRupiah(result.totalModal)}</span>
+                    <span className="font-display text-base font-extrabold tabular">{formatRupiah(result.totalModal)}</span>
                   </div>
                 </div>
               </div>
@@ -663,17 +663,17 @@ export function Calculator() {
 
             const actions = (
               <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
-                <Button variant="outline" size="sm" onClick={copySummary} className="h-9">
-                  <Copy className="mr-1.5 h-3.5 w-3.5" /> Salin
+                <Button variant="outline" size="sm" onClick={copySummary} className="h-10 rounded-xl">
+                  <Copy className="mr-1.5 h-4 w-4" /> Salin
                 </Button>
-                <Button variant="outline" size="sm" onClick={shareLink} className="h-9">
-                  <Link2 className="mr-1.5 h-3.5 w-3.5" /> Link
+                <Button variant="outline" size="sm" onClick={shareLink} className="h-10 rounded-xl">
+                  <Link2 className="mr-1.5 h-4 w-4" /> Link
                 </Button>
-                <Button variant="outline" size="sm" onClick={saveImage} className="h-9">
-                  <Download className="mr-1.5 h-3.5 w-3.5" /> PNG
+                <Button variant="outline" size="sm" onClick={saveImage} className="h-10 rounded-xl">
+                  <Download className="mr-1.5 h-4 w-4" /> PNG
                 </Button>
-                <Button variant="outline" size="sm" onClick={resetAvg} className="h-9">
-                  <X className="mr-1.5 h-3.5 w-3.5" /> Reset
+                <Button variant="outline" size="sm" onClick={resetAvg} className="h-10 rounded-xl">
+                  <X className="mr-1.5 h-4 w-4" /> Reset
                 </Button>
               </div>
             );
@@ -686,49 +686,47 @@ export function Calculator() {
                   {actions}
                 </section>
 
-                {/* Mobile: sticky bottom bar + drawer */}
+                {/* Mobile: floating sticky bar + drawer */}
                 <Drawer open={barOpen} onOpenChange={setBarOpen}>
-                  <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/95 backdrop-blur sm:hidden">
+                  <div className="fixed inset-x-0 bottom-4 z-30 flex justify-center px-4 sm:hidden">
                     <DrawerTrigger asChild>
                       <button
                         type="button"
-                        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left active:bg-accent/50"
+                        className="flex w-full max-w-[440px] items-center justify-between gap-3 rounded-3xl border border-slate-700 bg-slate-900 px-5 py-4 text-left text-white shadow-2xl backdrop-blur transition-transform active:scale-[0.98]"
                         aria-label="Lihat detail hasil"
                       >
-                        <div className="min-w-0">
-                          <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                            {result.stockName} · {result.mode === "new-avg" ? "Avg Baru" : "Lot Diperlukan"}
+                        <div className="min-w-0 space-y-0.5">
+                          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                            {result.mode === "new-avg" ? "Avg Baru" : "Lot Diperlukan"}
                           </p>
-                          <p className="text-lg font-bold tabular leading-tight">
+                          <p className="font-display text-xl font-extrabold tabular leading-tight text-white">
                             {formatRupiah(result.newAvgPrice)}
                           </p>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Badge
-                            variant="secondary"
+                        <div className="h-10 w-px bg-slate-700" />
+                        <div className="min-w-0 space-y-0.5 text-right">
+                          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                            {result.status === "down" ? "Turun" : result.status === "up" ? "Naik" : "Sama"}
+                          </p>
+                          <p
                             className={cn(
-                              "gap-1 text-[11px]",
-                              result.status === "down" &&
-                                "bg-destructive/10 text-destructive hover:bg-destructive/10",
-                              result.status === "up" &&
-                                "bg-[color:var(--success)]/15 text-[color:var(--success)] hover:bg-[color:var(--success)]/15"
+                              "font-display text-xl font-extrabold tabular leading-tight",
+                              result.status === "down" && "text-rose-400",
+                              result.status === "up" && "text-emerald-400",
+                              result.status === "same" && "text-white"
                             )}
                           >
-                            {result.status === "down" ? (
-                              <TrendingDown className="h-3 w-3" />
-                            ) : (
-                              <TrendingUp className="h-3 w-3" />
-                            )}
+                            {result.status === "down" ? "↓" : result.status === "up" ? "↑" : "→"}{" "}
                             {result.percentage.toFixed(2)}%
-                          </Badge>
-                          <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                          </p>
                         </div>
+                        <ChevronUp className="h-5 w-5 shrink-0 text-slate-400" />
                       </button>
                     </DrawerTrigger>
                   </div>
                   <DrawerContent className="sm:hidden">
                     <DrawerHeader className="pb-2">
-                      <DrawerTitle className="text-sm">Hasil Perhitungan</DrawerTitle>
+                      <DrawerTitle className="font-display">Hasil Perhitungan</DrawerTitle>
                     </DrawerHeader>
                     <div className="px-4 pb-6">
                       {resultCard(mobileResultRef)}
@@ -740,9 +738,10 @@ export function Calculator() {
             );
           })()}
 
-          <footer className="mt-8 text-center text-[10px] text-muted-foreground">
-            made with <span className="text-destructive">♥</span> · IDXAvg
+          <footer className="mt-10 text-center text-xs font-medium text-muted-foreground">
+            made with <span className="text-rose-400">♥</span> · IDXAvg
           </footer>
+
         </main>
       </div>
     </TooltipProvider>
