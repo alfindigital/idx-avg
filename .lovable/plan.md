@@ -1,105 +1,56 @@
-## IDXAvg — Mobile-First Averaging Calculator
+## Tujuan
 
-Single-page tool. Compact stacked layout, mobile-first. Tidak ada tab — mode kalkulasi auto-detect dari kolom yang user isi.
+Refresh tampilan kalkulator IDXAvg jadi modern minimalis dan mobile-responsive, dengan font lebih besar agar nyaman dibaca di desktop maupun mobile. Tidak ada perubahan business logic — semua field, validasi, history, share/export, dan keyboard shortcut tetap.
 
-### Layout (mobile-first, max-w-md, desktop centered)
+## Arah desain (terkunci)
 
-```
-┌─────────────────────────────────┐
-│ ▲ IDXAvg          ☰ menu        │  header tipis (32px)
-├─────────────────────────────────┤
-│ [Kode]  [Tgl]                   │  baris 1: stock + date inline
-│ [Avg Sekarang]  [Lot]           │  baris 2: 2 kolom
-│ Modal Awal: Rp 12.345.000   ⓘ   │  inline subtle, bukan card
-├─────────────────────────────────┤
-│ Averaging                       │
-│ [Harga Beli]                    │  field selalu visible
-│ [+ Lot]    atau  [Target Avg]   │  2 field side-by-side
-│                                 │  → isi salah satu, satunya disable
-│ [        H I T U N G        ]   │  full-width primary
-├─────────────────────────────────┤
-│ ▼ Hasil (muncul setelah hitung) │
-│ ┌─ badge Down 2.3% ─────────┐   │
-│ │ Avg Baru:  Rp 1.245       │   │
-│ │ Lot Baru:  35 (+10)       │   │
-│ │ Modal+:    Rp 1.250.000   │   │
-│ │ Total:     Rp 13.595.000  │   │
-│ └───────────────────────────┘   │
-│ [Share] [PNG] [Reset]           │
-└─────────────────────────────────┘
-```
+- Palet **Cloud White**: bg `#fafbfc`, surface kartu `#e8ecf1`, muted `#94a3b8`, primary `#3b82f6`.
+- Tipografi: **Urbanist** (heading/angka/tombol) + **Epilogue** (body/label) via Google Fonts.
+- Layout **single-column**, max width ~480px, terpusat di desktop dan mobile.
+- Komposisi mengikuti prototype terpilih: dua kartu berlapis (Posisi Saat Ini + Averaging), tombol HITUNG full-width rounded, sticky result bar gelap (`slate-900`) mengambang di bawah.
 
-Desktop (≥md): grid 2 kolom — kiri = posisi + averaging input, kanan = hasil sticky. Tetap padat, tanpa card outline tebal.
+## Perubahan file
 
-### Mode auto-detect
+### 1. `src/styles.css`
+- Tambah `@import` Google Fonts untuk Urbanist 700/800 dan Epilogue 400/500/600.
+- Set `--font-sans: 'Epilogue'` dan `--font-display: 'Urbanist'` di `:root`, lalu register di `@theme inline`.
+- Update `body` agar pakai Epilogue, tambah utility `.font-display` untuk Urbanist.
+- Sesuaikan token `--background`, `--card`, `--muted`, `--primary` ke oklch yang setara dengan palet Cloud White (light mode), dan turunan gelap yang konsisten untuk dark mode (tetap dukung toggle theme yang sudah ada).
+- Naikkan `--radius` ke `1rem` agar match rounded-3xl prototype.
 
-- Field "Lot Tambahan" dan "Target Avg" ditampilkan berdampingan (`grid-cols-2`).
-- Saat user isi salah satu, yang lain otomatis `disabled` + opacity-50.
-- Saat dikosongkan, dua-duanya re-enable.
-- Tombol HITUNG memanggil formula sesuai field aktif.
-- Tidak ada tab/segmented switch.
+### 2. `src/components/calculator.tsx` (visual saja)
+- Container utama: `bg-background`, padding longgar, `max-w-[480px] mx-auto`.
+- Header: logo bulat biru `rounded-xl` + judul Urbanist 2xl + subtitle muted. Tombol header tetap (theme, history, menu) tapi pakai ukuran ikon lebih besar (`h-5 w-5`).
+- Section "Posisi Saat Ini" & "Averaging" jadi `<section className="bg-muted/60 border border-white/60 rounded-3xl p-5 shadow-sm">` dengan heading kecil uppercase tracking-widest Urbanist.
+- Semua Input diberi class besar: `h-auto py-4 px-4 text-lg font-bold rounded-2xl bg-card border-2 border-transparent focus-visible:border-primary focus-visible:ring-0`. Label naik jadi `text-sm font-semibold`.
+- "Modal Awal" callout: `rounded-2xl bg-card/50` dengan angka Urbanist `text-lg font-bold`.
+- Tombol HITUNG: `w-full py-5 rounded-3xl text-xl font-extrabold tracking-wider shadow-xl shadow-primary/20` dengan label "(Enter)" kecil di samping.
+- Sticky result bar (mobile + desktop): kartu mengambang `fixed bottom-4` `max-w-[440px]` `bg-slate-900 text-white rounded-3xl p-5 shadow-2xl`, dua kolom (Avg Baru / metric kedua) dengan divider vertikal, angka Urbanist 2xl. Saat belum ada result → tetap sembunyikan seperti sekarang.
+- Result detail panel desktop tetap, hanya rebrand visual (rounded-3xl, font baru, padding lebih lega).
+- Pesan error inline tetap di bawah input (`text-xs text-destructive`).
+- Footer "made with ♥ IDXAvg" kecil muted-foreground.
 
-### Fitur
+### 3. Tidak diubah
+- `src/lib/calc.ts`, `src/lib/idx-tick.ts`, history, share link, copy summary, export image, keyboard, validasi, tabIndex — semua logic tetap.
 
-1. **Input posisi**: stock code (uppercase auto), tanggal (default today), avg price, total lot
-2. **Auto-tick rounding** on blur: aturan IDX (1/2/5/10/25). Toast subtle "Dibulatkan ke Rp X" 1.5 detik
-3. **Validasi lot**: integer positif; inline error merah kecil di bawah field
-4. **Modal Awal** inline (bukan card besar) — update real-time
-5. **Live hasil**: hitung otomatis saat semua field valid (tetap ada tombol HITUNG untuk eksplisit + Enter shortcut)
-6. **Status badge**: Down (merah)/Up (hijau) + persen perubahan
-7. **History**: 20 terakhir di `localStorage`, drawer dari kanan (sheet); tap entry untuk re-load
-8. **Share link**: `?stock=...&avg=...&lot=...&type=...&...` — auto-parse on mount
-9. **Save as PNG**: `html2canvas` (atau native canvas) pada result card
-10. **Dark mode**: toggle di menu, persist `localStorage`, tokens via CSS variables
-11. **Shortcut**: Enter dimana saja = HITUNG; Tab order rapi
+## Catatan teknis (untuk kontributor)
 
-### Design tokens (src/styles.css)
+```text
+styles.css
+  └── @import Urbanist + Epilogue
+  └── --font-sans / --font-display tokens
+  └── tweak oklch values → Cloud White light mode
 
-Brand: indigo subtle (bukan biru pop seperti screenshot v0). Light = bg putih dengan sentuhan slate; dark = slate-950.
-
-- `--primary` ≈ oklch(0.45 0.18 264) (indigo dalam, professional)
-- `--success` (up) hijau emerald lembut; `--destructive` (down) merah coral lembut
-- Border-radius 0.5rem, padding rapat (`p-3`/`p-4`), font Inter
-- Tidak pakai card berbayang tebal — gunakan border tipis `border-border`
-- Numeric font tabular: `font-variant-numeric: tabular-nums`
-
-### Struktur file
-
-```
-src/
-  routes/
-    __root.tsx              (update title + meta IDXAvg)
-    index.tsx               (render <Calculator />)
-  components/
-    calculator.tsx          (main component)
-    calculator/
-      header.tsx            (logo + menu dropdown: dark, history, reset, share, png)
-      position-form.tsx     (stock/date/avg/lot + modal awal)
-      averaging-form.tsx    (harga + lot OR target, mode auto-detect)
-      result-card.tsx       (badge + 4 baris hasil + actions)
-      history-sheet.tsx     (drawer 20 entries)
-  lib/
-    idx-tick.ts             (getTickSize, roundToTick, formatRupiah)
-    calc.ts                 (calculateNewAvg, calculateLotsNeeded, types)
-    history.ts              (load/save/clear localStorage)
-    share.ts                (build & parse URL params)
-  styles.css                (palette indigo + tokens)
+calculator.tsx (visual layer only)
+  └── header     → logo pill + 2xl title
+  └── sections   → bg-muted rounded-3xl cards
+  └── inputs     → text-lg, py-4, rounded-2xl, focus ring primary
+  └── HITUNG     → py-5 rounded-3xl text-xl shadow primary
+  └── result bar → fixed bottom dark pill (slate-900)
 ```
 
-### Dependencies
+## QA
 
-- `html2canvas` — export PNG (`bun add html2canvas`)
-- `sonner` toast (sudah ada di shadcn) untuk feedback rounding/copy
-
-### Out of scope
-
-- Backend / auth / Lovable Cloud — semua client-side
-- Multi-stock portfolio tracking
-- Real-time price API
-
-### Validation & polish
-
-- Mobile preview viewport diset ke mobile saat selesai build
-- Enter shortcut di-test di semua input
-- Dark mode di-test
-- URL share roundtrip di-test
+- Cek desktop (1280+) & mobile (375) di preview — pastikan single-column, font terbaca, sticky bar tidak menutupi tombol HITUNG (padding bawah `pb-32`).
+- Toggle dark mode masih kontras.
+- Semua field tetap berfungsi, Enter tetap submit, error inline tampil.
