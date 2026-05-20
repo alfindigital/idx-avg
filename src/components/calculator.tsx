@@ -603,8 +603,8 @@ export function Calculator() {
             </p>
           )}
 
-          </section>
           </form>
+
 
           {/* Result */}
           {result && (() => {
