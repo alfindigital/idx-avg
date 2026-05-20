@@ -706,14 +706,14 @@ export function Calculator() {
                         <div className="h-10 w-px bg-slate-700" />
                         <div className="min-w-0 space-y-0.5 text-right">
                           <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
-                            {result.status === "down" ? "Turun" : result.status === "up" ? "Naik" : "Sama"}
+                            {result.status === "down" ? "Turun" : result.status === "up" ? "Naik" : "Flat"}
                           </p>
                           <p
                             className={cn(
                               "font-display text-xl font-extrabold tabular leading-tight",
                               result.status === "down" && "text-rose-400",
                               result.status === "up" && "text-emerald-400",
-                              result.status === "same" && "text-white"
+                              result.status === "flat" && "text-white"
                             )}
                           >
                             {result.status === "down" ? "↓" : result.status === "up" ? "↑" : "→"}{" "}
