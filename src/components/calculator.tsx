@@ -673,18 +673,18 @@ export function Calculator() {
             );
 
             const actions = (
-              <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
-                <Button variant="outline" size="sm" onClick={copySummary} className="h-10 rounded-xl">
-                  <Copy className="mr-1.5 h-4 w-4" /> Salin
+              <div className="mt-4 flex items-center justify-center gap-2">
+                <Button variant="outline" size="icon" onClick={copySummary} aria-label="Salin ringkasan" className="h-11 w-11 rounded-2xl border-border bg-card hover:border-primary/40 hover:bg-secondary hover:text-primary">
+                  <Copy className="h-4.5 w-4.5" />
                 </Button>
-                <Button variant="outline" size="sm" onClick={shareLink} className="h-10 rounded-xl">
-                  <Link2 className="mr-1.5 h-4 w-4" /> Link
+                <Button variant="outline" size="icon" onClick={shareLink} aria-label="Salin link" className="h-11 w-11 rounded-2xl border-border bg-card hover:border-primary/40 hover:bg-secondary hover:text-primary">
+                  <Link2 className="h-4.5 w-4.5" />
                 </Button>
-                <Button variant="outline" size="sm" onClick={saveImage} className="h-10 rounded-xl">
-                  <Download className="mr-1.5 h-4 w-4" /> PNG
+                <Button variant="outline" size="icon" onClick={saveImage} aria-label="Simpan PNG" className="h-11 w-11 rounded-2xl border-border bg-card hover:border-primary/40 hover:bg-secondary hover:text-primary">
+                  <Download className="h-4.5 w-4.5" />
                 </Button>
-                <Button variant="outline" size="sm" onClick={resetAvg} className="h-10 rounded-xl">
-                  <X className="mr-1.5 h-4 w-4" /> Reset
+                <Button variant="outline" size="icon" onClick={resetAvg} aria-label="Reset" className="h-11 w-11 rounded-2xl border-border bg-card hover:border-destructive/40 hover:bg-destructive/10 hover:text-destructive">
+                  <X className="h-4.5 w-4.5" />
                 </Button>
               </div>
             );
