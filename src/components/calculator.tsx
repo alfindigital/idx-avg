@@ -595,7 +595,6 @@ export function Calculator() {
             disabled={!canCalculate}
           >
             Hitung
-            <span className="ml-2 text-xs font-medium normal-case opacity-70 tracking-normal">(Enter)</span>
           </Button>
           {!mode && (hargaAvg || avgPrice) && (
             <p className="text-center text-xs font-medium text-muted-foreground">
