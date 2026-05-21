@@ -13,22 +13,23 @@ import {
   RotateCcw,
   TrendingDown,
   TrendingUp,
-  Check,
   X,
   Info,
   ChevronUp,
+  Send,
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+
 import {
   Drawer,
   DrawerContent,
@@ -58,7 +59,7 @@ import {
   calcLotsNeeded,
   calcNewAvg,
 } from "@/lib/calc";
-import html2canvas from "html2canvas";
+import { toPng } from "html-to-image";
 
 const HISTORY_KEY = "idxavg-history-v1";
 const THEME_KEY = "idxavg-theme";
@@ -288,21 +289,18 @@ export function Calculator() {
       resultRef.current?.offsetParent ? resultRef.current : mobileResultRef.current;
     if (!node) return;
     try {
-      const canvas = await html2canvas(node, {
-        backgroundColor: isDark ? "#0b1220" : "#ffffff",
-        scale: 2,
-        logging: false,
+      const dataUrl = await toPng(node, {
+        pixelRatio: 2,
+        cacheBust: true,
+        backgroundColor: isDark ? "#1a1d2e" : "#ffffff",
       });
-      canvas.toBlob((blob) => {
-        if (!blob) return;
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.download = `IDXAvg-${result?.stockName || "result"}-${todayISO()}.png`;
-        link.href = url;
-        link.click();
-        URL.revokeObjectURL(url);
-      }, "image/png");
-    } catch {
+      const link = document.createElement("a");
+      link.download = `IDXAvg-${result.stockName || "result"}-${todayISO()}.png`;
+      link.href = dataUrl;
+      link.click();
+      toast.success("Gambar disimpan");
+    } catch (err) {
+      console.error(err);
       toast.error("Gagal menyimpan gambar");
     }
   };
@@ -352,8 +350,8 @@ export function Calculator() {
             </div>
             <div className="leading-tight">
               <h1 className="font-display text-2xl font-extrabold tracking-tight">IDXAvg</h1>
-              <p className="text-xs font-medium text-muted-foreground">
-                Hitung avg sebelum beli
+              <p className="font-sans text-xs font-medium text-muted-foreground">
+                Kalkulator averaging IDX
               </p>
             </div>
           </div>
@@ -368,51 +366,53 @@ export function Calculator() {
             >
               {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
-            <Sheet open={historyOpen} onOpenChange={setHistoryOpen}>
-              <SheetTrigger asChild>
+            <Dialog open={historyOpen} onOpenChange={setHistoryOpen}>
+              <DialogTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-secondary hover:text-primary" aria-label="History">
                   <History className="h-5 w-5" />
                 </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[88vw] sm:w-96">
-                <SheetHeader>
-                  <SheetTitle className="flex items-center justify-between font-display">
-                    Riwayat
+              </DialogTrigger>
+              <DialogContent className="max-w-[440px] gap-3 rounded-3xl border-border bg-card p-6">
+                <DialogHeader>
+                  <DialogTitle className="flex items-center justify-between gap-2 font-display text-lg font-extrabold tracking-tight">
+                    <span>Riwayat</span>
                     {history.length > 0 && (
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={clearHistory}
-                        className="h-8 text-xs text-destructive"
+                        className="h-8 rounded-lg text-xs font-semibold text-destructive hover:bg-destructive/10 hover:text-destructive"
                       >
                         <Trash2 className="mr-1 h-3.5 w-3.5" /> Hapus
                       </Button>
                     )}
-                  </SheetTitle>
-                </SheetHeader>
-                <div className="mt-4 space-y-2">
+                  </DialogTitle>
+                </DialogHeader>
+                <div className="max-h-[60vh] space-y-2 overflow-y-auto pr-1">
                   {history.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">Belum ada riwayat.</p>
+                    <p className="py-6 text-center text-sm font-medium text-muted-foreground">
+                      Belum ada riwayat.
+                    </p>
                   ) : (
                     history.map((h) => (
                       <button
                         key={h.id}
                         onClick={() => loadHistory(h)}
-                        className="w-full rounded-2xl border border-border bg-card p-3 text-left transition-colors hover:border-primary/40 hover:bg-accent"
+                        className="w-full rounded-2xl border border-border bg-secondary/40 p-3 text-left transition-colors hover:border-primary/40 hover:bg-accent"
                       >
                         <div className="flex items-center justify-between text-sm">
-                          <span className="font-display font-bold">{h.stockName}</span>
-                          <span className="text-xs text-muted-foreground">
+                          <span className="font-display text-base font-extrabold tracking-tight">{h.stockName}</span>
+                          <span className="text-xs font-medium text-muted-foreground">
                             {new Date(h.timestamp).toLocaleDateString("id-ID")}
                           </span>
                         </div>
-                        <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground tabular">
+                        <div className="mt-1 flex items-center justify-between text-xs font-medium text-muted-foreground tabular">
                           <span>
                             {formatRupiah(h.avgSekarang)} → {formatRupiah(h.newAvgPrice)}
                           </span>
                           <span
                             className={cn(
-                              "font-semibold",
+                              "font-bold",
                               h.status === "down" && "text-destructive",
                               h.status === "up" && "text-[color:var(--success)]"
                             )}
@@ -425,26 +425,26 @@ export function Calculator() {
                     ))
                   )}
                 </div>
-              </SheetContent>
-            </Sheet>
+              </DialogContent>
+            </Dialog>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-secondary hover:text-primary" aria-label="Menu">
                   <Menu className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={copySummary} disabled={!result}>
+              <DropdownMenuContent align="end" className="min-w-[200px] rounded-2xl border-border bg-card p-1.5 font-sans">
+                <DropdownMenuItem onClick={copySummary} disabled={!result} className="rounded-xl px-3 py-2 text-sm font-semibold text-foreground focus:bg-secondary focus:text-primary">
                   <Copy className="mr-2 h-4 w-4" /> Salin ringkasan
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={shareLink} disabled={!result}>
+                <DropdownMenuItem onClick={shareLink} disabled={!result} className="rounded-xl px-3 py-2 text-sm font-semibold text-foreground focus:bg-secondary focus:text-primary">
                   <Link2 className="mr-2 h-4 w-4" /> Salin link
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={saveImage} disabled={!result}>
+                <DropdownMenuItem onClick={saveImage} disabled={!result} className="rounded-xl px-3 py-2 text-sm font-semibold text-foreground focus:bg-secondary focus:text-primary">
                   <Download className="mr-2 h-4 w-4" /> Simpan gambar
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={resetAvg}>
+                <DropdownMenuSeparator className="my-1 bg-border" />
+                <DropdownMenuItem onClick={resetAvg} className="rounded-xl px-3 py-2 text-sm font-semibold text-foreground focus:bg-secondary focus:text-primary">
                   <RotateCcw className="mr-2 h-4 w-4" /> Reset
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -464,7 +464,7 @@ export function Calculator() {
                 <Input
                   value={stockName}
                   onChange={(e) => setStockName(e.target.value.toUpperCase().slice(0, 6))}
-                  placeholder="BBRI"
+                  placeholder="BUMI"
                   className={cn(inputCls, "font-display uppercase tracking-wide")}
                   autoFocus
                   tabIndex={1}
@@ -595,7 +595,6 @@ export function Calculator() {
             disabled={!canCalculate}
           >
             Hitung
-            <span className="ml-2 text-xs font-medium normal-case opacity-70 tracking-normal">(Enter)</span>
           </Button>
           {!mode && (hargaAvg || avgPrice) && (
             <p className="text-center text-xs font-medium text-muted-foreground">
@@ -608,72 +607,84 @@ export function Calculator() {
 
           {/* Result */}
           {result && (() => {
+            const headLabel = result.mode === "new-avg" ? "Avg Baru" : "Lot Diperlukan";
+            const headValue =
+              result.mode === "new-avg"
+                ? formatRupiah(result.newAvgPrice)
+                : `${result.lotDelta} lot`;
             const resultCard = (ref: RefObject<HTMLDivElement | null>) => (
               <div
                 ref={ref}
                 data-result-card
-                className="rounded-3xl border border-white/70 bg-card p-5 shadow-sm dark:border-white/5"
+                className="overflow-hidden rounded-3xl border border-white/70 bg-card shadow-sm dark:border-white/5"
               >
-                <div className="mb-4 flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">
-                      {result.stockName} · {result.mode === "new-avg" ? "Avg Baru" : "Lot Diperlukan"}
-                    </p>
-                    <p className="mt-1 font-display text-3xl font-extrabold tabular">
-                      {formatRupiah(result.newAvgPrice)}
-                    </p>
+                <div className="bg-primary/10 px-5 pt-5 pb-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="font-display text-[11px] font-extrabold uppercase tracking-[0.22em] text-primary">
+                        {result.stockName} · {headLabel}
+                      </p>
+                      <p className="mt-2 font-display text-4xl font-extrabold leading-none tabular text-foreground">
+                        {headValue}
+                      </p>
+                      {result.mode === "lots-needed" && (
+                        <p className="mt-2 font-sans text-sm font-semibold text-muted-foreground tabular">
+                          Avg jadi {formatRupiah(result.newAvgPrice)}
+                        </p>
+                      )}
+                    </div>
+                    <Badge
+                      variant="secondary"
+                      className={cn(
+                        "shrink-0 gap-1 rounded-full px-3 py-1.5 text-xs font-bold",
+                        result.status === "down" &&
+                          "bg-destructive/15 text-destructive hover:bg-destructive/15",
+                        result.status === "up" &&
+                          "bg-[color:var(--success)]/15 text-[color:var(--success)] hover:bg-[color:var(--success)]/15"
+                      )}
+                    >
+                      {result.status === "down" ? (
+                        <TrendingDown className="h-3.5 w-3.5" />
+                      ) : (
+                        <TrendingUp className="h-3.5 w-3.5" />
+                      )}
+                      {result.percentage.toFixed(2)}%
+                    </Badge>
                   </div>
-                  <Badge
-                    variant="secondary"
-                    className={cn(
-                      "gap-1 rounded-full px-2.5 py-1 text-xs font-semibold",
-                      result.status === "down" &&
-                        "bg-destructive/10 text-destructive hover:bg-destructive/10",
-                      result.status === "up" &&
-                        "bg-[color:var(--success)]/15 text-[color:var(--success)] hover:bg-[color:var(--success)]/15"
-                    )}
-                  >
-                    {result.status === "down" ? (
-                      <TrendingDown className="h-3.5 w-3.5" />
-                    ) : (
-                      <TrendingUp className="h-3.5 w-3.5" />
-                    )}
-                    {result.percentage.toFixed(2)}%
-                  </Badge>
                 </div>
 
-                <div className="space-y-2 border-t border-border/70 pt-3 text-sm">
+                <div className="space-y-2.5 px-5 py-4 text-sm font-medium">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Lot Baru</span>
-                    <span className="font-semibold tabular">
+                    <span className="font-bold tabular text-foreground">
                       {result.totalLotBaru} <span className="text-muted-foreground">(+{result.lotDelta})</span>
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Modal Tambahan</span>
-                    <span className="font-semibold tabular">{formatRupiah(result.modalTambahan)}</span>
+                    <span className="font-bold tabular text-foreground">{formatRupiah(result.modalTambahan)}</span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between border-t border-border/70 pt-2.5">
                     <span className="text-muted-foreground">Total Modal</span>
-                    <span className="font-display text-base font-extrabold tabular">{formatRupiah(result.totalModal)}</span>
+                    <span className="font-display text-base font-extrabold tabular text-foreground">{formatRupiah(result.totalModal)}</span>
                   </div>
                 </div>
               </div>
             );
 
             const actions = (
-              <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
-                <Button variant="outline" size="sm" onClick={copySummary} className="h-10 rounded-xl">
-                  <Copy className="mr-1.5 h-4 w-4" /> Salin
+              <div className="mt-4 flex items-center justify-center gap-2">
+                <Button variant="outline" size="icon" onClick={copySummary} aria-label="Salin ringkasan" className="h-11 w-11 rounded-2xl border-border bg-card hover:border-primary/40 hover:bg-secondary hover:text-primary">
+                  <Copy className="h-4.5 w-4.5" />
                 </Button>
-                <Button variant="outline" size="sm" onClick={shareLink} className="h-10 rounded-xl">
-                  <Link2 className="mr-1.5 h-4 w-4" /> Link
+                <Button variant="outline" size="icon" onClick={shareLink} aria-label="Salin link" className="h-11 w-11 rounded-2xl border-border bg-card hover:border-primary/40 hover:bg-secondary hover:text-primary">
+                  <Link2 className="h-4.5 w-4.5" />
                 </Button>
-                <Button variant="outline" size="sm" onClick={saveImage} className="h-10 rounded-xl">
-                  <Download className="mr-1.5 h-4 w-4" /> PNG
+                <Button variant="outline" size="icon" onClick={saveImage} aria-label="Simpan PNG" className="h-11 w-11 rounded-2xl border-border bg-card hover:border-primary/40 hover:bg-secondary hover:text-primary">
+                  <Download className="h-4.5 w-4.5" />
                 </Button>
-                <Button variant="outline" size="sm" onClick={resetAvg} className="h-10 rounded-xl">
-                  <X className="mr-1.5 h-4 w-4" /> Reset
+                <Button variant="outline" size="icon" onClick={resetAvg} aria-label="Reset" className="h-11 w-11 rounded-2xl border-border bg-card hover:border-destructive/40 hover:bg-destructive/10 hover:text-destructive">
+                  <X className="h-4.5 w-4.5" />
                 </Button>
               </div>
             );
@@ -696,16 +707,16 @@ export function Calculator() {
                         aria-label="Lihat detail hasil"
                       >
                         <div className="min-w-0 space-y-0.5">
-                          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
-                            {result.mode === "new-avg" ? "Avg Baru" : "Lot Diperlukan"}
+                          <p className="font-display text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
+                            {headLabel}
                           </p>
                           <p className="font-display text-xl font-extrabold tabular leading-tight text-white">
-                            {formatRupiah(result.newAvgPrice)}
+                            {headValue}
                           </p>
                         </div>
                         <div className="h-10 w-px bg-slate-700" />
                         <div className="min-w-0 space-y-0.5 text-right">
-                          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                          <p className="font-display text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
                             {result.status === "down" ? "Turun" : result.status === "up" ? "Naik" : "Flat"}
                           </p>
                           <p
@@ -738,8 +749,58 @@ export function Calculator() {
             );
           })()}
 
-          <footer className="mt-10 text-center text-xs font-medium text-muted-foreground">
-            made with <span className="text-rose-400">♥</span> · IDXAvg
+          <footer className="mt-12 flex flex-col items-center gap-4 pb-2 text-center">
+            <div className="flex items-center gap-2">
+              <a
+                href="https://x.com/alfindigital"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="X (Twitter) @alfindigital"
+                className="flex h-10 w-10 items-center justify-center rounded-2xl bg-secondary text-foreground/70 transition-colors hover:bg-primary/10 hover:text-primary"
+              >
+                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden="true">
+                  <path d="M18.244 2H21.5l-7.5 8.575L23 22h-6.844l-5.36-6.99L4.5 22H1.244l8.02-9.166L1 2h7.02l4.85 6.41L18.244 2Zm-2.4 18h1.9L7.27 4H5.27l10.574 16Z" />
+                </svg>
+              </a>
+              <a
+                href="https://tiktok.com/@alfindigital"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="TikTok @alfindigital"
+                className="flex h-10 w-10 items-center justify-center rounded-2xl bg-secondary text-foreground/70 transition-colors hover:bg-primary/10 hover:text-primary"
+              >
+                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden="true">
+                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.83a8.16 8.16 0 0 0 4.77 1.52V6.9a4.85 4.85 0 0 1-1.84-.21Z" />
+                </svg>
+              </a>
+              <a
+                href="https://facebook.com/alfindigital"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Facebook @alfindigital"
+                className="flex h-10 w-10 items-center justify-center rounded-2xl bg-secondary text-foreground/70 transition-colors hover:bg-primary/10 hover:text-primary"
+              >
+                <svg viewBox="0 0 24 24" className="h-4.5 w-4.5" fill="currentColor" aria-hidden="true">
+                  <path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.7c0-.92.26-1.55 1.57-1.55H17V4.27A22 22 0 0 0 14.56 4.1c-2.42 0-4.06 1.48-4.06 4.2v2.5H8v3.2h2.5V22h3Z" />
+                </svg>
+              </a>
+            </div>
+            <p className="font-sans text-xs font-semibold text-foreground/80">
+              <span className="text-muted-foreground">X · TikTok · FB</span>{" "}
+              <span className="text-foreground">@alfindigital</span>
+            </p>
+            <a
+              href="https://t.me/alfindx"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3.5 py-1.5 text-xs font-bold text-primary transition-colors hover:bg-primary/15"
+            >
+              <Send className="h-3.5 w-3.5" />
+              @alfindx
+            </a>
+            <p className="font-sans text-[11px] font-medium text-muted-foreground">
+              made with <span className="text-rose-500">♥</span> · IDXAvg
+            </p>
           </footer>
 
         </main>
