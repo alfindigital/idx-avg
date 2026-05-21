@@ -350,8 +350,8 @@ export function Calculator() {
             </div>
             <div className="leading-tight">
               <h1 className="font-display text-2xl font-extrabold tracking-tight">IDXAvg</h1>
-              <p className="text-xs font-medium text-muted-foreground">
-                Hitung avg sebelum beli
+              <p className="font-sans text-xs font-medium text-muted-foreground">
+                Kalkulator averaging IDX
               </p>
             </div>
           </div>
