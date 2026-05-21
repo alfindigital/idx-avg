@@ -464,7 +464,7 @@ export function Calculator() {
                 <Input
                   value={stockName}
                   onChange={(e) => setStockName(e.target.value.toUpperCase().slice(0, 6))}
-                  placeholder="BBRI"
+                  placeholder="BUMI"
                   className={cn(inputCls, "font-display uppercase tracking-wide")}
                   autoFocus
                   tabIndex={1}
