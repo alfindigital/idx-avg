@@ -716,7 +716,7 @@ export function Calculator() {
                         </div>
                         <div className="h-10 w-px bg-slate-700" />
                         <div className="min-w-0 space-y-0.5 text-right">
-                          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                          <p className="font-display text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
                             {result.status === "down" ? "Turun" : result.status === "up" ? "Naik" : "Flat"}
                           </p>
                           <p
