@@ -369,51 +369,53 @@ export function Calculator() {
             >
               {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
-            <Sheet open={historyOpen} onOpenChange={setHistoryOpen}>
-              <SheetTrigger asChild>
+            <Dialog open={historyOpen} onOpenChange={setHistoryOpen}>
+              <DialogTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-secondary hover:text-primary" aria-label="History">
                   <History className="h-5 w-5" />
                 </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[88vw] sm:w-96">
-                <SheetHeader>
-                  <SheetTitle className="flex items-center justify-between font-display">
-                    Riwayat
+              </DialogTrigger>
+              <DialogContent className="max-w-[440px] gap-3 rounded-3xl border-border bg-card p-6">
+                <DialogHeader>
+                  <DialogTitle className="flex items-center justify-between gap-2 font-display text-lg font-extrabold tracking-tight">
+                    <span>Riwayat</span>
                     {history.length > 0 && (
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={clearHistory}
-                        className="h-8 text-xs text-destructive"
+                        className="h-8 rounded-lg text-xs font-semibold text-destructive hover:bg-destructive/10 hover:text-destructive"
                       >
                         <Trash2 className="mr-1 h-3.5 w-3.5" /> Hapus
                       </Button>
                     )}
-                  </SheetTitle>
-                </SheetHeader>
-                <div className="mt-4 space-y-2">
+                  </DialogTitle>
+                </DialogHeader>
+                <div className="max-h-[60vh] space-y-2 overflow-y-auto pr-1">
                   {history.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">Belum ada riwayat.</p>
+                    <p className="py-6 text-center text-sm font-medium text-muted-foreground">
+                      Belum ada riwayat.
+                    </p>
                   ) : (
                     history.map((h) => (
                       <button
                         key={h.id}
                         onClick={() => loadHistory(h)}
-                        className="w-full rounded-2xl border border-border bg-card p-3 text-left transition-colors hover:border-primary/40 hover:bg-accent"
+                        className="w-full rounded-2xl border border-border bg-secondary/40 p-3 text-left transition-colors hover:border-primary/40 hover:bg-accent"
                       >
                         <div className="flex items-center justify-between text-sm">
-                          <span className="font-display font-bold">{h.stockName}</span>
-                          <span className="text-xs text-muted-foreground">
+                          <span className="font-display text-base font-extrabold tracking-tight">{h.stockName}</span>
+                          <span className="text-xs font-medium text-muted-foreground">
                             {new Date(h.timestamp).toLocaleDateString("id-ID")}
                           </span>
                         </div>
-                        <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground tabular">
+                        <div className="mt-1 flex items-center justify-between text-xs font-medium text-muted-foreground tabular">
                           <span>
                             {formatRupiah(h.avgSekarang)} → {formatRupiah(h.newAvgPrice)}
                           </span>
                           <span
                             className={cn(
-                              "font-semibold",
+                              "font-bold",
                               h.status === "down" && "text-destructive",
                               h.status === "up" && "text-[color:var(--success)]"
                             )}
@@ -426,8 +428,8 @@ export function Calculator() {
                     ))
                   )}
                 </div>
-              </SheetContent>
-            </Sheet>
+              </DialogContent>
+            </Dialog>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-secondary hover:text-primary" aria-label="Menu">
