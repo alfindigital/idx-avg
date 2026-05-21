@@ -289,21 +289,18 @@ export function Calculator() {
       resultRef.current?.offsetParent ? resultRef.current : mobileResultRef.current;
     if (!node) return;
     try {
-      const canvas = await html2canvas(node, {
-        backgroundColor: isDark ? "#0b1220" : "#ffffff",
-        scale: 2,
-        logging: false,
+      const dataUrl = await toPng(node, {
+        pixelRatio: 2,
+        cacheBust: true,
+        backgroundColor: isDark ? "#1a1d2e" : "#ffffff",
       });
-      canvas.toBlob((blob) => {
-        if (!blob) return;
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.download = `IDXAvg-${result?.stockName || "result"}-${todayISO()}.png`;
-        link.href = url;
-        link.click();
-        URL.revokeObjectURL(url);
-      }, "image/png");
-    } catch {
+      const link = document.createElement("a");
+      link.download = `IDXAvg-${result.stockName || "result"}-${todayISO()}.png`;
+      link.href = dataUrl;
+      link.click();
+      toast.success("Gambar disimpan");
+    } catch (err) {
+      console.error(err);
       toast.error("Gagal menyimpan gambar");
     }
   };
