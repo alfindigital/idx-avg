@@ -59,7 +59,7 @@ import {
   calcLotsNeeded,
   calcNewAvg,
 } from "@/lib/calc";
-import html2canvas from "html2canvas";
+import { toPng } from "html-to-image";
 
 const HISTORY_KEY = "idxavg-history-v1";
 const THEME_KEY = "idxavg-theme";
