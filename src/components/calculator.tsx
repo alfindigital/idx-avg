@@ -607,54 +607,66 @@ export function Calculator() {
 
           {/* Result */}
           {result && (() => {
+            const headLabel = result.mode === "new-avg" ? "Avg Baru" : "Lot Diperlukan";
+            const headValue =
+              result.mode === "new-avg"
+                ? formatRupiah(result.newAvgPrice)
+                : `${result.lotDelta} lot`;
             const resultCard = (ref: RefObject<HTMLDivElement | null>) => (
               <div
                 ref={ref}
                 data-result-card
-                className="rounded-3xl border border-white/70 bg-card p-5 shadow-sm dark:border-white/5"
+                className="overflow-hidden rounded-3xl border border-white/70 bg-card shadow-sm dark:border-white/5"
               >
-                <div className="mb-4 flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">
-                      {result.stockName} · {result.mode === "new-avg" ? "Avg Baru" : "Lot Diperlukan"}
-                    </p>
-                    <p className="mt-1 font-display text-3xl font-extrabold tabular">
-                      {formatRupiah(result.newAvgPrice)}
-                    </p>
+                <div className="bg-primary/10 px-5 pt-5 pb-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="font-display text-[11px] font-extrabold uppercase tracking-[0.22em] text-primary">
+                        {result.stockName} · {headLabel}
+                      </p>
+                      <p className="mt-2 font-display text-4xl font-extrabold leading-none tabular text-foreground">
+                        {headValue}
+                      </p>
+                      {result.mode === "lots-needed" && (
+                        <p className="mt-2 font-sans text-sm font-semibold text-muted-foreground tabular">
+                          Avg jadi {formatRupiah(result.newAvgPrice)}
+                        </p>
+                      )}
+                    </div>
+                    <Badge
+                      variant="secondary"
+                      className={cn(
+                        "shrink-0 gap-1 rounded-full px-3 py-1.5 text-xs font-bold",
+                        result.status === "down" &&
+                          "bg-destructive/15 text-destructive hover:bg-destructive/15",
+                        result.status === "up" &&
+                          "bg-[color:var(--success)]/15 text-[color:var(--success)] hover:bg-[color:var(--success)]/15"
+                      )}
+                    >
+                      {result.status === "down" ? (
+                        <TrendingDown className="h-3.5 w-3.5" />
+                      ) : (
+                        <TrendingUp className="h-3.5 w-3.5" />
+                      )}
+                      {result.percentage.toFixed(2)}%
+                    </Badge>
                   </div>
-                  <Badge
-                    variant="secondary"
-                    className={cn(
-                      "gap-1 rounded-full px-2.5 py-1 text-xs font-semibold",
-                      result.status === "down" &&
-                        "bg-destructive/10 text-destructive hover:bg-destructive/10",
-                      result.status === "up" &&
-                        "bg-[color:var(--success)]/15 text-[color:var(--success)] hover:bg-[color:var(--success)]/15"
-                    )}
-                  >
-                    {result.status === "down" ? (
-                      <TrendingDown className="h-3.5 w-3.5" />
-                    ) : (
-                      <TrendingUp className="h-3.5 w-3.5" />
-                    )}
-                    {result.percentage.toFixed(2)}%
-                  </Badge>
                 </div>
 
-                <div className="space-y-2 border-t border-border/70 pt-3 text-sm">
+                <div className="space-y-2.5 px-5 py-4 text-sm font-medium">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Lot Baru</span>
-                    <span className="font-semibold tabular">
+                    <span className="font-bold tabular text-foreground">
                       {result.totalLotBaru} <span className="text-muted-foreground">(+{result.lotDelta})</span>
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Modal Tambahan</span>
-                    <span className="font-semibold tabular">{formatRupiah(result.modalTambahan)}</span>
+                    <span className="font-bold tabular text-foreground">{formatRupiah(result.modalTambahan)}</span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between border-t border-border/70 pt-2.5">
                     <span className="text-muted-foreground">Total Modal</span>
-                    <span className="font-display text-base font-extrabold tabular">{formatRupiah(result.totalModal)}</span>
+                    <span className="font-display text-base font-extrabold tabular text-foreground">{formatRupiah(result.totalModal)}</span>
                   </div>
                 </div>
               </div>
