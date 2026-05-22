@@ -794,10 +794,10 @@ export function Calculator() {
               target="_blank"
               rel="noreferrer"
               aria-label="Telegram @alfindx"
-              className="inline-flex h-11 min-h-11 items-center gap-1.5 rounded-full bg-primary/10 px-4 text-sm font-bold text-primary transition-all hover:bg-primary/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
+              className="inline-flex h-11 min-h-11 max-w-[7.5rem] items-center gap-1.5 truncate rounded-full bg-primary/10 px-3 text-sm font-bold text-primary transition-all hover:bg-primary/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95 sm:max-w-none sm:px-4"
             >
-              <Send className="h-4 w-4" />
-              @alfindx
+              <Send className="h-4 w-4 shrink-0" />
+              <span className="truncate">@alfindx</span>
             </a>
           </div>
         </footer>
