@@ -752,7 +752,7 @@ export function Calculator() {
         </main>
 
         {/* Sticky footer */}
-        <footer className="fixed inset-x-0 bottom-0 z-20 border-t border-border/60 bg-background/85 backdrop-blur-md">
+        <footer className="fixed inset-x-0 bottom-0 z-20 border-t border-border/60 bg-background/85 pb-[env(safe-area-inset-bottom)] backdrop-blur-md">
           <div className="mx-auto flex w-full max-w-[480px] items-center justify-between gap-3 px-4 py-2.5">
             <div className="flex items-center gap-1">
               <a
