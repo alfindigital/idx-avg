@@ -453,7 +453,7 @@ export function Calculator() {
         </header>
 
         {/* Main */}
-        <main className="mx-auto w-full max-w-[480px] px-4 pt-4 pb-44 sm:pb-24">
+        <main className="mx-auto w-full max-w-[480px] px-4 pt-4 pb-[calc(11rem+env(safe-area-inset-bottom))] sm:pb-24">
           <form onSubmit={handleSubmit} noValidate className="space-y-5">
           {/* Position */}
           <section className={cardCls}>
@@ -699,7 +699,7 @@ export function Calculator() {
 
                 {/* Mobile: floating sticky bar + drawer */}
                 <Drawer open={barOpen} onOpenChange={setBarOpen}>
-                  <div className="fixed inset-x-0 bottom-16 z-30 flex justify-center px-4 sm:hidden">
+                  <div className="fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-30 flex justify-center px-4 sm:hidden">
                     <DrawerTrigger asChild>
                       <button
                         type="button"
@@ -752,7 +752,7 @@ export function Calculator() {
         </main>
 
         {/* Sticky footer */}
-        <footer className="fixed inset-x-0 bottom-0 z-20 border-t border-border/60 bg-background/85 backdrop-blur-md">
+        <footer className="fixed inset-x-0 bottom-0 z-20 border-t border-border/60 bg-background/85 pb-[env(safe-area-inset-bottom)] backdrop-blur-md">
           <div className="mx-auto flex w-full max-w-[480px] items-center justify-between gap-3 px-4 py-2.5">
             <div className="flex items-center gap-1">
               <a
