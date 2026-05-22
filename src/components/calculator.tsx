@@ -453,7 +453,7 @@ export function Calculator() {
         </header>
 
         {/* Main */}
-        <main className="mx-auto w-full max-w-[480px] px-4 pt-4 pb-[calc(8.5rem+env(safe-area-inset-bottom))] sm:pb-[calc(4.5rem+env(safe-area-inset-bottom))]">
+        <main className="mx-auto w-full max-w-[480px] px-4 pt-4 pb-[calc(9rem+env(safe-area-inset-bottom))] sm:pb-[calc(5rem+env(safe-area-inset-bottom))]">
           <form onSubmit={handleSubmit} noValidate className="space-y-5">
           {/* Position */}
           <section className={cardCls}>
