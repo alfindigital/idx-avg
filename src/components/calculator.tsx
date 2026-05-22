@@ -453,7 +453,7 @@ export function Calculator() {
         </header>
 
         {/* Main */}
-        <main className="mx-auto w-full max-w-[480px] px-4 pt-4 pb-[calc(11rem+env(safe-area-inset-bottom))] sm:pb-24">
+        <main className="mx-auto w-full max-w-[480px] px-4 pt-4 pb-[calc(8.5rem+env(safe-area-inset-bottom))] sm:pb-[calc(4.5rem+env(safe-area-inset-bottom))]">
           <form onSubmit={handleSubmit} noValidate className="space-y-5">
           {/* Position */}
           <section className={cardCls}>
@@ -699,7 +699,7 @@ export function Calculator() {
 
                 {/* Mobile: floating sticky bar + drawer */}
                 <Drawer open={barOpen} onOpenChange={setBarOpen}>
-                  <div className="fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-30 flex justify-center px-4 sm:hidden">
+                  <div className="fixed inset-x-0 bottom-[calc(3.5rem+env(safe-area-inset-bottom))] z-30 flex justify-center px-4 sm:hidden">
                     <DrawerTrigger asChild>
                       <button
                         type="button"
