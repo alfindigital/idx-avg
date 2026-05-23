@@ -689,9 +689,17 @@ export function Calculator() {
                       <Copy className="h-3 w-3 text-muted-foreground" />
                     </button>
                   </div>
-                  <div className="flex justify-between border-t border-border/70 pt-2.5">
+                  <div className="flex items-center justify-between border-t border-border/70 pt-2.5">
                     <span className="text-muted-foreground">Total Modal</span>
-                    <span className="font-display text-base font-extrabold tabular text-foreground">{formatRupiah(result.totalModal)}</span>
+                    <button
+                      type="button"
+                      onClick={() => copyValue("Total Modal", formatRupiah(result.totalModal))}
+                      className="flex items-center gap-1 rounded-lg px-1.5 py-0.5 text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
+                      aria-label="Salin Total Modal"
+                    >
+                      <span className="font-display text-base font-extrabold tabular text-foreground">{formatRupiah(result.totalModal)}</span>
+                      <Copy className="h-3 w-3 text-muted-foreground" />
+                    </button>
                   </div>
                 </div>
               </div>
