@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://idx-avg.lovable.app/sitemap.xml
