@@ -142,36 +142,6 @@ export function Calculator() {
     if (tg) setTargetAvg(tg);
   }, []);
 
-  // Keyboard shortcuts
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      const tag = (e.target as HTMLElement)?.tagName?.toLowerCase();
-      const inInput = tag === "input" || tag === "textarea" || tag === "select";
-
-      // "/" to focus stock input (unless already in input)
-      if (e.key === "/" && !inInput) {
-        e.preventDefault();
-        stockInputRef.current?.focus();
-        return;
-      }
-
-      // Escape to blur stock input
-      if (e.key === "Escape" && stockInputRef.current === document.activeElement) {
-        stockInputRef.current?.blur();
-        return;
-      }
-
-      // Ctrl/Cmd+Enter to calculate from anywhere
-      if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
-        e.preventDefault();
-        if (canCalculate) runCalc();
-        return;
-      }
-    };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [canCalculate]);
-
   const modalAwal = useMemo(() => {
     const a = parseFloat(avgPrice);
     const l = parseInt(totalLot);
