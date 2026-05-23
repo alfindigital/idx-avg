@@ -390,7 +390,7 @@ export function Calculator() {
             </div>
             <div className="leading-tight">
               <h1 className="font-display text-2xl font-extrabold tracking-tight">
-                IDXAvg — Kalkulator Averaging Saham IDX
+                IDXAvg
               </h1>
               <p className="font-sans text-xs font-medium text-muted-foreground">
                 Kalkulator averaging IDX
