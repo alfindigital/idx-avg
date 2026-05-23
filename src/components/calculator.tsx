@@ -389,7 +389,9 @@ export function Calculator() {
               <TrendingUp className="h-5 w-5" strokeWidth={2.5} />
             </div>
             <div className="leading-tight">
-              <h1 className="font-display text-2xl font-extrabold tracking-tight">IDXAvg</h1>
+              <h1 className="font-display text-2xl font-extrabold tracking-tight">
+                IDXAvg — Kalkulator Averaging Saham IDX
+              </h1>
               <p className="font-sans text-xs font-medium text-muted-foreground">
                 Kalkulator averaging IDX
               </p>
@@ -558,8 +560,8 @@ export function Calculator() {
               <span className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
                 Modal Awal
                 <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Info className="h-3.5 w-3.5 cursor-help" />
+                  <TooltipTrigger asChild aria-label="Informasi">
+                    <Info className="h-3.5 w-3.5 cursor-help" aria-label="Informasi" />
                   </TooltipTrigger>
                   <TooltipContent side="top" className="text-xs">
                     Avg × Lot × 100
@@ -583,8 +585,8 @@ export function Calculator() {
             <div className="mb-4 flex items-center justify-between">
               <h2 className={cn(sectionHead, "mb-0")}>Averaging</h2>
               <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info className="h-4 w-4 cursor-help text-muted-foreground" />
+                <TooltipTrigger asChild aria-label="Informasi">
+                  <Info className="h-4 w-4 cursor-help text-muted-foreground" aria-label="Informasi" />
                 </TooltipTrigger>
                 <TooltipContent side="left" className="max-w-[220px] text-xs">
                   Isi <b>Lot Tambah</b> untuk hitung avg baru, atau <b>Target Avg</b> untuk

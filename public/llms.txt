@@ -1,0 +1,7 @@
+# IDXAvg
+
+> Kalkulator averaging saham IDX — hitung average price & lot tambahan sebelum beli, dengan auto tick-size, mobile-first, dan gratis.
+
+## Pages
+
+- [Home](/): Kalkulator averaging saham IDX dengan auto tick-size.
