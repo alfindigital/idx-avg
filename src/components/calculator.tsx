@@ -264,6 +264,15 @@ export function Calculator() {
     }
   };
 
+  const copyValue = async (label: string, value: string) => {
+    try {
+      await navigator.clipboard.writeText(value);
+      toast.success(`${label} disalin`);
+    } catch {
+      toast.error("Gagal menyalin");
+    }
+  };
+
   const copySummary = async () => {
     if (!result) return;
     const arrow = result.status === "down" ? "↓" : result.status === "up" ? "↑" : "→";
@@ -520,7 +529,15 @@ export function Calculator() {
                   </TooltipContent>
                 </Tooltip>
               </span>
-              <span className="font-display text-lg font-extrabold tabular">{formatRupiah(modalAwal)}</span>
+              <button
+                type="button"
+                onClick={() => copyValue("Modal Awal", formatRupiah(modalAwal))}
+                className="flex items-center gap-1.5 rounded-xl px-2 py-1 text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
+                aria-label="Salin Modal Awal"
+              >
+                <span className="font-display text-lg font-extrabold tabular">{formatRupiah(modalAwal)}</span>
+                <Copy className="h-3.5 w-3.5 text-muted-foreground" />
+              </button>
             </div>
           </section>
 
@@ -660,13 +677,29 @@ export function Calculator() {
                       {result.totalLotBaru} <span className="text-muted-foreground">(+{result.lotDelta})</span>
                     </span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">Modal Tambahan</span>
-                    <span className="font-bold tabular text-foreground">{formatRupiah(result.modalTambahan)}</span>
+                    <button
+                      type="button"
+                      onClick={() => copyValue("Modal Tambahan", formatRupiah(result.modalTambahan))}
+                      className="flex items-center gap-1 rounded-lg px-1.5 py-0.5 text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
+                      aria-label="Salin Modal Tambahan"
+                    >
+                      <span className="font-bold tabular text-foreground">{formatRupiah(result.modalTambahan)}</span>
+                      <Copy className="h-3 w-3 text-muted-foreground" />
+                    </button>
                   </div>
-                  <div className="flex justify-between border-t border-border/70 pt-2.5">
+                  <div className="flex items-center justify-between border-t border-border/70 pt-2.5">
                     <span className="text-muted-foreground">Total Modal</span>
-                    <span className="font-display text-base font-extrabold tabular text-foreground">{formatRupiah(result.totalModal)}</span>
+                    <button
+                      type="button"
+                      onClick={() => copyValue("Total Modal", formatRupiah(result.totalModal))}
+                      className="flex items-center gap-1 rounded-lg px-1.5 py-0.5 text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
+                      aria-label="Salin Total Modal"
+                    >
+                      <span className="font-display text-base font-extrabold tabular text-foreground">{formatRupiah(result.totalModal)}</span>
+                      <Copy className="h-3 w-3 text-muted-foreground" />
+                    </button>
                   </div>
                 </div>
               </div>
