@@ -793,7 +793,7 @@ export function Calculator() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="X (Twitter) @alfindigital"
-                className="flex h-11 min-h-11 w-11 min-w-11 items-center justify-center rounded-xl text-foreground/60 transition-all hover:bg-secondary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
+                className="flex h-11 min-h-11 w-11 min-w-11 items-center justify-center rounded-xl text-foreground/60 transition-all hover:bg-secondary hover:text-primary hover:ring-2 hover:ring-primary/40 hover:ring-offset-2 hover:ring-offset-background focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-primary focus-visible:ring-offset-[3px] focus-visible:ring-offset-background active:scale-95"
               >
                 <svg viewBox="0 0 24 24" className="h-[1.125rem] w-[1.125rem]" fill="currentColor" aria-hidden="true">
                   <path d="M18.244 2H21.5l-7.5 8.575L23 22h-6.844l-5.36-6.99L4.5 22H1.244l8.02-9.166L1 2h7.02l4.85 6.41L18.244 2Zm-2.4 18h1.9L7.27 4H5.27l10.574 16Z" />
@@ -804,7 +804,7 @@ export function Calculator() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="TikTok @alfindigital"
-                className="flex h-11 min-h-11 w-11 min-w-11 items-center justify-center rounded-xl text-foreground/60 transition-all hover:bg-secondary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
+                className="flex h-11 min-h-11 w-11 min-w-11 items-center justify-center rounded-xl text-foreground/60 transition-all hover:bg-secondary hover:text-primary hover:ring-2 hover:ring-primary/40 hover:ring-offset-2 hover:ring-offset-background focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-primary focus-visible:ring-offset-[3px] focus-visible:ring-offset-background active:scale-95"
               >
                 <svg viewBox="0 0 24 24" className="h-[1.125rem] w-[1.125rem]" fill="currentColor" aria-hidden="true">
                   <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.83a8.16 8.16 0 0 0 4.77 1.52V6.9a4.85 4.85 0 0 1-1.84-.21Z" />
@@ -815,7 +815,7 @@ export function Calculator() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Facebook @alfindigital"
-                className="flex h-11 min-h-11 w-11 min-w-11 items-center justify-center rounded-xl text-foreground/60 transition-all hover:bg-secondary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
+                className="flex h-11 min-h-11 w-11 min-w-11 items-center justify-center rounded-xl text-foreground/60 transition-all hover:bg-secondary hover:text-primary hover:ring-2 hover:ring-primary/40 hover:ring-offset-2 hover:ring-offset-background focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-primary focus-visible:ring-offset-[3px] focus-visible:ring-offset-background active:scale-95"
               >
                 <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden="true">
                   <path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.7c0-.92.26-1.55 1.57-1.55H17V4.27A22 22 0 0 0 14.56 4.1c-2.42 0-4.06 1.48-4.06 4.2v2.5H8v3.2h2.5V22h3Z" />
@@ -827,7 +827,7 @@ export function Calculator() {
               target="_blank"
               rel="noreferrer"
               aria-label="Telegram @alfindx"
-              className="inline-flex h-11 min-h-11 max-w-[7.5rem] items-center gap-1.5 truncate rounded-full bg-primary/10 px-3 text-sm font-bold text-primary transition-all hover:bg-primary/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95 sm:max-w-none sm:px-4"
+              className="inline-flex h-11 min-h-11 max-w-[7.5rem] items-center gap-1.5 truncate rounded-full bg-primary/10 px-3 text-sm font-bold text-primary transition-all hover:bg-primary/20 hover:ring-2 hover:ring-primary/40 hover:ring-offset-2 hover:ring-offset-background focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-primary focus-visible:ring-offset-[3px] focus-visible:ring-offset-background active:scale-95 sm:max-w-none sm:px-4"
             >
               <Send className="h-4 w-4 shrink-0" />
               <span className="truncate">@alfindx</span>
