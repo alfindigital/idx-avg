@@ -529,7 +529,15 @@ export function Calculator() {
                   </TooltipContent>
                 </Tooltip>
               </span>
-              <span className="font-display text-lg font-extrabold tabular">{formatRupiah(modalAwal)}</span>
+              <button
+                type="button"
+                onClick={() => copyValue("Modal Awal", formatRupiah(modalAwal))}
+                className="flex items-center gap-1.5 rounded-xl px-2 py-1 text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
+                aria-label="Salin Modal Awal"
+              >
+                <span className="font-display text-lg font-extrabold tabular">{formatRupiah(modalAwal)}</span>
+                <Copy className="h-3.5 w-3.5 text-muted-foreground" />
+              </button>
             </div>
           </section>
 
