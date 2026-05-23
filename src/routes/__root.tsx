@@ -76,10 +76,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "IDXAvg — Kalkulator Averaging Saham IDX" },
       { name: "description", content: "Hitung average price & lot tambahan sebelum beli saham IDX. Auto tick-size, mobile-first, gratis." },
       { name: "author", content: "IDXAvg" },
-      { property: "og:title", content: "IDXAvg — Kalkulator Averaging Saham" },
-      { property: "og:description", content: "Hitung avg baru & lot dibutuhkan untuk averaging saham IDX." },
+      { property: "og:title", content: "IDXAvg — Kalkulator Averaging Saham IDX" },
+      { property: "og:description", content: "Hitung average price & lot tambahan sebelum beli saham IDX. Auto tick-size, mobile-first, gratis." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "IDXAvg — Kalkulator Averaging Saham IDX" },
+      { name: "twitter:description", content: "Hitung average price & lot tambahan sebelum beli saham IDX. Auto tick-size, mobile-first, gratis." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/ac8c2814-12b6-4100-bb3d-8955bdcbd50b/id-preview-59797336--5dffbd10-db18-4371-8b20-1bd5b48d0c43.lovable.app-1779325250304.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/ac8c2814-12b6-4100-bb3d-8955bdcbd50b/id-preview-59797336--5dffbd10-db18-4371-8b20-1bd5b48d0c43.lovable.app-1779325250304.png" },
     ],
     links: [
       {
