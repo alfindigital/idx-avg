@@ -112,6 +112,7 @@ export function Calculator() {
   const [isDark, setIsDark] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
   const mobileResultRef = useRef<HTMLDivElement>(null);
+  const stockInputRef = useRef<HTMLInputElement>(null);
   const [barOpen, setBarOpen] = useState(false);
 
   // Init: theme, history, URL params
