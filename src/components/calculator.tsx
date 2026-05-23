@@ -112,6 +112,7 @@ export function Calculator() {
   const [isDark, setIsDark] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
   const mobileResultRef = useRef<HTMLDivElement>(null);
+  const stockInputRef = useRef<HTMLInputElement>(null);
   const [barOpen, setBarOpen] = useState(false);
 
   // Init: theme, history, URL params
@@ -225,6 +226,36 @@ export function Calculator() {
     e.preventDefault();
     if (canCalculate) runCalc();
   };
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement)?.tagName?.toLowerCase();
+      const inInput = tag === "input" || tag === "textarea" || tag === "select";
+
+      // "/" to focus stock input (unless already in input)
+      if (e.key === "/" && !inInput) {
+        e.preventDefault();
+        stockInputRef.current?.focus();
+        return;
+      }
+
+      // Escape to blur stock input
+      if (e.key === "Escape" && stockInputRef.current === document.activeElement) {
+        stockInputRef.current?.blur();
+        return;
+      }
+
+      // Ctrl/Cmd+Enter to calculate from anywhere
+      if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        if (canCalculate) runCalc();
+        return;
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [canCalculate]);
 
   const toggleTheme = () => {
     const n = !isDark;
@@ -469,8 +500,14 @@ export function Calculator() {
             <h2 className={sectionHead}>Posisi Saat Ini</h2>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label className={labelCls}>Kode Saham</Label>
+                <div className="mb-1.5 ml-1 flex items-center justify-between">
+                  <Label className={labelCls}>Kode Saham</Label>
+                  <kbd className="hidden rounded-md border border-border bg-secondary px-1.5 py-0.5 text-[10px] font-bold text-muted-foreground sm:inline-block" title="Tekan / untuk fokus">
+                    /
+                  </kbd>
+                </div>
                 <Input
+                  ref={stockInputRef}
                   value={stockName}
                   onChange={(e) => setStockName(e.target.value.toUpperCase().slice(0, 6))}
                   placeholder="BUMI"
@@ -610,9 +647,16 @@ export function Calculator() {
             type="submit"
             className="font-display h-auto w-full rounded-3xl py-5 text-lg font-extrabold uppercase tracking-[0.15em] shadow-xl shadow-primary/25 transition-all active:scale-[0.98]"
             disabled={!canCalculate}
+            title="Ctrl+Enter atau Cmd+Enter untuk hitung dari mana saja"
           >
             Hitung
           </Button>
+          <p className="flex items-center justify-center gap-1.5 text-center text-[10px] font-semibold text-muted-foreground">
+            <kbd className="rounded-md border border-border bg-secondary px-1.5 py-0.5 font-bold">Ctrl</kbd>
+            +
+            <kbd className="rounded-md border border-border bg-secondary px-1.5 py-0.5 font-bold">Enter</kbd>
+            <span className="hidden sm:inline"> untuk hitung cepat</span>
+          </p>
           {!mode && (hargaAvg || avgPrice) && (
             <p className="text-center text-xs font-medium text-muted-foreground">
               Isi <b>Lot Tambah</b> atau <b>Target Avg</b>
