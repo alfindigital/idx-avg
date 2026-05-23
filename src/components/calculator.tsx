@@ -264,6 +264,15 @@ export function Calculator() {
     }
   };
 
+  const copyValue = async (label: string, value: string) => {
+    try {
+      await navigator.clipboard.writeText(value);
+      toast.success(`${label} disalin`);
+    } catch {
+      toast.error("Gagal menyalin");
+    }
+  };
+
   const copySummary = async () => {
     if (!result) return;
     const arrow = result.status === "down" ? "↓" : result.status === "up" ? "↑" : "→";
