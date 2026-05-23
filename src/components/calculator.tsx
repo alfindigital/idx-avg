@@ -677,9 +677,17 @@ export function Calculator() {
                       {result.totalLotBaru} <span className="text-muted-foreground">(+{result.lotDelta})</span>
                     </span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">Modal Tambahan</span>
-                    <span className="font-bold tabular text-foreground">{formatRupiah(result.modalTambahan)}</span>
+                    <button
+                      type="button"
+                      onClick={() => copyValue("Modal Tambahan", formatRupiah(result.modalTambahan))}
+                      className="flex items-center gap-1 rounded-lg px-1.5 py-0.5 text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
+                      aria-label="Salin Modal Tambahan"
+                    >
+                      <span className="font-bold tabular text-foreground">{formatRupiah(result.modalTambahan)}</span>
+                      <Copy className="h-3 w-3 text-muted-foreground" />
+                    </button>
                   </div>
                   <div className="flex justify-between border-t border-border/70 pt-2.5">
                     <span className="text-muted-foreground">Total Modal</span>
