@@ -260,12 +260,13 @@ export function Calculator() {
         return;
       }
 
-      // Ctrl/Cmd+Enter to calculate from anywhere
-      if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+      // Enter to calculate from anywhere
+      if (e.key === "Enter") {
         e.preventDefault();
         if (canCalculate) runCalc();
         return;
       }
+
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
