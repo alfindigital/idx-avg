@@ -505,7 +505,7 @@ export function Calculator() {
                 <div className="mb-1.5 ml-1 flex items-center justify-between">
                   <Label className={labelCls}>Kode Saham</Label>
                   <kbd className="hidden rounded-md border border-border bg-secondary px-1.5 py-0.5 text-[10px] font-bold text-muted-foreground sm:inline-block" title="Tekan / untuk fokus">
-                    /
+                    ​
                   </kbd>
                 </div>
                 <Input
