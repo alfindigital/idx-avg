@@ -659,14 +659,9 @@ export function Calculator() {
             type="submit"
             className="font-display h-auto w-full rounded-3xl py-5 text-lg font-extrabold uppercase tracking-[0.15em] shadow-xl shadow-primary/25 transition-all active:scale-[0.98]"
             disabled={!canCalculate}
-            title="Tekan Enter untuk hitung dari mana saja"
           >
             Hitung
           </Button>
-          <p className="flex items-center justify-center gap-1.5 text-center text-[10px] font-semibold text-muted-foreground">
-            <kbd className="rounded-md border border-border bg-secondary px-1.5 py-0.5 font-bold">Enter</kbd>
-            <span className="hidden sm:inline"> untuk hitung cepat</span>
-          </p>
 
           {!mode && (hargaAvg || avgPrice) && (
             <p className="text-center text-xs font-medium text-muted-foreground">
