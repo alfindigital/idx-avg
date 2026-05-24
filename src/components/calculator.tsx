@@ -63,6 +63,7 @@ import { toPng } from "html-to-image";
 
 const HISTORY_KEY = "idxavg-history-v1";
 const THEME_KEY = "idxavg-theme";
+const INPUTS_KEY = "idxavg-inputs-v1";
 
 const MAX_PRICE = 1_000_000;
 const MAX_LOT = 1_000_000;
@@ -115,6 +116,7 @@ export function Calculator() {
   const stockInputRef = useRef<HTMLInputElement>(null);
   const resultInputsRef = useRef<string>("");
   const [barOpen, setBarOpen] = useState(false);
+  const hydratedRef = useRef(false);
 
   // Invalidate stale result whenever any calc input changes after a calculation
   const currentInputsKey = `${avgPrice}|${totalLot}|${hargaAvg}|${lotTambah}|${targetAvg}|${stockName}`;
@@ -137,6 +139,22 @@ export function Calculator() {
       if (h) setHistory(JSON.parse(h));
     } catch {}
 
+    // Load saved inputs first
+    try {
+      const saved = localStorage.getItem(INPUTS_KEY);
+      if (saved) {
+        const v = JSON.parse(saved);
+        if (typeof v.stockName === "string") setStockName(v.stockName);
+        if (typeof v.date === "string") setDate(v.date);
+        if (typeof v.avgPrice === "string") setAvgPrice(v.avgPrice);
+        if (typeof v.totalLot === "string") setTotalLot(v.totalLot);
+        if (typeof v.hargaAvg === "string") setHargaAvg(v.hargaAvg);
+        if (typeof v.lotTambah === "string") setLotTambah(v.lotTambah);
+        if (typeof v.targetAvg === "string") setTargetAvg(v.targetAvg);
+      }
+    } catch {}
+
+    // URL params override saved inputs
     const p = new URLSearchParams(window.location.search);
     const s = p.get("stock");
     const a = p.get("avg");
@@ -150,7 +168,20 @@ export function Calculator() {
     if (h) setHargaAvg(h);
     if (lt) setLotTambah(lt);
     if (tg) setTargetAvg(tg);
+
+    hydratedRef.current = true;
   }, []);
+
+  // Auto-save inputs to localStorage
+  useEffect(() => {
+    if (!hydratedRef.current) return;
+    try {
+      localStorage.setItem(
+        INPUTS_KEY,
+        JSON.stringify({ stockName, date, avgPrice, totalLot, hargaAvg, lotTambah, targetAvg })
+      );
+    } catch {}
+  }, [stockName, date, avgPrice, totalLot, hargaAvg, lotTambah, targetAvg]);
 
   const modalAwal = useMemo(() => {
     const a = parseFloat(avgPrice);
