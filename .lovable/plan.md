@@ -1,56 +1,30 @@
-## Tujuan
+## Diagnosis
 
-Refresh tampilan kalkulator IDXAvg jadi modern minimalis dan mobile-responsive, dengan font lebih besar agar nyaman dibaca di desktop maupun mobile. Tidak ada perubahan business logic — semua field, validasi, history, share/export, dan keyboard shortcut tetap.
+Logika `calcNewAvg` di `src/lib/calc.ts` sudah benar:
+`(100×100 + 150×100) / 200 = 125`.
 
-## Arah desain (terkunci)
+Yang terjadi di screenshot: kartu hasil menampilkan **Lot Baru 101 (+1)** dan **Modal Tambahan Rp 15.000**. Itu artinya saat tombol HITUNG ditekan sebelumnya, `lotTambah` masih **"1"** — lalu user mengetik `00` menjadi `100`, tapi **tidak menekan HITUNG lagi**. Kartu hasil tidak invalidasi saat input berubah, jadi angka lama (`Rp 100`) tetap nempel padahal field di atas sudah berubah → terlihat seperti kalkulasi salah.
 
-- Palet **Cloud White**: bg `#fafbfc`, surface kartu `#e8ecf1`, muted `#94a3b8`, primary `#3b82f6`.
-- Tipografi: **Urbanist** (heading/angka/tombol) + **Epilogue** (body/label) via Google Fonts.
-- Layout **single-column**, max width ~480px, terpusat di desktop dan mobile.
-- Komposisi mengikuti prototype terpilih: dua kartu berlapis (Posisi Saat Ini + Averaging), tombol HITUNG full-width rounded, sticky result bar gelap (`slate-900`) mengambang di bawah.
+Konfirmasi cocok:
+- `Modal Awal Rp 1.000.000` = 100×100×100 ✓ (lotSekarang masih 100)
+- `Modal Tambahan Rp 15.000` = 150×**1**×100 ✓
+- `Total Modal Rp 1.015.000` ✓
+- `Lot Baru 101 (+1)` ✓
 
-## Perubahan file
+Jadi bug-nya **stale result**, bukan rumus. Tetap fatal karena menyesatkan.
 
-### 1. `src/styles.css`
-- Tambah `@import` Google Fonts untuk Urbanist 700/800 dan Epilogue 400/500/600.
-- Set `--font-sans: 'Epilogue'` dan `--font-display: 'Urbanist'` di `:root`, lalu register di `@theme inline`.
-- Update `body` agar pakai Epilogue, tambah utility `.font-display` untuk Urbanist.
-- Sesuaikan token `--background`, `--card`, `--muted`, `--primary` ke oklch yang setara dengan palet Cloud White (light mode), dan turunan gelap yang konsisten untuk dark mode (tetap dukung toggle theme yang sudah ada).
-- Naikkan `--radius` ke `1rem` agar match rounded-3xl prototype.
+## Perbaikan
 
-### 2. `src/components/calculator.tsx` (visual saja)
-- Container utama: `bg-background`, padding longgar, `max-w-[480px] mx-auto`.
-- Header: logo bulat biru `rounded-xl` + judul Urbanist 2xl + subtitle muted. Tombol header tetap (theme, history, menu) tapi pakai ukuran ikon lebih besar (`h-5 w-5`).
-- Section "Posisi Saat Ini" & "Averaging" jadi `<section className="bg-muted/60 border border-white/60 rounded-3xl p-5 shadow-sm">` dengan heading kecil uppercase tracking-widest Urbanist.
-- Semua Input diberi class besar: `h-auto py-4 px-4 text-lg font-bold rounded-2xl bg-card border-2 border-transparent focus-visible:border-primary focus-visible:ring-0`. Label naik jadi `text-sm font-semibold`.
-- "Modal Awal" callout: `rounded-2xl bg-card/50` dengan angka Urbanist `text-lg font-bold`.
-- Tombol HITUNG: `w-full py-5 rounded-3xl text-xl font-extrabold tracking-wider shadow-xl shadow-primary/20` dengan label "(Enter)" kecil di samping.
-- Sticky result bar (mobile + desktop): kartu mengambang `fixed bottom-4` `max-w-[440px]` `bg-slate-900 text-white rounded-3xl p-5 shadow-2xl`, dua kolom (Avg Baru / metric kedua) dengan divider vertikal, angka Urbanist 2xl. Saat belum ada result → tetap sembunyikan seperti sekarang.
-- Result detail panel desktop tetap, hanya rebrand visual (rounded-3xl, font baru, padding lebih lega).
-- Pesan error inline tetap di bawah input (`text-xs text-destructive`).
-- Footer "made with ♥ IDXAvg" kecil muted-foreground.
+### `src/components/calculator.tsx`
 
-### 3. Tidak diubah
-- `src/lib/calc.ts`, `src/lib/idx-tick.ts`, history, share link, copy summary, export image, keyboard, validasi, tabIndex — semua logic tetap.
+1. **Auto-invalidate hasil saat input berubah.**
+   Tambah `useEffect` yang reset `setResult(null)` setiap kali salah satu input perhitungan berubah (`avgPrice`, `totalLot`, `hargaAvg`, `lotTambah`, `targetAvg`, `stockName`). Dengan begitu kartu hasil hilang begitu user mulai mengubah angka, dan user wajib tekan HITUNG lagi untuk melihat hasil terbaru — tidak ada lagi angka stale yang menyesatkan.
 
-## Catatan teknis (untuk kontributor)
+   Catatan: harus skip efek ini saat hasil baru saja di-set oleh `runCalc` (kalau tidak, efek langsung menghapusnya). Caranya: simpan snapshot input "yang dipakai untuk hasil terakhir" di `ref`, dan baru clear kalau snapshot itu beda dengan input saat ini.
 
-```text
-styles.css
-  └── @import Urbanist + Epilogue
-  └── --font-sans / --font-display tokens
-  └── tweak oklch values → Cloud White light mode
+2. **Tidak ada perubahan business logic** di `src/lib/calc.ts` — rumus sudah benar.
 
-calculator.tsx (visual layer only)
-  └── header     → logo pill + 2xl title
-  └── sections   → bg-muted rounded-3xl cards
-  └── inputs     → text-lg, py-4, rounded-2xl, focus ring primary
-  └── HITUNG     → py-5 rounded-3xl text-xl shadow primary
-  └── result bar → fixed bottom dark pill (slate-900)
-```
+## Hasil yang diharapkan
 
-## QA
-
-- Cek desktop (1280+) & mobile (375) di preview — pastikan single-column, font terbaca, sticky bar tidak menutupi tombol HITUNG (padding bawah `pb-32`).
-- Toggle dark mode masih kontras.
-- Semua field tetap berfungsi, Enter tetap submit, error inline tampil.
+- Begitu user mengetik di field apa pun setelah HITUNG, kartu hasil + sticky bar langsung hilang sampai HITUNG ditekan ulang.
+- Skenario di screenshot: setelah user ubah `Lot Tambah` dari `1` → `100`, hasil lama (`Rp 100`) menghilang. Tekan HITUNG → muncul `Avg Baru Rp 125`, Lot Baru 200 (+100), Modal Tambahan Rp 1.500.000, Total Modal Rp 2.500.000.

@@ -113,7 +113,17 @@ export function Calculator() {
   const resultRef = useRef<HTMLDivElement>(null);
   const mobileResultRef = useRef<HTMLDivElement>(null);
   const stockInputRef = useRef<HTMLInputElement>(null);
+  const resultInputsRef = useRef<string>("");
   const [barOpen, setBarOpen] = useState(false);
+
+  // Invalidate stale result whenever any calc input changes after a calculation
+  const currentInputsKey = `${avgPrice}|${totalLot}|${hargaAvg}|${lotTambah}|${targetAvg}|${stockName}`;
+  useEffect(() => {
+    if (result && currentInputsKey !== resultInputsRef.current) {
+      setResult(null);
+    }
+  }, [currentInputsKey, result]);
+
 
   // Init: theme, history, URL params
   useEffect(() => {
@@ -193,6 +203,7 @@ export function Calculator() {
     const l = parseInt(totalLot);
     const h = parseFloat(hargaAvg);
     const s = stockName.trim().toUpperCase() || "-";
+    const snapshot = `${avgPrice}|${totalLot}|${hargaAvg}|${lotTambah}|${targetAvg}|${stockName}`;
     if (mode === "new-avg") {
       const r = calcNewAvg({
         avgSekarang: a,
@@ -202,6 +213,7 @@ export function Calculator() {
         stockName: s,
         date,
       });
+      resultInputsRef.current = snapshot;
       setResult(r);
       saveHistory(r);
     } else {
@@ -217,10 +229,12 @@ export function Calculator() {
         toast.error(out.error);
         return;
       }
+      resultInputsRef.current = snapshot;
       setResult(out.result);
       saveHistory(out.result);
     }
   };
+
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
