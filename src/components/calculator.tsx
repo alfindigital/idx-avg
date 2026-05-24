@@ -116,6 +116,7 @@ export function Calculator() {
   const stockInputRef = useRef<HTMLInputElement>(null);
   const resultInputsRef = useRef<string>("");
   const [barOpen, setBarOpen] = useState(false);
+  const hydratedRef = useRef(false);
 
   // Invalidate stale result whenever any calc input changes after a calculation
   const currentInputsKey = `${avgPrice}|${totalLot}|${hargaAvg}|${lotTambah}|${targetAvg}|${stockName}`;
