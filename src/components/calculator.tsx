@@ -63,6 +63,7 @@ import { toPng } from "html-to-image";
 
 const HISTORY_KEY = "idxavg-history-v1";
 const THEME_KEY = "idxavg-theme";
+const INPUTS_KEY = "idxavg-inputs-v1";
 
 const MAX_PRICE = 1_000_000;
 const MAX_LOT = 1_000_000;
