@@ -113,7 +113,17 @@ export function Calculator() {
   const resultRef = useRef<HTMLDivElement>(null);
   const mobileResultRef = useRef<HTMLDivElement>(null);
   const stockInputRef = useRef<HTMLInputElement>(null);
+  const resultInputsRef = useRef<string>("");
   const [barOpen, setBarOpen] = useState(false);
+
+  // Invalidate stale result whenever any calc input changes after a calculation
+  const currentInputsKey = `${avgPrice}|${totalLot}|${hargaAvg}|${lotTambah}|${targetAvg}|${stockName}`;
+  useEffect(() => {
+    if (result && currentInputsKey !== resultInputsRef.current) {
+      setResult(null);
+    }
+  }, [currentInputsKey, result]);
+
 
   // Init: theme, history, URL params
   useEffect(() => {
