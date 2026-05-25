@@ -172,15 +172,23 @@ export function Calculator() {
     hydratedRef.current = true;
   }, []);
 
-  // Auto-save inputs to localStorage
+  // Auto-save inputs to localStorage (debounced 800ms)
+  const saveTimeoutRef = useRef<number | null>(null);
   useEffect(() => {
     if (!hydratedRef.current) return;
-    try {
-      localStorage.setItem(
-        INPUTS_KEY,
-        JSON.stringify({ stockName, date, avgPrice, totalLot, hargaAvg, lotTambah, targetAvg })
-      );
-    } catch {}
+    if (saveTimeoutRef.current) window.clearTimeout(saveTimeoutRef.current);
+    saveTimeoutRef.current = window.setTimeout(() => {
+      try {
+        localStorage.setItem(
+          INPUTS_KEY,
+          JSON.stringify({ stockName, date, avgPrice, totalLot, hargaAvg, lotTambah, targetAvg })
+        );
+      } catch {}
+      saveTimeoutRef.current = null;
+    }, 800);
+    return () => {
+      if (saveTimeoutRef.current) window.clearTimeout(saveTimeoutRef.current);
+    };
   }, [stockName, date, avgPrice, totalLot, hargaAvg, lotTambah, targetAvg]);
 
   const modalAwal = useMemo(() => {
