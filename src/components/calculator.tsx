@@ -502,7 +502,7 @@ export function Calculator() {
                             className={cn(
                               "font-bold",
                               h.status === "down" && "text-destructive",
-                              h.status === "up" && "text-[color:var(--success)]"
+                              h.status === "up" && "text-success"
                             )}
                           >
                             {h.status === "down" ? "↓" : h.status === "up" ? "↑" : "→"}{" "}
