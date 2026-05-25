@@ -597,8 +597,8 @@ export function Calculator() {
                 {errLot && <p className="mt-1.5 ml-1 text-xs font-medium text-destructive">{errLot}</p>}
               </div>
             </div>
-            <div className="mt-4 flex items-center justify-between rounded-2xl border border-white/70 bg-card/60 px-4 py-3 dark:border-white/5">
-              <span className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
+            <div className="mt-3 flex items-center justify-between rounded-xl border border-white/70 bg-card/60 px-3 py-2 dark:border-white/5 sm:mt-4 sm:rounded-2xl sm:px-4 sm:py-3">
+              <span className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground sm:text-sm">
                 Modal Awal
                 <Tooltip>
                   <TooltipTrigger asChild aria-label="Informasi">
@@ -612,10 +612,10 @@ export function Calculator() {
               <button
                 type="button"
                 onClick={() => copyValue("Modal Awal", formatRupiah(modalAwal))}
-                className="flex items-center gap-1.5 rounded-xl px-2 py-1 text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
+                className="flex items-center gap-1.5 rounded-lg px-2 py-0.5 text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95 sm:rounded-xl sm:py-1"
                 aria-label="Salin Modal Awal"
               >
-                <span className="font-display text-lg font-extrabold tabular">{formatRupiah(modalAwal)}</span>
+                <span className="font-display text-base font-extrabold tabular sm:text-lg">{formatRupiah(modalAwal)}</span>
                 <Copy className="h-3.5 w-3.5 text-muted-foreground" />
               </button>
             </div>
