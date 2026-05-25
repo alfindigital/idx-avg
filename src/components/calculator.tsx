@@ -502,7 +502,7 @@ export function Calculator() {
                             className={cn(
                               "font-bold",
                               h.status === "down" && "text-destructive",
-                              h.status === "up" && "text-[color:var(--success)]"
+                              h.status === "up" && "text-success"
                             )}
                           >
                             {h.status === "down" ? "↓" : h.status === "up" ? "↑" : "→"}{" "}
@@ -738,7 +738,7 @@ export function Calculator() {
                         result.status === "down" &&
                           "bg-destructive/15 text-destructive hover:bg-destructive/15",
                         result.status === "up" &&
-                          "bg-[color:var(--success)]/15 text-[color:var(--success)] hover:bg-[color:var(--success)]/15"
+                          "bg-success/15 text-success hover:bg-success/15"
                       )}
                     >
                       {result.status === "down" ? (
@@ -817,35 +817,35 @@ export function Calculator() {
                     <DrawerTrigger asChild>
                       <button
                         type="button"
-                        className="flex w-full max-w-[440px] items-center justify-between gap-3 rounded-3xl border border-slate-700 bg-slate-900 px-5 py-4 text-left text-white shadow-2xl backdrop-blur transition-transform active:scale-[0.98]"
+                        className="flex w-full max-w-[440px] items-center justify-between gap-3 rounded-3xl border border-border bg-card px-5 py-4 text-left text-foreground shadow-2xl backdrop-blur transition-transform active:scale-[0.98]"
                         aria-label="Lihat detail hasil"
                       >
                         <div className="min-w-0 space-y-0.5">
-                          <p className="font-display text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
+                          <p className="font-display text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
                             {headLabel}
                           </p>
-                          <p className="font-display text-xl font-extrabold tabular leading-tight text-white">
+                          <p className="font-display text-xl font-extrabold tabular leading-tight text-foreground">
                             {headValue}
                           </p>
                         </div>
-                        <div className="h-10 w-px bg-slate-700" />
+                        <div className="h-10 w-px bg-border" />
                         <div className="min-w-0 space-y-0.5 text-right">
-                          <p className="font-display text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
+                          <p className="font-display text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
                             {result.status === "down" ? "Turun" : result.status === "up" ? "Naik" : "Flat"}
                           </p>
                           <p
                             className={cn(
                               "font-display text-xl font-extrabold tabular leading-tight",
-                              result.status === "down" && "text-rose-400",
-                              result.status === "up" && "text-emerald-400",
-                              result.status === "flat" && "text-white"
+                              result.status === "down" && "text-destructive",
+                              result.status === "up" && "text-success",
+                              result.status === "flat" && "text-foreground"
                             )}
                           >
                             {result.status === "down" ? "↓" : result.status === "up" ? "↑" : "→"}{" "}
                             {result.percentage.toFixed(2)}%
                           </p>
                         </div>
-                        <ChevronUp className="h-5 w-5 shrink-0 text-slate-400" />
+                        <ChevronUp className="h-5 w-5 shrink-0 text-muted-foreground" />
                       </button>
                     </DrawerTrigger>
                   </div>
