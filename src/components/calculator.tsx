@@ -581,7 +581,7 @@ export function Calculator() {
                   className={cn(inputCls, "tabular", errAvg && "border-destructive focus-visible:border-destructive")}
                   tabIndex={2}
                 />
-                {errAvg && <p className="mt-1.5 ml-1 text-xs font-medium text-destructive">{errAvg}</p>}
+                {errAvg && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errAvg}</p>}
               </div>
               <div>
                 <Label className={labelCls}>Total Lot</Label>
@@ -594,7 +594,7 @@ export function Calculator() {
                   className={cn(inputCls, "tabular", errLot && "border-destructive focus-visible:border-destructive")}
                   tabIndex={3}
                 />
-                {errLot && <p className="mt-1.5 ml-1 text-xs font-medium text-destructive">{errLot}</p>}
+                {errLot && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errLot}</p>}
               </div>
             </div>
             <div className="mt-3 flex items-center justify-between rounded-xl border border-white/70 bg-card/60 px-3 py-2 dark:border-white/5 sm:mt-4 sm:rounded-2xl sm:px-4 sm:py-3">
