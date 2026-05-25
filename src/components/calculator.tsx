@@ -418,12 +418,12 @@ export function Calculator() {
   const targetAvgDisabled = !!lotTambah;
 
   const inputCls =
-    "h-auto rounded-2xl border-2 border-transparent bg-card px-4 py-3.5 text-lg font-bold text-foreground shadow-none transition-all focus-visible:border-primary focus-visible:ring-0 placeholder:text-muted-foreground/50 md:text-lg";
-  const labelCls = "mb-1.5 ml-1 block text-sm font-semibold text-foreground/70";
+    "h-auto rounded-xl border-2 border-transparent bg-card px-3 py-2 text-base font-bold text-foreground shadow-none transition-all focus-visible:border-primary focus-visible:ring-0 placeholder:text-muted-foreground/50 sm:px-4 sm:py-2.5 sm:text-lg";
+  const labelCls = "mb-1 ml-0.5 block text-xs font-semibold text-foreground/70 sm:text-sm";
   const sectionHead =
-    "mb-4 font-display text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground";
+    "mb-3 font-display text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground sm:mb-4 sm:text-xs";
   const cardCls =
-    "rounded-3xl border border-white/70 bg-secondary/60 p-5 shadow-sm dark:border-white/5";
+    "rounded-2xl border border-white/70 bg-secondary/60 p-3.5 shadow-sm dark:border-white/5 sm:rounded-3xl sm:p-5";
 
   return (
     <TooltipProvider delayDuration={150}>
@@ -542,11 +542,11 @@ export function Calculator() {
 
         {/* Main */}
         <main className="mx-auto w-full max-w-[480px] px-4 pt-4 pb-[calc(9rem+env(safe-area-inset-bottom))] sm:pb-[calc(5rem+env(safe-area-inset-bottom))]">
-          <form onSubmit={handleSubmit} noValidate className="space-y-5">
+          <form onSubmit={handleSubmit} noValidate className="space-y-3 sm:space-y-5">
           {/* Position */}
           <section className={cardCls}>
             <h2 className={sectionHead}>Posisi Saat Ini</h2>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3">
               <div>
                 <Label className={labelCls}>Kode Saham</Label>
                 <Input
@@ -581,7 +581,7 @@ export function Calculator() {
                   className={cn(inputCls, "tabular", errAvg && "border-destructive focus-visible:border-destructive")}
                   tabIndex={2}
                 />
-                {errAvg && <p className="mt-1.5 ml-1 text-xs font-medium text-destructive">{errAvg}</p>}
+                {errAvg && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errAvg}</p>}
               </div>
               <div>
                 <Label className={labelCls}>Total Lot</Label>
@@ -594,11 +594,11 @@ export function Calculator() {
                   className={cn(inputCls, "tabular", errLot && "border-destructive focus-visible:border-destructive")}
                   tabIndex={3}
                 />
-                {errLot && <p className="mt-1.5 ml-1 text-xs font-medium text-destructive">{errLot}</p>}
+                {errLot && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errLot}</p>}
               </div>
             </div>
-            <div className="mt-4 flex items-center justify-between rounded-2xl border border-white/70 bg-card/60 px-4 py-3 dark:border-white/5">
-              <span className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
+            <div className="mt-3 flex items-center justify-between rounded-xl border border-white/70 bg-card/60 px-3 py-2 dark:border-white/5 sm:mt-4 sm:rounded-2xl sm:px-4 sm:py-3">
+              <span className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground sm:text-sm">
                 Modal Awal
                 <Tooltip>
                   <TooltipTrigger asChild aria-label="Informasi">
@@ -612,10 +612,10 @@ export function Calculator() {
               <button
                 type="button"
                 onClick={() => copyValue("Modal Awal", formatRupiah(modalAwal))}
-                className="flex items-center gap-1.5 rounded-xl px-2 py-1 text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
+                className="flex items-center gap-1.5 rounded-lg px-2 py-0.5 text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95 sm:rounded-xl sm:py-1"
                 aria-label="Salin Modal Awal"
               >
-                <span className="font-display text-lg font-extrabold tabular">{formatRupiah(modalAwal)}</span>
+                <span className="font-display text-base font-extrabold tabular sm:text-lg">{formatRupiah(modalAwal)}</span>
                 <Copy className="h-3.5 w-3.5 text-muted-foreground" />
               </button>
             </div>
@@ -623,7 +623,7 @@ export function Calculator() {
 
           {/* Averaging */}
           <section className={cardCls}>
-            <div className="mb-4 flex items-center justify-between">
+            <div className="mb-3 flex items-center justify-between sm:mb-4">
               <h2 className={cn(sectionHead, "mb-0")}>Averaging</h2>
               <Tooltip>
                 <TooltipTrigger asChild aria-label="Informasi">
@@ -636,7 +636,7 @@ export function Calculator() {
               </Tooltip>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               <div>
                 <Label className={labelCls}>Harga Averaging (Rp)</Label>
                 <Input
@@ -649,10 +649,10 @@ export function Calculator() {
                   className={cn(inputCls, "tabular", errHarga && "border-destructive focus-visible:border-destructive")}
                   tabIndex={4}
                 />
-                {errHarga && <p className="mt-1.5 ml-1 text-xs font-medium text-destructive">{errHarga}</p>}
+                {errHarga && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errHarga}</p>}
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 <div className={cn(lotTambahDisabled && "opacity-50")}>
                   <Label className={labelCls}>Lot Tambah</Label>
                   <Input
@@ -665,7 +665,7 @@ export function Calculator() {
                     disabled={lotTambahDisabled}
                     tabIndex={5}
                   />
-                  {errLotTambah && <p className="mt-1.5 ml-1 text-xs font-medium text-destructive">{errLotTambah}</p>}
+                  {errLotTambah && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errLotTambah}</p>}
                 </div>
                 <div className={cn(targetAvgDisabled && "opacity-50")}>
                   <Label className={labelCls}>Target Avg (Rp)</Label>
@@ -680,7 +680,7 @@ export function Calculator() {
                     disabled={targetAvgDisabled}
                     tabIndex={6}
                   />
-                  {errTarget && <p className="mt-1.5 ml-1 text-xs font-medium text-destructive">{errTarget}</p>}
+                  {errTarget && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errTarget}</p>}
                 </div>
               </div>
             </div>
@@ -688,7 +688,7 @@ export function Calculator() {
 
           <Button
             type="submit"
-            className="font-display h-auto w-full rounded-3xl py-5 text-lg font-extrabold uppercase tracking-[0.15em] shadow-xl shadow-primary/25 transition-all active:scale-[0.98]"
+            className="font-display h-auto w-full rounded-2xl py-3.5 text-base font-extrabold uppercase tracking-[0.15em] shadow-xl shadow-primary/25 transition-all active:scale-[0.98] sm:rounded-3xl sm:py-5 sm:text-lg"
             disabled={!canCalculate}
           >
             Hitung
