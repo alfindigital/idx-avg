@@ -623,7 +623,7 @@ export function Calculator() {
 
           {/* Averaging */}
           <section className={cardCls}>
-            <div className="mb-4 flex items-center justify-between">
+            <div className="mb-3 flex items-center justify-between sm:mb-4">
               <h2 className={cn(sectionHead, "mb-0")}>Averaging</h2>
               <Tooltip>
                 <TooltipTrigger asChild aria-label="Informasi">
@@ -636,7 +636,7 @@ export function Calculator() {
               </Tooltip>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               <div>
                 <Label className={labelCls}>Harga Averaging (Rp)</Label>
                 <Input
@@ -649,10 +649,10 @@ export function Calculator() {
                   className={cn(inputCls, "tabular", errHarga && "border-destructive focus-visible:border-destructive")}
                   tabIndex={4}
                 />
-                {errHarga && <p className="mt-1.5 ml-1 text-xs font-medium text-destructive">{errHarga}</p>}
+                {errHarga && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errHarga}</p>}
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 <div className={cn(lotTambahDisabled && "opacity-50")}>
                   <Label className={labelCls}>Lot Tambah</Label>
                   <Input
@@ -665,7 +665,7 @@ export function Calculator() {
                     disabled={lotTambahDisabled}
                     tabIndex={5}
                   />
-                  {errLotTambah && <p className="mt-1.5 ml-1 text-xs font-medium text-destructive">{errLotTambah}</p>}
+                  {errLotTambah && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errLotTambah}</p>}
                 </div>
                 <div className={cn(targetAvgDisabled && "opacity-50")}>
                   <Label className={labelCls}>Target Avg (Rp)</Label>
@@ -680,7 +680,7 @@ export function Calculator() {
                     disabled={targetAvgDisabled}
                     tabIndex={6}
                   />
-                  {errTarget && <p className="mt-1.5 ml-1 text-xs font-medium text-destructive">{errTarget}</p>}
+                  {errTarget && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errTarget}</p>}
                 </div>
               </div>
             </div>
@@ -688,7 +688,7 @@ export function Calculator() {
 
           <Button
             type="submit"
-            className="font-display h-auto w-full rounded-3xl py-5 text-lg font-extrabold uppercase tracking-[0.15em] shadow-xl shadow-primary/25 transition-all active:scale-[0.98]"
+            className="font-display h-auto w-full rounded-2xl py-3.5 text-base font-extrabold uppercase tracking-[0.15em] shadow-xl shadow-primary/25 transition-all active:scale-[0.98] sm:rounded-3xl sm:py-5 sm:text-lg"
             disabled={!canCalculate}
           >
             Hitung
