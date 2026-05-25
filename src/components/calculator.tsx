@@ -418,12 +418,12 @@ export function Calculator() {
   const targetAvgDisabled = !!lotTambah;
 
   const inputCls =
-    "h-auto rounded-2xl border-2 border-transparent bg-card px-4 py-3.5 text-lg font-bold text-foreground shadow-none transition-all focus-visible:border-primary focus-visible:ring-0 placeholder:text-muted-foreground/50 md:text-lg";
-  const labelCls = "mb-1.5 ml-1 block text-sm font-semibold text-foreground/70";
+    "h-auto rounded-xl border-2 border-transparent bg-card px-3 py-2 text-base font-bold text-foreground shadow-none transition-all focus-visible:border-primary focus-visible:ring-0 placeholder:text-muted-foreground/50 sm:px-4 sm:py-2.5 sm:text-lg";
+  const labelCls = "mb-1 ml-0.5 block text-xs font-semibold text-foreground/70 sm:text-sm";
   const sectionHead =
-    "mb-4 font-display text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground";
+    "mb-3 font-display text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground sm:mb-4 sm:text-xs";
   const cardCls =
-    "rounded-3xl border border-white/70 bg-secondary/60 p-5 shadow-sm dark:border-white/5";
+    "rounded-2xl border border-white/70 bg-secondary/60 p-3.5 shadow-sm dark:border-white/5 sm:rounded-3xl sm:p-5";
 
   return (
     <TooltipProvider delayDuration={150}>
