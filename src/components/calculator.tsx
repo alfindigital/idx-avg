@@ -542,11 +542,11 @@ export function Calculator() {
 
         {/* Main */}
         <main className="mx-auto w-full max-w-[480px] px-4 pt-4 pb-[calc(9rem+env(safe-area-inset-bottom))] sm:pb-[calc(5rem+env(safe-area-inset-bottom))]">
-          <form onSubmit={handleSubmit} noValidate className="space-y-5">
+          <form onSubmit={handleSubmit} noValidate className="space-y-3 sm:space-y-5">
           {/* Position */}
           <section className={cardCls}>
             <h2 className={sectionHead}>Posisi Saat Ini</h2>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3">
               <div>
                 <Label className={labelCls}>Kode Saham</Label>
                 <Input
