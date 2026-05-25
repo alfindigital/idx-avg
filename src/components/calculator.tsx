@@ -738,7 +738,7 @@ export function Calculator() {
                         result.status === "down" &&
                           "bg-destructive/15 text-destructive hover:bg-destructive/15",
                         result.status === "up" &&
-                          "bg-[color:var(--success)]/15 text-[color:var(--success)] hover:bg-[color:var(--success)]/15"
+                          "bg-success/15 text-success hover:bg-success/15"
                       )}
                     >
                       {result.status === "down" ? (
