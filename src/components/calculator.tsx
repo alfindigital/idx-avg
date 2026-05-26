@@ -17,6 +17,7 @@ import {
   Info,
   ChevronUp,
   Send,
+  Check,
 } from "lucide-react";
 import {
   Dialog,
@@ -117,6 +118,8 @@ export function Calculator() {
   const resultInputsRef = useRef<string>("");
   const [barOpen, setBarOpen] = useState(false);
   const hydratedRef = useRef(false);
+  const [showRecovered, setShowRecovered] = useState(false);
+  const recoveredTimeoutRef = useRef<number | null>(null);
 
   // Invalidate stale result whenever any calc input changes after a calculation
   const currentInputsKey = `${avgPrice}|${totalLot}|${hargaAvg}|${lotTambah}|${targetAvg}|${stockName}`;
@@ -140,6 +143,7 @@ export function Calculator() {
     } catch {}
 
     // Load saved inputs first
+    let recovered = false;
     try {
       const saved = localStorage.getItem(INPUTS_KEY);
       if (saved) {
@@ -151,8 +155,18 @@ export function Calculator() {
         if (typeof v.hargaAvg === "string") setHargaAvg(v.hargaAvg);
         if (typeof v.lotTambah === "string") setLotTambah(v.lotTambah);
         if (typeof v.targetAvg === "string") setTargetAvg(v.targetAvg);
+        recovered = true;
       }
     } catch {}
+
+    if (recovered) {
+      setShowRecovered(true);
+      if (recoveredTimeoutRef.current) window.clearTimeout(recoveredTimeoutRef.current);
+      recoveredTimeoutRef.current = window.setTimeout(() => {
+        setShowRecovered(false);
+        recoveredTimeoutRef.current = null;
+      }, 3000);
+    }
 
     // URL params override saved inputs
     const p = new URLSearchParams(window.location.search);
@@ -170,6 +184,9 @@ export function Calculator() {
     if (tg) setTargetAvg(tg);
 
     hydratedRef.current = true;
+    return () => {
+      if (recoveredTimeoutRef.current) window.clearTimeout(recoveredTimeoutRef.current);
+    };
   }, []);
 
   // Auto-save inputs to localStorage (debounced 800ms)
@@ -558,6 +575,13 @@ export function Calculator() {
 
         {/* Main */}
         <main className="mx-auto w-full max-w-[480px] px-4 pt-4 pb-[calc(9rem+env(safe-area-inset-bottom))] sm:pb-[calc(5rem+env(safe-area-inset-bottom))]">
+          {showRecovered && (
+            <div className="mb-3 flex items-center justify-center animate-in fade-in slide-in-from-top-2 duration-300">
+              <Badge variant="secondary" className="rounded-full bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary">
+                <Check className="mr-1 h-3.5 w-3.5" /> Data sebelumnya dipulihkan
+              </Badge>
+            </div>
+          )}
           <form onSubmit={handleSubmit} noValidate className="space-y-3 sm:space-y-5">
           {/* Position */}
           <section className={cardCls}>
