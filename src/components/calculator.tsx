@@ -574,6 +574,13 @@ export function Calculator() {
 
         {/* Main */}
         <main className="mx-auto w-full max-w-[480px] px-4 pt-4 pb-[calc(9rem+env(safe-area-inset-bottom))] sm:pb-[calc(5rem+env(safe-area-inset-bottom))]">
+          {showRecovered && (
+            <div className="mb-3 flex items-center justify-center animate-in fade-in slide-in-from-top-2 duration-300">
+              <Badge variant="secondary" className="rounded-full bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary">
+                <Check className="mr-1 h-3.5 w-3.5" /> Data sebelumnya dipulihkan
+              </Badge>
+            </div>
+          )}
           <form onSubmit={handleSubmit} noValidate className="space-y-3 sm:space-y-5">
           {/* Position */}
           <section className={cardCls}>
