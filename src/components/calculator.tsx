@@ -117,6 +117,8 @@ export function Calculator() {
   const resultInputsRef = useRef<string>("");
   const [barOpen, setBarOpen] = useState(false);
   const hydratedRef = useRef(false);
+  const [showRecovered, setShowRecovered] = useState(false);
+  const recoveredTimeoutRef = useRef<number | null>(null);
 
   // Invalidate stale result whenever any calc input changes after a calculation
   const currentInputsKey = `${avgPrice}|${totalLot}|${hargaAvg}|${lotTambah}|${targetAvg}|${stockName}`;
