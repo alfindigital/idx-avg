@@ -199,6 +199,18 @@ export function Calculator() {
     };
   }, []);
 
+  const modalAwal = useMemo(() => {
+    const a = parseFloat(avgPrice);
+    const l = parseInt(totalLot);
+    return isFinite(a) && isFinite(l) ? a * l * 100 : 0;
+  }, [avgPrice, totalLot]);
+
+  const mode: CalcMode | null = useMemo(() => {
+    if (lotTambah && !targetAvg) return "new-avg";
+    if (targetAvg && !lotTambah) return "lots-needed";
+    return null;
+  }, [lotTambah, targetAvg]);
+
   // Auto-save inputs to localStorage (debounced 800ms)
   const saveTimeoutRef = useRef<number | null>(null);
   useEffect(() => {
@@ -217,18 +229,6 @@ export function Calculator() {
       if (saveTimeoutRef.current) window.clearTimeout(saveTimeoutRef.current);
     };
   }, [stockName, date, avgPrice, totalLot, hargaAvg, lotTambah, targetAvg, mode]);
-
-  const modalAwal = useMemo(() => {
-    const a = parseFloat(avgPrice);
-    const l = parseInt(totalLot);
-    return isFinite(a) && isFinite(l) ? a * l * 100 : 0;
-  }, [avgPrice, totalLot]);
-
-  const mode: CalcMode | null = useMemo(() => {
-    if (lotTambah && !targetAvg) return "new-avg";
-    if (targetAvg && !lotTambah) return "lots-needed";
-    return null;
-  }, [lotTambah, targetAvg]);
 
   const errAvg = useMemo(() => validatePrice(avgPrice), [avgPrice]);
   const errHarga = useMemo(() => validatePrice(hargaAvg), [hargaAvg]);
