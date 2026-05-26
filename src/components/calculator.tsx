@@ -142,6 +142,7 @@ export function Calculator() {
     } catch {}
 
     // Load saved inputs first
+    let recovered = false;
     try {
       const saved = localStorage.getItem(INPUTS_KEY);
       if (saved) {
@@ -153,8 +154,18 @@ export function Calculator() {
         if (typeof v.hargaAvg === "string") setHargaAvg(v.hargaAvg);
         if (typeof v.lotTambah === "string") setLotTambah(v.lotTambah);
         if (typeof v.targetAvg === "string") setTargetAvg(v.targetAvg);
+        recovered = true;
       }
     } catch {}
+
+    if (recovered) {
+      setShowRecovered(true);
+      if (recoveredTimeoutRef.current) window.clearTimeout(recoveredTimeoutRef.current);
+      recoveredTimeoutRef.current = window.setTimeout(() => {
+        setShowRecovered(false);
+        recoveredTimeoutRef.current = null;
+      }, 3000);
+    }
 
     // URL params override saved inputs
     const p = new URLSearchParams(window.location.search);
