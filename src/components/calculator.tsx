@@ -208,7 +208,7 @@ export function Calculator() {
       try {
         localStorage.setItem(
           INPUTS_KEY,
-          JSON.stringify({ stockName, date, avgPrice, totalLot, hargaAvg, lotTambah, targetAvg })
+          JSON.stringify({ stockName, date, avgPrice, totalLot, hargaAvg, lotTambah, targetAvg, mode })
         );
       } catch {}
       saveTimeoutRef.current = null;
