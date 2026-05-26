@@ -153,8 +153,18 @@ export function Calculator() {
         if (typeof v.avgPrice === "string") setAvgPrice(v.avgPrice);
         if (typeof v.totalLot === "string") setTotalLot(v.totalLot);
         if (typeof v.hargaAvg === "string") setHargaAvg(v.hargaAvg);
-        if (typeof v.lotTambah === "string") setLotTambah(v.lotTambah);
-        if (typeof v.targetAvg === "string") setTargetAvg(v.targetAvg);
+        // Restore mode-appropriate field only
+        if (v.mode === "new-avg") {
+          if (typeof v.lotTambah === "string") setLotTambah(v.lotTambah);
+          setTargetAvg("");
+        } else if (v.mode === "lots-needed") {
+          if (typeof v.targetAvg === "string") setTargetAvg(v.targetAvg);
+          setLotTambah("");
+        } else {
+          // legacy fallback
+          if (typeof v.lotTambah === "string") setLotTambah(v.lotTambah);
+          if (typeof v.targetAvg === "string") setTargetAvg(v.targetAvg);
+        }
         recovered = true;
       }
     } catch {}
@@ -189,25 +199,6 @@ export function Calculator() {
     };
   }, []);
 
-  // Auto-save inputs to localStorage (debounced 800ms)
-  const saveTimeoutRef = useRef<number | null>(null);
-  useEffect(() => {
-    if (!hydratedRef.current) return;
-    if (saveTimeoutRef.current) window.clearTimeout(saveTimeoutRef.current);
-    saveTimeoutRef.current = window.setTimeout(() => {
-      try {
-        localStorage.setItem(
-          INPUTS_KEY,
-          JSON.stringify({ stockName, date, avgPrice, totalLot, hargaAvg, lotTambah, targetAvg })
-        );
-      } catch {}
-      saveTimeoutRef.current = null;
-    }, 800);
-    return () => {
-      if (saveTimeoutRef.current) window.clearTimeout(saveTimeoutRef.current);
-    };
-  }, [stockName, date, avgPrice, totalLot, hargaAvg, lotTambah, targetAvg]);
-
   const modalAwal = useMemo(() => {
     const a = parseFloat(avgPrice);
     const l = parseInt(totalLot);
@@ -219,6 +210,25 @@ export function Calculator() {
     if (targetAvg && !lotTambah) return "lots-needed";
     return null;
   }, [lotTambah, targetAvg]);
+
+  // Auto-save inputs to localStorage (debounced 800ms)
+  const saveTimeoutRef = useRef<number | null>(null);
+  useEffect(() => {
+    if (!hydratedRef.current) return;
+    if (saveTimeoutRef.current) window.clearTimeout(saveTimeoutRef.current);
+    saveTimeoutRef.current = window.setTimeout(() => {
+      try {
+        localStorage.setItem(
+          INPUTS_KEY,
+          JSON.stringify({ stockName, date, avgPrice, totalLot, hargaAvg, lotTambah, targetAvg, mode })
+        );
+      } catch {}
+      saveTimeoutRef.current = null;
+    }, 800);
+    return () => {
+      if (saveTimeoutRef.current) window.clearTimeout(saveTimeoutRef.current);
+    };
+  }, [stockName, date, avgPrice, totalLot, hargaAvg, lotTambah, targetAvg, mode]);
 
   const errAvg = useMemo(() => validatePrice(avgPrice), [avgPrice]);
   const errHarga = useMemo(() => validatePrice(hargaAvg), [hargaAvg]);
