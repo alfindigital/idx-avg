@@ -183,6 +183,9 @@ export function Calculator() {
     if (tg) setTargetAvg(tg);
 
     hydratedRef.current = true;
+    return () => {
+      if (recoveredTimeoutRef.current) window.clearTimeout(recoveredTimeoutRef.current);
+    };
   }, []);
 
   // Auto-save inputs to localStorage (debounced 800ms)
