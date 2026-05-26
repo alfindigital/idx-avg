@@ -17,6 +17,7 @@ import {
   Info,
   ChevronUp,
   Send,
+  Check,
 } from "lucide-react";
 import {
   Dialog,
