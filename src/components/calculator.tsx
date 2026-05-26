@@ -153,8 +153,18 @@ export function Calculator() {
         if (typeof v.avgPrice === "string") setAvgPrice(v.avgPrice);
         if (typeof v.totalLot === "string") setTotalLot(v.totalLot);
         if (typeof v.hargaAvg === "string") setHargaAvg(v.hargaAvg);
-        if (typeof v.lotTambah === "string") setLotTambah(v.lotTambah);
-        if (typeof v.targetAvg === "string") setTargetAvg(v.targetAvg);
+        // Restore mode-appropriate field only
+        if (v.mode === "new-avg") {
+          if (typeof v.lotTambah === "string") setLotTambah(v.lotTambah);
+          setTargetAvg("");
+        } else if (v.mode === "lots-needed") {
+          if (typeof v.targetAvg === "string") setTargetAvg(v.targetAvg);
+          setLotTambah("");
+        } else {
+          // legacy fallback
+          if (typeof v.lotTambah === "string") setLotTambah(v.lotTambah);
+          if (typeof v.targetAvg === "string") setTargetAvg(v.targetAvg);
+        }
         recovered = true;
       }
     } catch {}
