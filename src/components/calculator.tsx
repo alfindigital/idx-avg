@@ -323,11 +323,19 @@ export function Calculator() {
     }
   };
 
-  const resetAvg = () => {
+  const resetAll = () => {
+    setStockName("");
+    setDate(todayISO());
+    setAvgPrice("");
+    setTotalLot("");
     setHargaAvg("");
     setLotTambah("");
     setTargetAvg("");
     setResult(null);
+    try {
+      localStorage.removeItem(INPUTS_KEY);
+    } catch {}
+    toast("Form direset");
   };
 
   const shareLink = async () => {
