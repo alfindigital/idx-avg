@@ -216,7 +216,7 @@ export function Calculator() {
     return () => {
       if (saveTimeoutRef.current) window.clearTimeout(saveTimeoutRef.current);
     };
-  }, [stockName, date, avgPrice, totalLot, hargaAvg, lotTambah, targetAvg]);
+  }, [stockName, date, avgPrice, totalLot, hargaAvg, lotTambah, targetAvg, mode]);
 
   const modalAwal = useMemo(() => {
     const a = parseFloat(avgPrice);
