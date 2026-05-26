@@ -548,7 +548,7 @@ export function Calculator() {
                   <Download className="mr-2 h-4 w-4" /> Simpan gambar
                 </DropdownMenuItem>
                 <DropdownMenuSeparator className="my-1 bg-border" />
-                <DropdownMenuItem onClick={resetAvg} className="rounded-xl px-3 py-2 text-sm font-semibold text-foreground focus:bg-secondary focus:text-primary">
+                <DropdownMenuItem onClick={resetAll} className="rounded-xl px-3 py-2 text-sm font-semibold text-foreground focus:bg-secondary focus:text-primary">
                   <RotateCcw className="mr-2 h-4 w-4" /> Reset
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -813,7 +813,7 @@ export function Calculator() {
                 <Button variant="outline" size="icon" onClick={saveImage} aria-label="Simpan PNG" className="h-11 w-11 rounded-2xl border-border bg-card hover:border-primary/40 hover:bg-secondary hover:text-primary">
                   <Download className="h-4.5 w-4.5" />
                 </Button>
-                <Button variant="outline" size="icon" onClick={resetAvg} aria-label="Reset" className="h-11 w-11 rounded-2xl border-border bg-card hover:border-destructive/40 hover:bg-destructive/10 hover:text-destructive">
+                <Button variant="outline" size="icon" onClick={resetAll} aria-label="Reset" className="h-11 w-11 rounded-2xl border-border bg-card hover:border-destructive/40 hover:bg-destructive/10 hover:text-destructive">
                   <X className="h-4.5 w-4.5" />
                 </Button>
               </div>
