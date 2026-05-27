@@ -630,7 +630,10 @@ export function Calculator() {
                   type="date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className={cn(inputCls, "text-base font-semibold")}
+                  className={cn(
+                    inputCls,
+                    "text-base font-semibold [&::-webkit-calendar-picker-indicator]:ml-auto [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-60 [&::-webkit-calendar-picker-indicator]:hover:opacity-100"
+                  )}
                   tabIndex={8}
                 />
               </div>
