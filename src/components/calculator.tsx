@@ -330,12 +330,14 @@ export function Calculator() {
         return;
       }
 
-      // Enter to calculate from anywhere
-      if (e.key === "Enter") {
+      // Enter to calculate (when focus not in input — form handles in-input Enter)
+      if (e.key === "Enter" && !inInput) {
         e.preventDefault();
         if (canCalculate) runCalc();
         return;
       }
+
+
 
     };
     document.addEventListener("keydown", onKey);
