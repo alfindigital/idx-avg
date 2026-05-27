@@ -248,6 +248,10 @@ export function Calculator() {
     return false;
   }, [avgPrice, totalLot, hargaAvg, lotTambah, targetAvg, mode, errAvg, errLot, errHarga, errLotTambah, errTarget]);
 
+  const canCalculateRef = useRef(canCalculate);
+  canCalculateRef.current = canCalculate;
+
+
   const handlePriceBlur = (
     value: string,
     setter: (v: string) => void
