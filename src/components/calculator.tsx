@@ -666,16 +666,8 @@ export function Calculator() {
               </div>
             </div>
             <div className="mt-3 flex items-center justify-between rounded-xl border border-white/70 bg-card/60 px-3 py-2 dark:border-white/5 sm:mt-4 sm:rounded-2xl sm:px-4 sm:py-3">
-              <span className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground sm:text-sm">
+              <span className="text-xs font-semibold text-muted-foreground sm:text-sm">
                 Modal Awal
-                <Tooltip>
-                  <TooltipTrigger asChild aria-label="Informasi">
-                    <Info className="h-3.5 w-3.5 cursor-help" aria-label="Informasi" />
-                  </TooltipTrigger>
-                  <TooltipContent side="top" className="text-xs">
-                    Avg × Lot × 100
-                  </TooltipContent>
-                </Tooltip>
               </span>
               <button
                 type="button"
