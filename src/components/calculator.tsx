@@ -2,7 +2,6 @@
 
 import { type FormEvent, type RefObject, useEffect, useMemo, useRef, useState } from "react";
 import {
-  Menu,
   Moon,
   Sun,
   History,
@@ -10,7 +9,6 @@ import {
   Link2,
   Copy,
   Download,
-  RotateCcw,
   TrendingDown,
   TrendingUp,
   X,
@@ -23,6 +21,7 @@ import {
   Facebook,
   Youtube,
 } from "lucide-react";
+
 import {
   Dialog,
   DialogContent,
