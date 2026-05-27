@@ -18,6 +18,10 @@ import {
   ChevronUp,
   Send,
   Check,
+  Sigma,
+  Globe,
+  Facebook,
+  Youtube,
 } from "lucide-react";
 import {
   Dialog,
