@@ -741,9 +741,7 @@ export function Calculator() {
             disabled={!canCalculate}
           >
             <span>Hitung</span>
-            <kbd className="hidden rounded-md border border-primary-foreground/30 bg-primary-foreground/10 px-1.5 py-0.5 font-sans text-[10px] font-bold tracking-normal opacity-90 sm:inline-block">
-              Enter ↵
-            </kbd>
+
           </Button>
 
           {!mode && (hargaAvg || avgPrice) && (
