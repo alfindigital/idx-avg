@@ -509,15 +509,6 @@ export function Calculator() {
           </div>
 
           <div className="flex items-center gap-0.5 text-muted-foreground">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-10 w-10 rounded-xl hover:bg-secondary hover:text-primary"
-              onClick={toggleTheme}
-              aria-label="Toggle theme"
-            >
-              {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-            </Button>
             <Dialog open={historyOpen} onOpenChange={setHistoryOpen}>
               <DialogTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-secondary hover:text-primary" aria-label="History">
@@ -579,30 +570,18 @@ export function Calculator() {
                 </div>
               </DialogContent>
             </Dialog>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-secondary hover:text-primary" aria-label="Menu">
-                  <Menu className="h-5 w-5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="min-w-[200px] rounded-2xl border-border bg-card p-1.5 font-sans">
-                <DropdownMenuItem onClick={copySummary} disabled={!result} className="rounded-xl px-3 py-2 text-sm font-semibold text-foreground focus:bg-secondary focus:text-primary">
-                  <Copy className="mr-2 h-4 w-4" /> Salin ringkasan
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={shareLink} disabled={!result} className="rounded-xl px-3 py-2 text-sm font-semibold text-foreground focus:bg-secondary focus:text-primary">
-                  <Link2 className="mr-2 h-4 w-4" /> Salin link
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={saveImage} disabled={!result} className="rounded-xl px-3 py-2 text-sm font-semibold text-foreground focus:bg-secondary focus:text-primary">
-                  <Download className="mr-2 h-4 w-4" /> Simpan gambar
-                </DropdownMenuItem>
-                <DropdownMenuSeparator className="my-1 bg-border" />
-                <DropdownMenuItem onClick={resetAll} className="rounded-xl px-3 py-2 text-sm font-semibold text-foreground focus:bg-secondary focus:text-primary">
-                  <RotateCcw className="mr-2 h-4 w-4" /> Reset
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-10 w-10 rounded-xl hover:bg-secondary hover:text-primary"
+              onClick={toggleTheme}
+              aria-label="Toggle theme"
+            >
+              {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </Button>
           </div>
         </header>
+
 
         {/* Main */}
         <main className="mx-auto w-full max-w-[480px] px-4 pt-4 pb-[calc(5.5rem+env(safe-area-inset-bottom))] sm:pb-4">
