@@ -48,12 +48,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { formatRupiah, getTickSize, roundToTick } from "@/lib/idx-tick";
