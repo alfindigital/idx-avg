@@ -308,8 +308,15 @@ export function Calculator() {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (canCalculate) runCalc();
+    // commit any pending blur formatting (tick rounding)
+    const active = document.activeElement as HTMLElement | null;
+    if (active && typeof active.blur === "function") active.blur();
+    // defer so blur-triggered state updates apply
+    setTimeout(() => {
+      if (canCalculateRef.current) runCalcRef.current();
+    }, 0);
   };
+
 
   // Keyboard shortcuts
   useEffect(() => {
