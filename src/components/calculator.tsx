@@ -308,6 +308,8 @@ export function Calculator() {
       saveHistory(out.result);
     }
   };
+  const runCalcRef = useRef(runCalc);
+  runCalcRef.current = runCalc;
 
 
   const handleSubmit = (e: FormEvent) => {
@@ -317,9 +319,10 @@ export function Calculator() {
     if (active && typeof active.blur === "function") active.blur();
     // run on next tick so blur-triggered state updates apply first
     setTimeout(() => {
-      if (canCalculate) runCalc();
+      if (canCalculateRef.current) runCalcRef.current();
     }, 0);
   };
+
 
 
 
