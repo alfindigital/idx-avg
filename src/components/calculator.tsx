@@ -599,7 +599,18 @@ export function Calculator() {
           <form onSubmit={handleSubmit} noValidate className="space-y-3 sm:space-y-5">
           {/* Position */}
           <section className={cardCls}>
-            <h2 className={sectionHead}>Posisi Saat Ini</h2>
+            <div className="mb-3 flex items-center justify-between sm:mb-4">
+              <h2 className={cn(sectionHead, "mb-0")}>Posisi Saat Ini</h2>
+              <Tooltip>
+                <TooltipTrigger asChild aria-label="Informasi">
+                  <Info className="h-4 w-4 cursor-help text-muted-foreground" aria-label="Informasi" />
+                </TooltipTrigger>
+                <TooltipContent side="left" className="max-w-[220px] text-xs">
+                  Isi <b>Kode Saham</b>, <b>Avg Sekarang</b>, dan <b>Total Lot</b> dari
+                  posisi saham yang sedang kamu pegang.
+                </TooltipContent>
+              </Tooltip>
+            </div>
             <div className="grid grid-cols-2 gap-2 sm:gap-3">
               <div>
                 <Label className={labelCls}>Kode Saham</Label>
