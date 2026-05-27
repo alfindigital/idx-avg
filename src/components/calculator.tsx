@@ -18,6 +18,10 @@ import {
   ChevronUp,
   Send,
   Check,
+  Sigma,
+  Globe,
+  Facebook,
+  Youtube,
 } from "lucide-react";
 import {
   Dialog,
@@ -475,7 +479,7 @@ export function Calculator() {
         <header className="mx-auto flex w-full max-w-[480px] items-center justify-between px-4 pt-6 pb-2 sm:pt-8">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/25">
-              <TrendingUp className="h-5 w-5" strokeWidth={2.5} />
+              <Sigma className="h-5 w-5" strokeWidth={2.5} />
             </div>
             <div className="leading-tight">
               <h1 className="font-display text-2xl font-extrabold tracking-tight">
@@ -584,7 +588,7 @@ export function Calculator() {
         </header>
 
         {/* Main */}
-        <main className="mx-auto w-full max-w-[480px] px-4 pt-4 pb-[calc(9rem+env(safe-area-inset-bottom))] sm:pb-[calc(5rem+env(safe-area-inset-bottom))]">
+        <main className="mx-auto w-full max-w-[480px] px-4 pt-4 pb-[calc(5.5rem+env(safe-area-inset-bottom))] sm:pb-4">
           {showRecovered && (
             <div className="mb-3 flex items-center justify-center animate-in fade-in slide-in-from-top-2 duration-300">
               <Badge variant="secondary" className="rounded-full bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary">
@@ -595,7 +599,18 @@ export function Calculator() {
           <form onSubmit={handleSubmit} noValidate className="space-y-3 sm:space-y-5">
           {/* Position */}
           <section className={cardCls}>
-            <h2 className={sectionHead}>Posisi Saat Ini</h2>
+            <div className="mb-3 flex items-center justify-between sm:mb-4">
+              <h2 className={cn(sectionHead, "mb-0")}>Posisi Saat Ini</h2>
+              <Tooltip>
+                <TooltipTrigger asChild aria-label="Informasi">
+                  <Info className="h-4 w-4 cursor-help text-muted-foreground" aria-label="Informasi" />
+                </TooltipTrigger>
+                <TooltipContent side="left" className="max-w-[220px] text-xs">
+                  Isi <b>Kode Saham</b>, <b>Avg Sekarang</b>, dan <b>Total Lot</b> dari
+                  posisi saham yang sedang kamu pegang.
+                </TooltipContent>
+              </Tooltip>
+            </div>
             <div className="grid grid-cols-2 gap-2 sm:gap-3">
               <div>
                 <Label className={labelCls}>Kode Saham</Label>
@@ -615,7 +630,10 @@ export function Calculator() {
                   type="date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className={cn(inputCls, "text-base font-semibold")}
+                  className={cn(
+                    inputCls,
+                    "text-base font-semibold [&::-webkit-calendar-picker-indicator]:ml-auto [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-60 [&::-webkit-calendar-picker-indicator]:hover:opacity-100"
+                  )}
                   tabIndex={8}
                 />
               </div>
@@ -648,16 +666,8 @@ export function Calculator() {
               </div>
             </div>
             <div className="mt-3 flex items-center justify-between rounded-xl border border-white/70 bg-card/60 px-3 py-2 dark:border-white/5 sm:mt-4 sm:rounded-2xl sm:px-4 sm:py-3">
-              <span className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground sm:text-sm">
+              <span className="text-xs font-semibold text-muted-foreground sm:text-sm">
                 Modal Awal
-                <Tooltip>
-                  <TooltipTrigger asChild aria-label="Informasi">
-                    <Info className="h-3.5 w-3.5 cursor-help" aria-label="Informasi" />
-                  </TooltipTrigger>
-                  <TooltipContent side="top" className="text-xs">
-                    Avg × Lot × 100
-                  </TooltipContent>
-                </Tooltip>
               </span>
               <button
                 type="button"
@@ -738,10 +748,13 @@ export function Calculator() {
 
           <Button
             type="submit"
-            className="font-display h-auto w-full rounded-2xl py-3.5 text-base font-extrabold uppercase tracking-[0.15em] shadow-xl shadow-primary/25 transition-all active:scale-[0.98] sm:rounded-3xl sm:py-5 sm:text-lg"
+            className="font-display flex h-auto w-full items-center justify-center gap-2 rounded-2xl py-3.5 text-base font-extrabold uppercase tracking-[0.15em] shadow-xl shadow-primary/25 transition-all active:scale-[0.98] sm:rounded-3xl sm:py-5 sm:text-lg"
             disabled={!canCalculate}
           >
-            Hitung
+            <span>Hitung</span>
+            <kbd className="hidden rounded-md border border-primary-foreground/30 bg-primary-foreground/10 px-1.5 py-0.5 font-sans text-[10px] font-bold tracking-normal opacity-90 sm:inline-block">
+              Enter ↵
+            </kbd>
           </Button>
 
           {!mode && (hargaAvg || avgPrice) && (
@@ -863,7 +876,7 @@ export function Calculator() {
 
                 {/* Mobile: floating sticky bar + drawer */}
                 <Drawer open={barOpen} onOpenChange={setBarOpen}>
-                  <div className="fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-30 flex justify-center px-4 sm:hidden">
+                  <div className="fixed inset-x-0 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-30 flex justify-center px-4 sm:hidden">
                     <DrawerTrigger asChild>
                       <button
                         type="button"
@@ -915,54 +928,81 @@ export function Calculator() {
 
         </main>
 
-        {/* Sticky footer */}
-        <footer className="fixed inset-x-0 bottom-0 z-20 h-14 border-t border-border/60 bg-background/85 pb-[env(safe-area-inset-bottom)] backdrop-blur-md">
-          <div className="mx-auto flex h-full w-full max-w-[480px] flex-wrap items-center justify-between gap-3 overflow-hidden px-4 py-2">
-            <div className="flex min-w-0 items-center gap-1">
+        {/* Footer */}
+        <footer className="mx-auto w-full max-w-[480px] px-4 pb-6 pt-2 sm:pb-8">
+          <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs font-medium text-muted-foreground">
+            <span>
+              by{" "}
               <a
                 href="https://x.com/alfindigital"
                 target="_blank"
                 rel="noreferrer"
-                aria-label="X (Twitter) @alfindigital"
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-foreground/60 transition-all hover:bg-secondary hover:text-primary hover:ring-2 hover:ring-primary/40 hover:ring-offset-2 hover:ring-offset-background focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-primary focus-visible:ring-offset-[3px] focus-visible:ring-offset-background active:scale-95"
+                className="font-semibold text-foreground/80 hover:text-primary"
               >
-                <svg viewBox="0 0 24 24" className="h-[1.125rem] w-[1.125rem]" fill="currentColor" aria-hidden="true">
-                  <path d="M18.244 2H21.5l-7.5 8.575L23 22h-6.844l-5.36-6.99L4.5 22H1.244l8.02-9.166L1 2h7.02l4.85 6.41L18.244 2Zm-2.4 18h1.9L7.27 4H5.27l10.574 16Z" />
-                </svg>
+                @alfindigital
               </a>
+            </span>
+            <span className="text-muted-foreground/40">|</span>
+            <div className="flex items-center gap-0.5">
               <a
-                href="https://tiktok.com/@alfindigital"
+                href="https://alfin.digital"
                 target="_blank"
                 rel="noreferrer"
-                aria-label="TikTok @alfindigital"
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-foreground/60 transition-all hover:bg-secondary hover:text-primary hover:ring-2 hover:ring-primary/40 hover:ring-offset-2 hover:ring-offset-background focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-primary focus-visible:ring-offset-[3px] focus-visible:ring-offset-background active:scale-95"
+                aria-label="Website"
+                className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary"
               >
-                <svg viewBox="0 0 24 24" className="h-[1.125rem] w-[1.125rem]" fill="currentColor" aria-hidden="true">
-                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.83a8.16 8.16 0 0 0 4.77 1.52V6.9a4.85 4.85 0 0 1-1.84-.21Z" />
-                </svg>
+                <Globe className="h-3.5 w-3.5" />
               </a>
               <a
                 href="https://facebook.com/alfindigital"
                 target="_blank"
                 rel="noreferrer"
-                aria-label="Facebook @alfindigital"
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-foreground/60 transition-all hover:bg-secondary hover:text-primary hover:ring-2 hover:ring-primary/40 hover:ring-offset-2 hover:ring-offset-background focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-primary focus-visible:ring-offset-[3px] focus-visible:ring-offset-background active:scale-95"
+                aria-label="Facebook"
+                className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary"
               >
-                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden="true">
-                  <path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.7c0-.92.26-1.55 1.57-1.55H17V4.27A22 22 0 0 0 14.56 4.1c-2.42 0-4.06 1.48-4.06 4.2v2.5H8v3.2h2.5V22h3Z" />
+                <Facebook className="h-3.5 w-3.5" />
+              </a>
+              <a
+                href="https://youtube.com/@alfindigital"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="YouTube"
+                className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary"
+              >
+                <Youtube className="h-3.5 w-3.5" />
+              </a>
+              <a
+                href="https://tiktok.com/@alfindigital"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="TikTok"
+                className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary"
+              >
+                <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor" aria-hidden="true">
+                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.83a8.16 8.16 0 0 0 4.77 1.52V6.9a4.85 4.85 0 0 1-1.84-.21Z" />
                 </svg>
               </a>
+              <a
+                href="https://x.com/alfindigital"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="X (Twitter)"
+                className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary"
+              >
+                <svg viewBox="0 0 24 24" className="h-3 w-3" fill="currentColor" aria-hidden="true">
+                  <path d="M18.244 2H21.5l-7.5 8.575L23 22h-6.844l-5.36-6.99L4.5 22H1.244l8.02-9.166L1 2h7.02l4.85 6.41L18.244 2Zm-2.4 18h1.9L7.27 4H5.27l10.574 16Z" />
+                </svg>
+              </a>
+              <a
+                href="https://t.me/alfindx"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Telegram"
+                className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary"
+              >
+                <Send className="h-3.5 w-3.5" />
+              </a>
             </div>
-            <a
-              href="https://t.me/alfindx"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Telegram @alfindx"
-              className="inline-flex h-11 min-w-0 max-w-[7.5rem] items-center gap-1.5 overflow-hidden rounded-full bg-primary/10 px-3 text-sm font-bold text-primary transition-all hover:bg-primary/20 hover:ring-2 hover:ring-primary/40 hover:ring-offset-2 hover:ring-offset-background focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-primary focus-visible:ring-offset-[3px] focus-visible:ring-offset-background active:scale-95 sm:max-w-none sm:px-4"
-            >
-              <Send className="h-4 w-4 shrink-0" />
-              <span className="truncate">@alfindx</span>
-            </a>
           </div>
         </footer>
       </div>
