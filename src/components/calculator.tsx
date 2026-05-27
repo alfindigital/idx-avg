@@ -479,7 +479,7 @@ export function Calculator() {
         <header className="mx-auto flex w-full max-w-[480px] items-center justify-between px-4 pt-6 pb-2 sm:pt-8">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/25">
-              <TrendingUp className="h-5 w-5" strokeWidth={2.5} />
+              <Sigma className="h-5 w-5" strokeWidth={2.5} />
             </div>
             <div className="leading-tight">
               <h1 className="font-display text-2xl font-extrabold tracking-tight">
