@@ -2,7 +2,6 @@
 
 import { type FormEvent, type RefObject, useEffect, useMemo, useRef, useState } from "react";
 import {
-  Menu,
   Moon,
   Sun,
   History,
@@ -10,7 +9,6 @@ import {
   Link2,
   Copy,
   Download,
-  RotateCcw,
   TrendingDown,
   TrendingUp,
   X,
@@ -23,6 +21,7 @@ import {
   Facebook,
   Youtube,
 } from "lucide-react";
+
 import {
   Dialog,
   DialogContent,
@@ -43,18 +42,12 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { formatRupiah, getTickSize, roundToTick } from "@/lib/idx-tick";
@@ -248,6 +241,10 @@ export function Calculator() {
     return false;
   }, [avgPrice, totalLot, hargaAvg, lotTambah, targetAvg, mode, errAvg, errLot, errHarga, errLotTambah, errTarget]);
 
+  const canCalculateRef = useRef(canCalculate);
+  canCalculateRef.current = canCalculate;
+
+
   const handlePriceBlur = (
     value: string,
     setter: (v: string) => void
@@ -304,12 +301,23 @@ export function Calculator() {
       saveHistory(out.result);
     }
   };
+  const runCalcRef = useRef(runCalc);
+  runCalcRef.current = runCalc;
 
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (canCalculate) runCalc();
+    // commit any pending blur formatting (tick rounding) on the focused input
+    const active = document.activeElement as HTMLElement | null;
+    if (active && typeof active.blur === "function") active.blur();
+    // run on next tick so blur-triggered state updates apply first
+    setTimeout(() => {
+      if (canCalculateRef.current) runCalcRef.current();
+    }, 0);
   };
+
+
+
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -330,12 +338,14 @@ export function Calculator() {
         return;
       }
 
-      // Enter to calculate from anywhere
-      if (e.key === "Enter") {
+      // Enter to calculate (when focus not in input — form handles in-input Enter)
+      if (e.key === "Enter" && !inInput) {
         e.preventDefault();
         if (canCalculate) runCalc();
         return;
       }
+
+
 
     };
     document.addEventListener("keydown", onKey);
@@ -492,15 +502,6 @@ export function Calculator() {
           </div>
 
           <div className="flex items-center gap-0.5 text-muted-foreground">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-10 w-10 rounded-xl hover:bg-secondary hover:text-primary"
-              onClick={toggleTheme}
-              aria-label="Toggle theme"
-            >
-              {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-            </Button>
             <Dialog open={historyOpen} onOpenChange={setHistoryOpen}>
               <DialogTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-secondary hover:text-primary" aria-label="History">
@@ -562,30 +563,18 @@ export function Calculator() {
                 </div>
               </DialogContent>
             </Dialog>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-secondary hover:text-primary" aria-label="Menu">
-                  <Menu className="h-5 w-5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="min-w-[200px] rounded-2xl border-border bg-card p-1.5 font-sans">
-                <DropdownMenuItem onClick={copySummary} disabled={!result} className="rounded-xl px-3 py-2 text-sm font-semibold text-foreground focus:bg-secondary focus:text-primary">
-                  <Copy className="mr-2 h-4 w-4" /> Salin ringkasan
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={shareLink} disabled={!result} className="rounded-xl px-3 py-2 text-sm font-semibold text-foreground focus:bg-secondary focus:text-primary">
-                  <Link2 className="mr-2 h-4 w-4" /> Salin link
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={saveImage} disabled={!result} className="rounded-xl px-3 py-2 text-sm font-semibold text-foreground focus:bg-secondary focus:text-primary">
-                  <Download className="mr-2 h-4 w-4" /> Simpan gambar
-                </DropdownMenuItem>
-                <DropdownMenuSeparator className="my-1 bg-border" />
-                <DropdownMenuItem onClick={resetAll} className="rounded-xl px-3 py-2 text-sm font-semibold text-foreground focus:bg-secondary focus:text-primary">
-                  <RotateCcw className="mr-2 h-4 w-4" /> Reset
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-10 w-10 rounded-xl hover:bg-secondary hover:text-primary"
+              onClick={toggleTheme}
+              aria-label="Toggle theme"
+            >
+              {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </Button>
           </div>
         </header>
+
 
         {/* Main */}
         <main className="mx-auto w-full max-w-[480px] px-4 pt-4 pb-[calc(5.5rem+env(safe-area-inset-bottom))] sm:pb-4">
@@ -752,9 +741,7 @@ export function Calculator() {
             disabled={!canCalculate}
           >
             <span>Hitung</span>
-            <kbd className="hidden rounded-md border border-primary-foreground/30 bg-primary-foreground/10 px-1.5 py-0.5 font-sans text-[10px] font-bold tracking-normal opacity-90 sm:inline-block">
-              Enter ↵
-            </kbd>
+
           </Button>
 
           {!mode && (hargaAvg || avgPrice) && (
@@ -816,11 +803,30 @@ export function Calculator() {
 
                 <div className="space-y-2.5 px-5 py-4 text-sm font-medium">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Lot Baru</span>
+                    <span className="text-muted-foreground">Avg Sekarang</span>
                     <span className="font-bold tabular text-foreground">
-                      {result.totalLotBaru} <span className="text-muted-foreground">(+{result.lotDelta})</span>
+                      {formatRupiah(result.avgSekarang)}
                     </span>
                   </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Total Lot</span>
+                    <span className="font-bold tabular text-foreground">
+                      {result.lotSekarang.toLocaleString("id-ID")}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Harga Averaging</span>
+                    <span className="font-bold tabular text-foreground">
+                      {formatRupiah(result.hargaAveraging)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between border-t border-border/70 pt-2.5">
+                    <span className="text-muted-foreground">Lot Baru</span>
+                    <span className="font-bold tabular text-foreground">
+                      {result.totalLotBaru.toLocaleString("id-ID")} <span className="text-muted-foreground">(+{result.lotDelta.toLocaleString("id-ID")})</span>
+                    </span>
+                  </div>
+
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">Modal Tambahan</span>
                     <button
@@ -929,7 +935,7 @@ export function Calculator() {
         </main>
 
         {/* Footer */}
-        <footer className="mx-auto w-full max-w-[480px] px-4 pb-6 pt-2 sm:pb-8">
+        <footer className="mx-auto mt-8 w-full max-w-[480px] border-t border-border/60 px-4 pt-5 pb-10 sm:mt-12 sm:pt-6 sm:pb-12">
           <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs font-medium text-muted-foreground">
             <span>
               by{" "}
