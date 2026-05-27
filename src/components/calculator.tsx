@@ -803,11 +803,30 @@ export function Calculator() {
 
                 <div className="space-y-2.5 px-5 py-4 text-sm font-medium">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Lot Baru</span>
+                    <span className="text-muted-foreground">Avg Sekarang</span>
                     <span className="font-bold tabular text-foreground">
-                      {result.totalLotBaru} <span className="text-muted-foreground">(+{result.lotDelta})</span>
+                      {formatRupiah(result.avgSekarang)}
                     </span>
                   </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Total Lot</span>
+                    <span className="font-bold tabular text-foreground">
+                      {result.lotSekarang.toLocaleString("id-ID")}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Harga Averaging</span>
+                    <span className="font-bold tabular text-foreground">
+                      {formatRupiah(result.hargaAveraging)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between border-t border-border/70 pt-2.5">
+                    <span className="text-muted-foreground">Lot Baru</span>
+                    <span className="font-bold tabular text-foreground">
+                      {result.totalLotBaru.toLocaleString("id-ID")} <span className="text-muted-foreground">(+{result.lotDelta.toLocaleString("id-ID")})</span>
+                    </span>
+                  </div>
+
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">Modal Tambahan</span>
                     <button
