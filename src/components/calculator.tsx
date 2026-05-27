@@ -935,7 +935,7 @@ export function Calculator() {
         </main>
 
         {/* Footer */}
-        <footer className="mx-auto w-full max-w-[480px] px-4 pb-6 pt-2 sm:pb-8">
+        <footer className="mx-auto mt-8 w-full max-w-[480px] border-t border-border/60 px-4 pt-5 pb-10 sm:mt-12 sm:pt-6 sm:pb-12">
           <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs font-medium text-muted-foreground">
             <span>
               by{" "}
