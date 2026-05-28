@@ -732,8 +732,8 @@ export function Calculator() {
                       />
                       <span className="text-sm font-semibold">{t.feeInclude}</span>
                     </label>
-                    <div className="grid grid-cols-2 gap-2 sm:gap-3">
-                      <div>
+                    <div className="grid grid-cols-2 items-end gap-2 sm:gap-3">
+                      <div className="space-y-1.5">
                         <Label className={labelCls}>{t.feeBuy} (%)</Label>
                         <Input
                           inputMode="decimal"
@@ -746,7 +746,7 @@ export function Calculator() {
                           className={cn(inputCls, "tabular")}
                         />
                       </div>
-                      <div>
+                      <div className="space-y-1.5">
                         <Label className={labelCls}>{t.feeSell} (%)</Label>
                         <Input
                           inputMode="decimal"
@@ -760,7 +760,7 @@ export function Calculator() {
                         />
                       </div>
                     </div>
-                    <p className="mt-2 text-xs text-muted-foreground">{t.feeHint}</p>
+
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
