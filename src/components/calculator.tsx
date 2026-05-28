@@ -612,15 +612,8 @@ export function Calculator() {
               </div>
               <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 <div>
-                  <div className="flex items-center justify-between">
-                    <Label className={labelCls}>{t.avgNow}</Label>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Info className="mb-1 mr-0.5 h-3 w-3 cursor-help text-muted-foreground/60" />
-                      </TooltipTrigger>
-                      <TooltipContent side="top" className="text-xs">{t.tickHint}</TooltipContent>
-                    </Tooltip>
-                  </div>
+                  <Label className={labelCls}>{t.avgNow}</Label>
+
                   <Input
                     ref={firstInputRef}
                     inputMode="decimal"
@@ -653,16 +646,9 @@ export function Calculator() {
                 <span className="text-xs font-semibold text-muted-foreground sm:text-sm">
                   {t.modalAwal}
                 </span>
-                <button
-                  type="button"
-                  onClick={() => copyValue(t.modalAwal, formatRupiah(modalAwal))}
-                  className="flex items-center gap-1.5 rounded-lg px-2 py-0.5 text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95 sm:rounded-xl sm:py-1"
-                  aria-label={`${t.copy} ${t.modalAwal}`}
-                >
-                  <span className="font-display text-base font-extrabold tabular sm:text-lg">{formatRupiah(modalAwal)}</span>
-                  <Copy className="h-3.5 w-3.5 text-muted-foreground" />
-                </button>
+                <span className="font-display text-base font-extrabold tabular sm:text-lg">{formatRupiah(modalAwal)}</span>
               </div>
+
             </section>
 
             {/* Averaging */}
@@ -681,15 +667,8 @@ export function Calculator() {
 
               <div className="space-y-2 sm:space-y-3">
                 <div>
-                  <div className="flex items-center justify-between">
-                    <Label className={labelCls}>{t.hargaAvg}</Label>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Info className="mb-1 mr-0.5 h-3 w-3 cursor-help text-muted-foreground/60" />
-                      </TooltipTrigger>
-                      <TooltipContent side="top" className="text-xs">{t.tickHint}</TooltipContent>
-                    </Tooltip>
-                  </div>
+                  <Label className={labelCls}>{t.hargaAvg}</Label>
+
                   <Input
                     inputMode="decimal"
                     value={hargaAvg}
@@ -742,14 +721,8 @@ export function Calculator() {
               <Accordion type="single" collapsible>
                 <AccordionItem value="fee" className="border-b-0">
                   <AccordionTrigger className="py-3 hover:no-underline">
-                    <div className="flex items-center gap-2">
-                      <span className={cn(sectionHead, "mb-0")}>{t.feeTitle}</span>
-                      {fee.enabled && (
-                        <Badge variant="secondary" className="rounded-full bg-primary/10 px-2 py-0 text-[10px] font-bold text-primary">
-                          {fee.buyPct}% / {fee.sellPct}%
-                        </Badge>
-                      )}
-                    </div>
+                    <span className={cn(sectionHead, "mb-0")}>{t.feeTitle}</span>
+
                   </AccordionTrigger>
                   <AccordionContent className="pt-1 pb-3">
                     <label className="mb-3 flex cursor-pointer items-center gap-2">
@@ -759,8 +732,8 @@ export function Calculator() {
                       />
                       <span className="text-sm font-semibold">{t.feeInclude}</span>
                     </label>
-                    <div className="grid grid-cols-2 gap-2 sm:gap-3">
-                      <div>
+                    <div className="grid grid-cols-2 items-end gap-2 sm:gap-3">
+                      <div className="space-y-1.5">
                         <Label className={labelCls}>{t.feeBuy} (%)</Label>
                         <Input
                           inputMode="decimal"
@@ -773,7 +746,7 @@ export function Calculator() {
                           className={cn(inputCls, "tabular")}
                         />
                       </div>
-                      <div>
+                      <div className="space-y-1.5">
                         <Label className={labelCls}>{t.feeSell} (%)</Label>
                         <Input
                           inputMode="decimal"
@@ -787,7 +760,7 @@ export function Calculator() {
                         />
                       </div>
                     </div>
-                    <p className="mt-2 text-xs text-muted-foreground">{t.feeHint}</p>
+
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
@@ -801,11 +774,6 @@ export function Calculator() {
               <span>{t.hitung}</span>
             </Button>
 
-            {!mode && (hargaAvg || avgPrice) && (
-              <p className="text-center text-xs font-medium text-muted-foreground">
-                {t.fillHint}
-              </p>
-            )}
           </form>
 
           {/* Result */}
