@@ -721,14 +721,8 @@ export function Calculator() {
               <Accordion type="single" collapsible>
                 <AccordionItem value="fee" className="border-b-0">
                   <AccordionTrigger className="py-3 hover:no-underline">
-                    <div className="flex items-center gap-2">
-                      <span className={cn(sectionHead, "mb-0")}>{t.feeTitle}</span>
-                      {fee.enabled && (
-                        <Badge variant="secondary" className="rounded-full bg-primary/10 px-2 py-0 text-[10px] font-bold text-primary">
-                          {fee.buyPct}% / {fee.sellPct}%
-                        </Badge>
-                      )}
-                    </div>
+                    <span className={cn(sectionHead, "mb-0")}>{t.feeTitle}</span>
+
                   </AccordionTrigger>
                   <AccordionContent className="pt-1 pb-3">
                     <label className="mb-3 flex cursor-pointer items-center gap-2">
