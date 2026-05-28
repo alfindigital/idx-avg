@@ -612,15 +612,8 @@ export function Calculator() {
               </div>
               <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 <div>
-                  <div className="flex items-center justify-between">
-                    <Label className={labelCls}>{t.avgNow}</Label>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Info className="mb-1 mr-0.5 h-3 w-3 cursor-help text-muted-foreground/60" />
-                      </TooltipTrigger>
-                      <TooltipContent side="top" className="text-xs">{t.tickHint}</TooltipContent>
-                    </Tooltip>
-                  </div>
+                  <Label className={labelCls}>{t.avgNow}</Label>
+
                   <Input
                     ref={firstInputRef}
                     inputMode="decimal"
