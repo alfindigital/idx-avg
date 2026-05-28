@@ -20,6 +20,7 @@ import {
   Globe,
   Facebook,
   Youtube,
+  Languages,
 } from "lucide-react";
 
 import {
@@ -33,6 +34,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 import {
   Drawer,
@@ -54,17 +62,22 @@ import { formatRupiah, getTickSize, roundToTick } from "@/lib/idx-tick";
 import {
   type CalcMode,
   type CalcResult,
+  type FeeOptions,
   calcLotsNeeded,
   calcNewAvg,
 } from "@/lib/calc";
+import { useLang, type Dict } from "@/lib/i18n";
 import { toPng } from "html-to-image";
 
 const HISTORY_KEY = "idxavg-history-v1";
 const THEME_KEY = "idxavg-theme";
-const INPUTS_KEY = "idxavg-inputs-v1";
+const INPUTS_KEY = "idxavg-inputs-v2";
+const FEE_KEY = "idxavg-fee-v1";
 
 const MAX_PRICE = 1_000_000;
 const MAX_LOT = 1_000_000;
+
+const DEFAULT_FEE: FeeOptions = { enabled: true, buyPct: 0.15, sellPct: 0.25 };
 
 function todayISO() {
   const d = new Date();
@@ -72,30 +85,30 @@ function todayISO() {
   return new Date(d.getTime() - tz).toISOString().split("T")[0];
 }
 
-function validatePrice(v: string): string | null {
+function validatePrice(v: string, t: Dict): string | null {
   if (!v) return null;
   const n = parseFloat(v);
-  if (!isFinite(n) || n <= 0) return "Harus angka > 0";
-  if (n > MAX_PRICE) return `Maks ${formatRupiah(MAX_PRICE)}`;
+  if (!isFinite(n) || n <= 0) return t.positive;
+  if (n > MAX_PRICE) return t.maxPrice(formatRupiah(MAX_PRICE));
   const tick = getTickSize(n);
   if (Math.abs(n - Math.round(n / tick) * tick) > 1e-9) {
-    return `Kelipatan ${tick}`;
+    return t.tickError(tick, roundToTick(n));
   }
   return null;
 }
 
-function validateLot(v: string): string | null {
+function validateLot(v: string, t: Dict): string | null {
   if (!v) return null;
   const n = Number(v);
-  if (!Number.isInteger(n) || n <= 0) return "Bilangan bulat > 0";
-  if (n > MAX_LOT) return `Maks ${MAX_LOT.toLocaleString("id-ID")} lot`;
+  if (!Number.isInteger(n) || n <= 0) return t.integerPositive;
+  if (n > MAX_LOT) return t.maxLot(MAX_LOT);
   return null;
 }
 
 export function Calculator() {
+  const { lang, toggle: toggleLang, t } = useLang();
+
   // Position
-  const [stockName, setStockName] = useState("");
-  const [date, setDate] = useState(todayISO());
   const [avgPrice, setAvgPrice] = useState("");
   const [totalLot, setTotalLot] = useState("");
 
@@ -104,6 +117,9 @@ export function Calculator() {
   const [lotTambah, setLotTambah] = useState("");
   const [targetAvg, setTargetAvg] = useState("");
 
+  // Fee
+  const [fee, setFee] = useState<FeeOptions>(DEFAULT_FEE);
+
   // UX
   const [result, setResult] = useState<CalcResult | null>(null);
   const [history, setHistory] = useState<CalcResult[]>([]);
@@ -111,26 +127,25 @@ export function Calculator() {
   const [isDark, setIsDark] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
   const mobileResultRef = useRef<HTMLDivElement>(null);
-  const stockInputRef = useRef<HTMLInputElement>(null);
+  const firstInputRef = useRef<HTMLInputElement>(null);
   const resultInputsRef = useRef<string>("");
   const [barOpen, setBarOpen] = useState(false);
   const hydratedRef = useRef(false);
   const [showRecovered, setShowRecovered] = useState(false);
   const recoveredTimeoutRef = useRef<number | null>(null);
 
-  // Invalidate stale result whenever any calc input changes after a calculation
-  const currentInputsKey = `${avgPrice}|${totalLot}|${hargaAvg}|${lotTambah}|${targetAvg}|${stockName}`;
+  const feeKey = `${fee.enabled}|${fee.buyPct}|${fee.sellPct}`;
+  const currentInputsKey = `${avgPrice}|${totalLot}|${hargaAvg}|${lotTambah}|${targetAvg}|${feeKey}`;
   useEffect(() => {
     if (result && currentInputsKey !== resultInputsRef.current) {
       setResult(null);
     }
   }, [currentInputsKey, result]);
 
-
-  // Init: theme, history, URL params
+  // Init
   useEffect(() => {
-    const t = localStorage.getItem(THEME_KEY);
-    if (t === "dark") {
+    const th = localStorage.getItem(THEME_KEY);
+    if (th === "dark") {
       setIsDark(true);
       document.documentElement.classList.add("dark");
     }
@@ -138,19 +153,26 @@ export function Calculator() {
       const h = localStorage.getItem(HISTORY_KEY);
       if (h) setHistory(JSON.parse(h));
     } catch {}
+    try {
+      const f = localStorage.getItem(FEE_KEY);
+      if (f) {
+        const v = JSON.parse(f);
+        setFee({
+          enabled: typeof v.enabled === "boolean" ? v.enabled : true,
+          buyPct: typeof v.buyPct === "number" ? v.buyPct : 0.15,
+          sellPct: typeof v.sellPct === "number" ? v.sellPct : 0.25,
+        });
+      }
+    } catch {}
 
-    // Load saved inputs first
     let recovered = false;
     try {
       const saved = localStorage.getItem(INPUTS_KEY);
       if (saved) {
         const v = JSON.parse(saved);
-        if (typeof v.stockName === "string") setStockName(v.stockName);
-        if (typeof v.date === "string") setDate(v.date);
         if (typeof v.avgPrice === "string") setAvgPrice(v.avgPrice);
         if (typeof v.totalLot === "string") setTotalLot(v.totalLot);
         if (typeof v.hargaAvg === "string") setHargaAvg(v.hargaAvg);
-        // Restore mode-appropriate field only
         if (v.mode === "new-avg") {
           if (typeof v.lotTambah === "string") setLotTambah(v.lotTambah);
           setTargetAvg("");
@@ -158,7 +180,6 @@ export function Calculator() {
           if (typeof v.targetAvg === "string") setTargetAvg(v.targetAvg);
           setLotTambah("");
         } else {
-          // legacy fallback
           if (typeof v.lotTambah === "string") setLotTambah(v.lotTambah);
           if (typeof v.targetAvg === "string") setTargetAvg(v.targetAvg);
         }
@@ -175,15 +196,13 @@ export function Calculator() {
       }, 3000);
     }
 
-    // URL params override saved inputs
+    // URL params
     const p = new URLSearchParams(window.location.search);
-    const s = p.get("stock");
     const a = p.get("avg");
     const l = p.get("lot");
     const h = p.get("harga");
     const lt = p.get("lotTambah");
     const tg = p.get("target");
-    if (s) setStockName(s.toUpperCase());
     if (a) setAvgPrice(a);
     if (l) setTotalLot(l);
     if (h) setHargaAvg(h);
@@ -208,7 +227,7 @@ export function Calculator() {
     return null;
   }, [lotTambah, targetAvg]);
 
-  // Auto-save inputs to localStorage (debounced 800ms)
+  // Auto-save inputs
   const saveTimeoutRef = useRef<number | null>(null);
   useEffect(() => {
     if (!hydratedRef.current) return;
@@ -217,7 +236,7 @@ export function Calculator() {
       try {
         localStorage.setItem(
           INPUTS_KEY,
-          JSON.stringify({ stockName, date, avgPrice, totalLot, hargaAvg, lotTambah, targetAvg, mode })
+          JSON.stringify({ avgPrice, totalLot, hargaAvg, lotTambah, targetAvg, mode })
         );
       } catch {}
       saveTimeoutRef.current = null;
@@ -225,13 +244,21 @@ export function Calculator() {
     return () => {
       if (saveTimeoutRef.current) window.clearTimeout(saveTimeoutRef.current);
     };
-  }, [stockName, date, avgPrice, totalLot, hargaAvg, lotTambah, targetAvg, mode]);
+  }, [avgPrice, totalLot, hargaAvg, lotTambah, targetAvg, mode]);
 
-  const errAvg = useMemo(() => validatePrice(avgPrice), [avgPrice]);
-  const errHarga = useMemo(() => validatePrice(hargaAvg), [hargaAvg]);
-  const errTarget = useMemo(() => validatePrice(targetAvg), [targetAvg]);
-  const errLot = useMemo(() => validateLot(totalLot), [totalLot]);
-  const errLotTambah = useMemo(() => validateLot(lotTambah), [lotTambah]);
+  // Auto-save fee
+  useEffect(() => {
+    if (!hydratedRef.current) return;
+    try {
+      localStorage.setItem(FEE_KEY, JSON.stringify(fee));
+    } catch {}
+  }, [fee]);
+
+  const errAvg = useMemo(() => validatePrice(avgPrice, t), [avgPrice, t]);
+  const errHarga = useMemo(() => validatePrice(hargaAvg, t), [hargaAvg, t]);
+  const errTarget = useMemo(() => validatePrice(targetAvg, t), [targetAvg, t]);
+  const errLot = useMemo(() => validateLot(totalLot, t), [totalLot, t]);
+  const errLotTambah = useMemo(() => validateLot(lotTambah, t), [lotTambah, t]);
 
   const canCalculate = useMemo(() => {
     if (!avgPrice || !totalLot || !hargaAvg) return false;
@@ -244,11 +271,7 @@ export function Calculator() {
   const canCalculateRef = useRef(canCalculate);
   canCalculateRef.current = canCalculate;
 
-
-  const handlePriceBlur = (
-    value: string,
-    setter: (v: string) => void
-  ) => {
+  const handlePriceBlur = (value: string, setter: (v: string) => void) => {
     const n = parseFloat(value);
     if (!isFinite(n) || n <= 0 || n > MAX_PRICE) return;
     const rounded = roundToTick(n);
@@ -269,16 +292,14 @@ export function Calculator() {
     const a = parseFloat(avgPrice);
     const l = parseInt(totalLot);
     const h = parseFloat(hargaAvg);
-    const s = stockName.trim().toUpperCase() || "-";
-    const snapshot = `${avgPrice}|${totalLot}|${hargaAvg}|${lotTambah}|${targetAvg}|${stockName}`;
+    const snapshot = currentInputsKey;
     if (mode === "new-avg") {
       const r = calcNewAvg({
         avgSekarang: a,
         lotSekarang: l,
         hargaAveraging: h,
         lotTambah: parseInt(lotTambah),
-        stockName: s,
-        date,
+        fee,
       });
       resultInputsRef.current = snapshot;
       setResult(r);
@@ -289,8 +310,7 @@ export function Calculator() {
         lotSekarang: l,
         hargaAveraging: h,
         targetAvg: parseFloat(targetAvg),
-        stockName: s,
-        date,
+        fee,
       });
       if ("error" in out) {
         toast.error(out.error);
@@ -304,49 +324,30 @@ export function Calculator() {
   const runCalcRef = useRef(runCalc);
   runCalcRef.current = runCalc;
 
-
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    // commit any pending blur formatting (tick rounding) on the focused input
     const active = document.activeElement as HTMLElement | null;
     if (active && typeof active.blur === "function") active.blur();
-    // run on next tick so blur-triggered state updates apply first
     setTimeout(() => {
       if (canCalculateRef.current) runCalcRef.current();
     }, 0);
   };
-
-
-
 
   // Keyboard shortcuts
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName?.toLowerCase();
       const inInput = tag === "input" || tag === "textarea" || tag === "select";
-
-      // "/" to focus stock input (unless already in input)
       if (e.key === "/" && !inInput) {
         e.preventDefault();
-        stockInputRef.current?.focus();
+        firstInputRef.current?.focus();
         return;
       }
-
-      // Escape to blur stock input
-      if (e.key === "Escape" && stockInputRef.current === document.activeElement) {
-        stockInputRef.current?.blur();
-        return;
-      }
-
-      // Enter to calculate (when focus not in input — form handles in-input Enter)
       if (e.key === "Enter" && !inInput) {
         e.preventDefault();
         if (canCalculate) runCalc();
         return;
       }
-
-
-
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
@@ -365,8 +366,6 @@ export function Calculator() {
   };
 
   const resetAll = () => {
-    setStockName("");
-    setDate(todayISO());
     setAvgPrice("");
     setTotalLot("");
     setHargaAvg("");
@@ -376,13 +375,12 @@ export function Calculator() {
     try {
       localStorage.removeItem(INPUTS_KEY);
     } catch {}
-    toast("Form direset");
+    toast(t.formReset);
   };
 
   const shareLink = async () => {
     if (!result) return;
     const p = new URLSearchParams({
-      stock: result.stockName,
       avg: String(result.avgSekarang),
       lot: String(result.lotSekarang),
       harga: String(result.hargaAveraging),
@@ -392,40 +390,44 @@ export function Calculator() {
     const url = `${window.location.origin}${window.location.pathname}?${p}`;
     try {
       await navigator.clipboard.writeText(url);
-      toast.success("Link disalin");
+      toast.success(t.linkCopied);
     } catch {
-      toast.error("Gagal menyalin link");
+      toast.error(t.copyFail);
     }
   };
 
   const copyValue = async (label: string, value: string) => {
     try {
       await navigator.clipboard.writeText(value);
-      toast.success(`${label} disalin`);
+      toast.success(`${label}: ${t.copy}`);
     } catch {
-      toast.error("Gagal menyalin");
+      toast.error(t.copyFail);
     }
   };
 
   const copySummary = async () => {
     if (!result) return;
     const arrow = result.status === "down" ? "↓" : result.status === "up" ? "↑" : "→";
-    const head =
-      result.mode === "new-avg" ? "Avg Baru" : "Lot Diperlukan";
+    const head = result.mode === "new-avg" ? t.avgBaru : t.lotDiperlukan;
     const lines = [
-      `${result.stockName} · ${result.date}`,
+      new Date(result.timestamp).toLocaleString(lang === "id" ? "id-ID" : "en-US"),
       `${head}: ${formatRupiah(result.newAvgPrice)} (${arrow} ${result.percentage.toFixed(2)}%)`,
-      `Lot Baru: ${result.totalLotBaru} (+${result.lotDelta})`,
-      `Modal Tambahan: ${formatRupiah(result.modalTambahan)}`,
-      `Total Modal: ${formatRupiah(result.totalModal)}`,
+      `${t.lotBaru}: ${result.totalLotBaru} (+${result.lotDelta})`,
+      `${t.modalTambahan}: ${formatRupiah(result.modalTambahan)}`,
+      `${t.totalModal}: ${formatRupiah(result.totalModal)}`,
     ];
+    if (result.feeEnabled) {
+      lines.push(`${t.feeBeliLabel}: ${formatRupiah(result.feeBeli ?? 0)}`);
+      lines.push(`${t.breakEven}: ${formatRupiah(result.breakEvenPrice ?? 0)}`);
+    }
     try {
       await navigator.clipboard.writeText(lines.join("\n"));
-      toast.success("Ringkasan disalin");
+      toast.success(t.summaryCopied);
     } catch {
-      toast.error("Gagal menyalin");
+      toast.error(t.copyFail);
     }
   };
+
   const saveImage = async () => {
     if (!result) return;
     const node =
@@ -438,25 +440,23 @@ export function Calculator() {
         backgroundColor: isDark ? "#1a1d2e" : "#ffffff",
       });
       const link = document.createElement("a");
-      link.download = `IDXAvg-${result.stockName || "result"}-${todayISO()}.png`;
+      link.download = `IDXAvg-${todayISO()}.png`;
       link.href = dataUrl;
       link.click();
-      toast.success("Gambar disimpan");
+      toast.success(t.imgSaved);
     } catch (err) {
       console.error(err);
-      toast.error("Gagal menyimpan gambar");
+      toast.error(t.imgFail);
     }
   };
 
   const clearHistory = () => {
     setHistory([]);
     localStorage.removeItem(HISTORY_KEY);
-    toast("Riwayat dihapus");
+    toast(t.historyCleared);
   };
 
   const loadHistory = (r: CalcResult) => {
-    setStockName(r.stockName);
-    setDate(r.date);
     setAvgPrice(String(r.avgSekarang));
     setTotalLot(String(r.lotSekarang));
     setHargaAvg(String(r.hargaAveraging));
@@ -493,25 +493,35 @@ export function Calculator() {
             </div>
             <div className="leading-tight">
               <h1 className="font-display text-2xl font-extrabold tracking-tight">
-                IDXAvg
+                {t.appTitle}
               </h1>
               <p className="font-sans text-xs font-medium text-muted-foreground">
-                Kalkulator averaging IDX
+                {t.appTagline}
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-0.5 text-muted-foreground">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleLang}
+              aria-label="Toggle language"
+              className="h-10 gap-1 rounded-xl px-2 text-xs font-bold uppercase hover:bg-secondary hover:text-primary"
+            >
+              <Languages className="h-4 w-4" />
+              {lang.toUpperCase()}
+            </Button>
             <Dialog open={historyOpen} onOpenChange={setHistoryOpen}>
               <DialogTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-secondary hover:text-primary" aria-label="History">
+                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-secondary hover:text-primary" aria-label={t.history}>
                   <History className="h-5 w-5" />
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-[440px] gap-3 rounded-3xl border-border bg-card p-6">
                 <DialogHeader>
                   <DialogTitle className="flex items-center justify-between gap-2 font-display text-lg font-extrabold tracking-tight">
-                    <span>Riwayat</span>
+                    <span>{t.history}</span>
                     {history.length > 0 && (
                       <Button
                         variant="ghost"
@@ -519,7 +529,7 @@ export function Calculator() {
                         onClick={clearHistory}
                         className="h-8 rounded-lg text-xs font-semibold text-destructive hover:bg-destructive/10 hover:text-destructive"
                       >
-                        <Trash2 className="mr-1 h-3.5 w-3.5" /> Hapus
+                        <Trash2 className="mr-1 h-3.5 w-3.5" /> {t.clearHistory}
                       </Button>
                     )}
                   </DialogTitle>
@@ -527,7 +537,7 @@ export function Calculator() {
                 <div className="max-h-[60vh] space-y-2 overflow-y-auto pr-1">
                   {history.length === 0 ? (
                     <p className="py-6 text-center text-sm font-medium text-muted-foreground">
-                      Belum ada riwayat.
+                      {t.noHistory}
                     </p>
                   ) : (
                     history.map((h) => (
@@ -537,14 +547,16 @@ export function Calculator() {
                         className="w-full rounded-2xl border border-border bg-secondary/40 p-3 text-left transition-colors hover:border-primary/40 hover:bg-accent"
                       >
                         <div className="flex items-center justify-between text-sm">
-                          <span className="font-display text-base font-extrabold tracking-tight">{h.stockName}</span>
+                          <span className="font-display text-sm font-bold tabular text-foreground">
+                            {formatRupiah(h.avgSekarang)} → {formatRupiah(h.newAvgPrice)}
+                          </span>
                           <span className="text-xs font-medium text-muted-foreground">
-                            {new Date(h.timestamp).toLocaleDateString("id-ID")}
+                            {new Date(h.timestamp).toLocaleDateString(lang === "id" ? "id-ID" : "en-US")}
                           </span>
                         </div>
                         <div className="mt-1 flex items-center justify-between text-xs font-medium text-muted-foreground tabular">
                           <span>
-                            {formatRupiah(h.avgSekarang)} → {formatRupiah(h.newAvgPrice)}
+                            {h.lotSekarang} → {h.totalLotBaru} lot
                           </span>
                           <span
                             className={cn(
@@ -575,187 +587,230 @@ export function Calculator() {
           </div>
         </header>
 
-
         {/* Main */}
         <main className="mx-auto w-full max-w-[480px] px-4 pt-4 pb-[calc(5.5rem+env(safe-area-inset-bottom))] sm:pb-4">
           {showRecovered && (
             <div className="mb-3 flex items-center justify-center animate-in fade-in slide-in-from-top-2 duration-300">
               <Badge variant="secondary" className="rounded-full bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary">
-                <Check className="mr-1 h-3.5 w-3.5" /> Data sebelumnya dipulihkan
+                <Check className="mr-1 h-3.5 w-3.5" /> {t.recovered}
               </Badge>
             </div>
           )}
           <form onSubmit={handleSubmit} noValidate className="space-y-3 sm:space-y-5">
-          {/* Position */}
-          <section className={cardCls}>
-            <div className="mb-3 flex items-center justify-between sm:mb-4">
-              <h2 className={cn(sectionHead, "mb-0")}>Posisi Saat Ini</h2>
-              <Tooltip>
-                <TooltipTrigger asChild aria-label="Informasi">
-                  <Info className="h-4 w-4 cursor-help text-muted-foreground" aria-label="Informasi" />
-                </TooltipTrigger>
-                <TooltipContent side="left" className="max-w-[220px] text-xs">
-                  Isi <b>Kode Saham</b>, <b>Avg Sekarang</b>, dan <b>Total Lot</b> dari
-                  posisi saham yang sedang kamu pegang.
-                </TooltipContent>
-              </Tooltip>
-            </div>
-            <div className="grid grid-cols-2 gap-2 sm:gap-3">
-              <div>
-                <Label className={labelCls}>Kode Saham</Label>
-                <Input
-                  ref={stockInputRef}
-                  value={stockName}
-                  onChange={(e) => setStockName(e.target.value.toUpperCase().slice(0, 6))}
-                  placeholder="BUMI"
-                  className={cn(inputCls, "font-display uppercase tracking-wide")}
-                  autoFocus
-                  tabIndex={1}
-                />
+            {/* Position */}
+            <section className={cardCls}>
+              <div className="mb-3 flex items-center justify-between sm:mb-4">
+                <h2 className={cn(sectionHead, "mb-0")}>{t.positionTitle}</h2>
+                <Tooltip>
+                  <TooltipTrigger asChild aria-label="Info">
+                    <Info className="h-4 w-4 cursor-help text-muted-foreground" />
+                  </TooltipTrigger>
+                  <TooltipContent side="left" className="max-w-[220px] text-xs">
+                    {t.positionTip}
+                  </TooltipContent>
+                </Tooltip>
               </div>
-              <div>
-                <Label className={labelCls}>Tanggal</Label>
-                <Input
-                  type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  className={cn(
-                    inputCls,
-                    "text-base font-semibold [&::-webkit-calendar-picker-indicator]:ml-auto [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-60 [&::-webkit-calendar-picker-indicator]:hover:opacity-100"
-                  )}
-                  tabIndex={8}
-                />
-              </div>
-              <div>
-                <Label className={labelCls}>Avg Sekarang (Rp)</Label>
-                <Input
-                  inputMode="decimal"
-                  value={avgPrice}
-                  onChange={(e) => setAvgPrice(numOnly(e.target.value))}
-                  onBlur={(e) => handlePriceBlur(e.target.value, setAvgPrice)}
-                  placeholder="0"
-                  aria-invalid={!!errAvg}
-                  className={cn(inputCls, "tabular", errAvg && "border-destructive focus-visible:border-destructive")}
-                  tabIndex={2}
-                />
-                {errAvg && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errAvg}</p>}
-              </div>
-              <div>
-                <Label className={labelCls}>Total Lot</Label>
-                <Input
-                  inputMode="numeric"
-                  value={totalLot}
-                  onChange={(e) => setTotalLot(intOnly(e.target.value))}
-                  placeholder="0"
-                  aria-invalid={!!errLot}
-                  className={cn(inputCls, "tabular", errLot && "border-destructive focus-visible:border-destructive")}
-                  tabIndex={3}
-                />
-                {errLot && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errLot}</p>}
-              </div>
-            </div>
-            <div className="mt-3 flex items-center justify-between rounded-xl border border-white/70 bg-card/60 px-3 py-2 dark:border-white/5 sm:mt-4 sm:rounded-2xl sm:px-4 sm:py-3">
-              <span className="text-xs font-semibold text-muted-foreground sm:text-sm">
-                Modal Awal
-              </span>
-              <button
-                type="button"
-                onClick={() => copyValue("Modal Awal", formatRupiah(modalAwal))}
-                className="flex items-center gap-1.5 rounded-lg px-2 py-0.5 text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95 sm:rounded-xl sm:py-1"
-                aria-label="Salin Modal Awal"
-              >
-                <span className="font-display text-base font-extrabold tabular sm:text-lg">{formatRupiah(modalAwal)}</span>
-                <Copy className="h-3.5 w-3.5 text-muted-foreground" />
-              </button>
-            </div>
-          </section>
-
-          {/* Averaging */}
-          <section className={cardCls}>
-            <div className="mb-3 flex items-center justify-between sm:mb-4">
-              <h2 className={cn(sectionHead, "mb-0")}>Averaging</h2>
-              <Tooltip>
-                <TooltipTrigger asChild aria-label="Informasi">
-                  <Info className="h-4 w-4 cursor-help text-muted-foreground" aria-label="Informasi" />
-                </TooltipTrigger>
-                <TooltipContent side="left" className="max-w-[220px] text-xs">
-                  Isi <b>Lot Tambah</b> untuk hitung avg baru, atau <b>Target Avg</b> untuk
-                  hitung lot yang dibutuhkan. Yang lain otomatis disable.
-                </TooltipContent>
-              </Tooltip>
-            </div>
-
-            <div className="space-y-2 sm:space-y-3">
-              <div>
-                <Label className={labelCls}>Harga Averaging (Rp)</Label>
-                <Input
-                  inputMode="decimal"
-                  value={hargaAvg}
-                  onChange={(e) => setHargaAvg(numOnly(e.target.value))}
-                  onBlur={(e) => handlePriceBlur(e.target.value, setHargaAvg)}
-                  placeholder="0"
-                  aria-invalid={!!errHarga}
-                  className={cn(inputCls, "tabular", errHarga && "border-destructive focus-visible:border-destructive")}
-                  tabIndex={4}
-                />
-                {errHarga && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errHarga}</p>}
-              </div>
-
               <div className="grid grid-cols-2 gap-2 sm:gap-3">
-                <div className={cn(lotTambahDisabled && "opacity-50")}>
-                  <Label className={labelCls}>Lot Tambah</Label>
+                <div>
+                  <div className="flex items-center justify-between">
+                    <Label className={labelCls}>{t.avgNow}</Label>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Info className="mb-1 mr-0.5 h-3 w-3 cursor-help text-muted-foreground/60" />
+                      </TooltipTrigger>
+                      <TooltipContent side="top" className="text-xs">{t.tickHint}</TooltipContent>
+                    </Tooltip>
+                  </div>
+                  <Input
+                    ref={firstInputRef}
+                    inputMode="decimal"
+                    value={avgPrice}
+                    onChange={(e) => setAvgPrice(numOnly(e.target.value))}
+                    onBlur={(e) => handlePriceBlur(e.target.value, setAvgPrice)}
+                    placeholder="0"
+                    aria-invalid={!!errAvg}
+                    className={cn(inputCls, "tabular", errAvg && "border-destructive focus-visible:border-destructive")}
+                    tabIndex={1}
+                    autoFocus
+                  />
+                  {errAvg && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errAvg}</p>}
+                </div>
+                <div>
+                  <Label className={labelCls}>{t.totalLot}</Label>
                   <Input
                     inputMode="numeric"
-                    value={lotTambah}
-                    onChange={(e) => setLotTambah(intOnly(e.target.value))}
+                    value={totalLot}
+                    onChange={(e) => setTotalLot(intOnly(e.target.value))}
                     placeholder="0"
-                    aria-invalid={!!errLotTambah}
-                    className={cn(inputCls, "tabular", errLotTambah && "border-destructive focus-visible:border-destructive")}
-                    disabled={lotTambahDisabled}
-                    tabIndex={5}
+                    aria-invalid={!!errLot}
+                    className={cn(inputCls, "tabular", errLot && "border-destructive focus-visible:border-destructive")}
+                    tabIndex={2}
                   />
-                  {errLotTambah && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errLotTambah}</p>}
-                </div>
-                <div className={cn(targetAvgDisabled && "opacity-50")}>
-                  <Label className={labelCls}>Target Avg (Rp)</Label>
-                  <Input
-                    inputMode="decimal"
-                    value={targetAvg}
-                    onChange={(e) => setTargetAvg(numOnly(e.target.value))}
-                    onBlur={(e) => handlePriceBlur(e.target.value, setTargetAvg)}
-                    placeholder="0"
-                    aria-invalid={!!errTarget}
-                    className={cn(inputCls, "tabular", errTarget && "border-destructive focus-visible:border-destructive")}
-                    disabled={targetAvgDisabled}
-                    tabIndex={6}
-                  />
-                  {errTarget && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errTarget}</p>}
+                  {errLot && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errLot}</p>}
                 </div>
               </div>
-            </div>
-          </section>
+              <div className="mt-3 flex items-center justify-between rounded-xl border border-white/70 bg-card/60 px-3 py-2 dark:border-white/5 sm:mt-4 sm:rounded-2xl sm:px-4 sm:py-3">
+                <span className="text-xs font-semibold text-muted-foreground sm:text-sm">
+                  {t.modalAwal}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => copyValue(t.modalAwal, formatRupiah(modalAwal))}
+                  className="flex items-center gap-1.5 rounded-lg px-2 py-0.5 text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95 sm:rounded-xl sm:py-1"
+                  aria-label={`${t.copy} ${t.modalAwal}`}
+                >
+                  <span className="font-display text-base font-extrabold tabular sm:text-lg">{formatRupiah(modalAwal)}</span>
+                  <Copy className="h-3.5 w-3.5 text-muted-foreground" />
+                </button>
+              </div>
+            </section>
 
-          <Button
-            type="submit"
-            className="font-display flex h-auto w-full items-center justify-center gap-2 rounded-2xl py-3.5 text-base font-extrabold uppercase tracking-[0.15em] shadow-xl shadow-primary/25 transition-all active:scale-[0.98] sm:rounded-3xl sm:py-5 sm:text-lg"
-            disabled={!canCalculate}
-          >
-            <span>Hitung</span>
+            {/* Averaging */}
+            <section className={cardCls}>
+              <div className="mb-3 flex items-center justify-between sm:mb-4">
+                <h2 className={cn(sectionHead, "mb-0")}>{t.averagingTitle}</h2>
+                <Tooltip>
+                  <TooltipTrigger asChild aria-label="Info">
+                    <Info className="h-4 w-4 cursor-help text-muted-foreground" />
+                  </TooltipTrigger>
+                  <TooltipContent side="left" className="max-w-[220px] text-xs">
+                    {t.averagingTip}
+                  </TooltipContent>
+                </Tooltip>
+              </div>
 
-          </Button>
+              <div className="space-y-2 sm:space-y-3">
+                <div>
+                  <div className="flex items-center justify-between">
+                    <Label className={labelCls}>{t.hargaAvg}</Label>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Info className="mb-1 mr-0.5 h-3 w-3 cursor-help text-muted-foreground/60" />
+                      </TooltipTrigger>
+                      <TooltipContent side="top" className="text-xs">{t.tickHint}</TooltipContent>
+                    </Tooltip>
+                  </div>
+                  <Input
+                    inputMode="decimal"
+                    value={hargaAvg}
+                    onChange={(e) => setHargaAvg(numOnly(e.target.value))}
+                    onBlur={(e) => handlePriceBlur(e.target.value, setHargaAvg)}
+                    placeholder="0"
+                    aria-invalid={!!errHarga}
+                    className={cn(inputCls, "tabular", errHarga && "border-destructive focus-visible:border-destructive")}
+                    tabIndex={3}
+                  />
+                  {errHarga && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errHarga}</p>}
+                </div>
 
-          {!mode && (hargaAvg || avgPrice) && (
-            <p className="text-center text-xs font-medium text-muted-foreground">
-              Isi <b>Lot Tambah</b> atau <b>Target Avg</b>
-            </p>
-          )}
+                <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                  <div className={cn(lotTambahDisabled && "opacity-50")}>
+                    <Label className={labelCls}>{t.lotTambah}</Label>
+                    <Input
+                      inputMode="numeric"
+                      value={lotTambah}
+                      onChange={(e) => setLotTambah(intOnly(e.target.value))}
+                      placeholder="0"
+                      aria-invalid={!!errLotTambah}
+                      className={cn(inputCls, "tabular", errLotTambah && "border-destructive focus-visible:border-destructive")}
+                      disabled={lotTambahDisabled}
+                      tabIndex={4}
+                    />
+                    {errLotTambah && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errLotTambah}</p>}
+                  </div>
+                  <div className={cn(targetAvgDisabled && "opacity-50")}>
+                    <Label className={labelCls}>{t.targetAvg}</Label>
+                    <Input
+                      inputMode="decimal"
+                      value={targetAvg}
+                      onChange={(e) => setTargetAvg(numOnly(e.target.value))}
+                      onBlur={(e) => handlePriceBlur(e.target.value, setTargetAvg)}
+                      placeholder="0"
+                      aria-invalid={!!errTarget}
+                      className={cn(inputCls, "tabular", errTarget && "border-destructive focus-visible:border-destructive")}
+                      disabled={targetAvgDisabled}
+                      tabIndex={5}
+                    />
+                    {errTarget && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errTarget}</p>}
+                  </div>
+                </div>
+              </div>
+            </section>
 
+            {/* Fee Accordion */}
+            <section className={cn(cardCls, "py-1 sm:py-1")}>
+              <Accordion type="single" collapsible>
+                <AccordionItem value="fee" className="border-b-0">
+                  <AccordionTrigger className="py-3 hover:no-underline">
+                    <div className="flex items-center gap-2">
+                      <span className={cn(sectionHead, "mb-0")}>{t.feeTitle}</span>
+                      {fee.enabled && (
+                        <Badge variant="secondary" className="rounded-full bg-primary/10 px-2 py-0 text-[10px] font-bold text-primary">
+                          {fee.buyPct}% / {fee.sellPct}%
+                        </Badge>
+                      )}
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="pt-1 pb-3">
+                    <label className="mb-3 flex cursor-pointer items-center gap-2">
+                      <Checkbox
+                        checked={fee.enabled}
+                        onCheckedChange={(c) => setFee((f) => ({ ...f, enabled: c === true }))}
+                      />
+                      <span className="text-sm font-semibold">{t.feeInclude}</span>
+                    </label>
+                    <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                      <div>
+                        <Label className={labelCls}>{t.feeBuy} (%)</Label>
+                        <Input
+                          inputMode="decimal"
+                          value={String(fee.buyPct)}
+                          onChange={(e) => {
+                            const v = numOnly(e.target.value);
+                            setFee((f) => ({ ...f, buyPct: v === "" ? 0 : parseFloat(v) || 0 }));
+                          }}
+                          disabled={!fee.enabled}
+                          className={cn(inputCls, "tabular")}
+                        />
+                      </div>
+                      <div>
+                        <Label className={labelCls}>{t.feeSell} (%)</Label>
+                        <Input
+                          inputMode="decimal"
+                          value={String(fee.sellPct)}
+                          onChange={(e) => {
+                            const v = numOnly(e.target.value);
+                            setFee((f) => ({ ...f, sellPct: v === "" ? 0 : parseFloat(v) || 0 }));
+                          }}
+                          disabled={!fee.enabled}
+                          className={cn(inputCls, "tabular")}
+                        />
+                      </div>
+                    </div>
+                    <p className="mt-2 text-xs text-muted-foreground">{t.feeHint}</p>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </section>
+
+            <Button
+              type="submit"
+              className="font-display flex h-auto w-full items-center justify-center gap-2 rounded-2xl py-3.5 text-base font-extrabold uppercase tracking-[0.15em] shadow-xl shadow-primary/25 transition-all active:scale-[0.98] sm:rounded-3xl sm:py-5 sm:text-lg"
+              disabled={!canCalculate}
+            >
+              <span>{t.hitung}</span>
+            </Button>
+
+            {!mode && (hargaAvg || avgPrice) && (
+              <p className="text-center text-xs font-medium text-muted-foreground">
+                {t.fillHint}
+              </p>
+            )}
           </form>
-
 
           {/* Result */}
           {result && (() => {
-            const headLabel = result.mode === "new-avg" ? "Avg Baru" : "Lot Diperlukan";
+            const headLabel = result.mode === "new-avg" ? t.avgBaru : t.lotDiperlukan;
             const headValue =
               result.mode === "new-avg"
                 ? formatRupiah(result.newAvgPrice)
@@ -770,14 +825,14 @@ export function Calculator() {
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
                       <p className="font-display text-[11px] font-extrabold uppercase tracking-[0.22em] text-primary">
-                        {result.stockName} · {headLabel}
+                        {headLabel}
                       </p>
                       <p className="mt-2 font-display text-4xl font-extrabold leading-none tabular text-foreground">
                         {headValue}
                       </p>
                       {result.mode === "lots-needed" && (
                         <p className="mt-2 font-sans text-sm font-semibold text-muted-foreground tabular">
-                          Avg jadi {formatRupiah(result.newAvgPrice)}
+                          {t.avgJadi} {formatRupiah(result.newAvgPrice)}
                         </p>
                       )}
                     </div>
@@ -803,49 +858,69 @@ export function Calculator() {
 
                 <div className="space-y-2.5 px-5 py-4 text-sm font-medium">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Avg Sekarang</span>
+                    <span className="text-muted-foreground">{t.avgSekarangRow}</span>
                     <span className="font-bold tabular text-foreground">
                       {formatRupiah(result.avgSekarang)}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Total Lot</span>
+                    <span className="text-muted-foreground">{t.totalLot}</span>
                     <span className="font-bold tabular text-foreground">
                       {result.lotSekarang.toLocaleString("id-ID")}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Harga Averaging</span>
+                    <span className="text-muted-foreground">{t.hargaAveragingRow}</span>
                     <span className="font-bold tabular text-foreground">
                       {formatRupiah(result.hargaAveraging)}
                     </span>
                   </div>
                   <div className="flex justify-between border-t border-border/70 pt-2.5">
-                    <span className="text-muted-foreground">Lot Baru</span>
+                    <span className="text-muted-foreground">{t.lotBaru}</span>
                     <span className="font-bold tabular text-foreground">
                       {result.totalLotBaru.toLocaleString("id-ID")} <span className="text-muted-foreground">(+{result.lotDelta.toLocaleString("id-ID")})</span>
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Modal Tambahan</span>
+                    <span className="text-muted-foreground">{t.modalTambahan}</span>
                     <button
                       type="button"
-                      onClick={() => copyValue("Modal Tambahan", formatRupiah(result.modalTambahan))}
+                      onClick={() => copyValue(t.modalTambahan, formatRupiah(result.modalTambahan))}
                       className="flex items-center gap-1 rounded-lg px-1.5 py-0.5 text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
-                      aria-label="Salin Modal Tambahan"
                     >
                       <span className="font-bold tabular text-foreground">{formatRupiah(result.modalTambahan)}</span>
                       <Copy className="h-3 w-3 text-muted-foreground" />
                     </button>
                   </div>
+                  {result.feeEnabled && (
+                    <>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">{t.feeBeliLabel} ({result.buyPct}%)</span>
+                        <span className="font-bold tabular text-foreground">
+                          {formatRupiah(result.feeBeli ?? 0)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">{t.feeJualLabel} ({result.sellPct}%)</span>
+                        <span className="font-bold tabular text-foreground">
+                          {formatRupiah(result.feeJualEst ?? 0)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">{t.breakEven}</span>
+                        <span className="font-bold tabular text-foreground">
+                          {formatRupiah(result.breakEvenPrice ?? 0)}
+                        </span>
+                      </div>
+                    </>
+                  )}
                   <div className="flex items-center justify-between border-t border-border/70 pt-2.5">
-                    <span className="text-muted-foreground">Total Modal</span>
+                    <span className="text-muted-foreground">{t.totalModal}</span>
                     <button
                       type="button"
-                      onClick={() => copyValue("Total Modal", formatRupiah(result.totalModal))}
+                      onClick={() => copyValue(t.totalModal, formatRupiah(result.totalModal))}
                       className="flex items-center gap-1 rounded-lg px-1.5 py-0.5 text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
-                      aria-label="Salin Total Modal"
                     >
                       <span className="font-display text-base font-extrabold tabular text-foreground">{formatRupiah(result.totalModal)}</span>
                       <Copy className="h-3 w-3 text-muted-foreground" />
@@ -857,37 +932,35 @@ export function Calculator() {
 
             const actions = (
               <div className="mt-4 flex items-center justify-center gap-2">
-                <Button variant="outline" size="icon" onClick={copySummary} aria-label="Salin ringkasan" className="h-11 w-11 rounded-2xl border-border bg-card hover:border-primary/40 hover:bg-secondary hover:text-primary">
-                  <Copy className="h-4.5 w-4.5" />
+                <Button variant="outline" size="icon" onClick={copySummary} aria-label={t.copy} className="h-11 w-11 rounded-2xl border-border bg-card hover:border-primary/40 hover:bg-secondary hover:text-primary">
+                  <Copy className="h-4 w-4" />
                 </Button>
-                <Button variant="outline" size="icon" onClick={shareLink} aria-label="Salin link" className="h-11 w-11 rounded-2xl border-border bg-card hover:border-primary/40 hover:bg-secondary hover:text-primary">
-                  <Link2 className="h-4.5 w-4.5" />
+                <Button variant="outline" size="icon" onClick={shareLink} aria-label={t.share} className="h-11 w-11 rounded-2xl border-border bg-card hover:border-primary/40 hover:bg-secondary hover:text-primary">
+                  <Link2 className="h-4 w-4" />
                 </Button>
-                <Button variant="outline" size="icon" onClick={saveImage} aria-label="Simpan PNG" className="h-11 w-11 rounded-2xl border-border bg-card hover:border-primary/40 hover:bg-secondary hover:text-primary">
-                  <Download className="h-4.5 w-4.5" />
+                <Button variant="outline" size="icon" onClick={saveImage} aria-label={t.savePng} className="h-11 w-11 rounded-2xl border-border bg-card hover:border-primary/40 hover:bg-secondary hover:text-primary">
+                  <Download className="h-4 w-4" />
                 </Button>
-                <Button variant="outline" size="icon" onClick={resetAll} aria-label="Reset" className="h-11 w-11 rounded-2xl border-border bg-card hover:border-destructive/40 hover:bg-destructive/10 hover:text-destructive">
-                  <X className="h-4.5 w-4.5" />
+                <Button variant="outline" size="icon" onClick={resetAll} aria-label={t.reset} className="h-11 w-11 rounded-2xl border-border bg-card hover:border-destructive/40 hover:bg-destructive/10 hover:text-destructive">
+                  <X className="h-4 w-4" />
                 </Button>
               </div>
             );
 
             return (
               <>
-                {/* Desktop: inline */}
                 <section className="mt-5 hidden sm:block">
                   {resultCard(resultRef)}
                   {actions}
                 </section>
 
-                {/* Mobile: floating sticky bar + drawer */}
                 <Drawer open={barOpen} onOpenChange={setBarOpen}>
                   <div className="fixed inset-x-0 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-30 flex justify-center px-4 sm:hidden">
                     <DrawerTrigger asChild>
                       <button
                         type="button"
                         className="flex w-full max-w-[440px] items-center justify-between gap-3 rounded-3xl border border-border bg-card px-5 py-4 text-left text-foreground shadow-2xl backdrop-blur transition-transform active:scale-[0.98]"
-                        aria-label="Lihat detail hasil"
+                        aria-label={t.resultTitle}
                       >
                         <div className="min-w-0 space-y-0.5">
                           <p className="font-display text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
@@ -900,7 +973,7 @@ export function Calculator() {
                         <div className="h-10 w-px bg-border" />
                         <div className="min-w-0 space-y-0.5 text-right">
                           <p className="font-display text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
-                            {result.status === "down" ? "Turun" : result.status === "up" ? "Naik" : "Flat"}
+                            {result.status === "down" ? t.turun : result.status === "up" ? t.naik : t.flat}
                           </p>
                           <p
                             className={cn(
@@ -920,7 +993,7 @@ export function Calculator() {
                   </div>
                   <DrawerContent className="sm:hidden">
                     <DrawerHeader className="pb-2">
-                      <DrawerTitle className="font-display">Hasil Perhitungan</DrawerTitle>
+                      <DrawerTitle className="font-display">{t.resultTitle}</DrawerTitle>
                     </DrawerHeader>
                     <div className="px-4 pb-6">
                       {resultCard(mobileResultRef)}
@@ -938,7 +1011,7 @@ export function Calculator() {
         <footer className="mx-auto mt-8 w-full max-w-[480px] border-t border-border/60 px-4 pt-5 pb-10 sm:mt-12 sm:pt-6 sm:pb-12">
           <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs font-medium text-muted-foreground">
             <span>
-              by{" "}
+              {t.footerBy}{" "}
               <a
                 href="https://x.com/alfindigital"
                 target="_blank"
@@ -950,62 +1023,26 @@ export function Calculator() {
             </span>
             <span className="text-muted-foreground/40">|</span>
             <div className="flex items-center gap-0.5">
-              <a
-                href="https://alfin.digital"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Website"
-                className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary"
-              >
+              <a href="https://alfin.digital" target="_blank" rel="noreferrer" aria-label="Website" className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary">
                 <Globe className="h-3.5 w-3.5" />
               </a>
-              <a
-                href="https://facebook.com/alfindigital"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Facebook"
-                className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary"
-              >
+              <a href="https://facebook.com/alfindigital" target="_blank" rel="noreferrer" aria-label="Facebook" className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary">
                 <Facebook className="h-3.5 w-3.5" />
               </a>
-              <a
-                href="https://youtube.com/@alfindigital"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="YouTube"
-                className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary"
-              >
+              <a href="https://youtube.com/@alfindigital" target="_blank" rel="noreferrer" aria-label="YouTube" className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary">
                 <Youtube className="h-3.5 w-3.5" />
               </a>
-              <a
-                href="https://tiktok.com/@alfindigital"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="TikTok"
-                className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary"
-              >
+              <a href="https://tiktok.com/@alfindigital" target="_blank" rel="noreferrer" aria-label="TikTok" className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary">
                 <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor" aria-hidden="true">
                   <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.83a8.16 8.16 0 0 0 4.77 1.52V6.9a4.85 4.85 0 0 1-1.84-.21Z" />
                 </svg>
               </a>
-              <a
-                href="https://x.com/alfindigital"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="X (Twitter)"
-                className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary"
-              >
+              <a href="https://x.com/alfindigital" target="_blank" rel="noreferrer" aria-label="X (Twitter)" className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary">
                 <svg viewBox="0 0 24 24" className="h-3 w-3" fill="currentColor" aria-hidden="true">
                   <path d="M18.244 2H21.5l-7.5 8.575L23 22h-6.844l-5.36-6.99L4.5 22H1.244l8.02-9.166L1 2h7.02l4.85 6.41L18.244 2Zm-2.4 18h1.9L7.27 4H5.27l10.574 16Z" />
                 </svg>
               </a>
-              <a
-                href="https://t.me/alfindx"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Telegram"
-                className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary"
-              >
+              <a href="https://t.me/alfindx" target="_blank" rel="noreferrer" aria-label="Telegram" className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary">
                 <Send className="h-3.5 w-3.5" />
               </a>
             </div>
