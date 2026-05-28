@@ -125,7 +125,7 @@ export const dict = {
     maxPrice: (rp: string) => `Max ${rp}`,
     footerBy: "by",
   },
-} as const;
+};
 
 export type Dict = typeof dict.id;
 
