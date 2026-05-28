@@ -774,11 +774,6 @@ export function Calculator() {
               <span>{t.hitung}</span>
             </Button>
 
-            {!mode && (hargaAvg || avgPrice) && (
-              <p className="text-center text-xs font-medium text-muted-foreground">
-                {t.fillHint}
-              </p>
-            )}
           </form>
 
           {/* Result */}
