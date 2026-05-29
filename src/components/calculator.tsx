@@ -734,10 +734,10 @@ export function Calculator() {
             </section>
 
             {/* Fee Accordion */}
-            <section className={cn(cardCls, "py-1 sm:py-1")}>
+            <section className={cn(cardCls, "py-0.5 sm:py-1")}>
               <Accordion type="single" collapsible>
                 <AccordionItem value="fee" className="border-b-0">
-                  <AccordionTrigger className="py-3 hover:no-underline">
+                  <AccordionTrigger className="py-2 hover:no-underline sm:py-3">
                     <span className={cn(sectionHead, "mb-0")}>{t.feeTitle}</span>
 
                   </AccordionTrigger>
