@@ -688,7 +688,8 @@ export function Calculator() {
                     onBlur={(e) => handlePriceBlur(e.target.value, setAvgPrice)}
                     placeholder="0"
                     aria-invalid={!!errAvg}
-                    className={cn(inputCls, "tabular", errAvg && "border-destructive focus-visible:border-destructive")}
+                    className={cn(inputCls, "tabular", errAvg && "border-destructive focus-visible:border-destructive", flashField === "avg" && flashCls)}
+
                     tabIndex={1}
                     autoFocus
                   />
