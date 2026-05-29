@@ -615,7 +615,7 @@ export function Calculator() {
 
             {/* Position */}
             <section className={cardCls}>
-              <div className="mb-3 flex items-center justify-between sm:mb-4">
+              <div className="mb-2 flex items-center justify-between sm:mb-4">
                 <h2 className={cn(sectionHead, "mb-0")}>{t.positionTitle}</h2>
                 <Tooltip>
                   <TooltipTrigger asChild aria-label="Info">
