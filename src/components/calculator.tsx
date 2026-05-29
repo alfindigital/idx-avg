@@ -756,16 +756,18 @@ export function Calculator() {
 
                 <div className="grid grid-cols-2 gap-2 sm:gap-3">
                   <div className={cn(lotTambahDisabled && "opacity-50")}>
-                    <Label className={labelCls}>{t.lotTambah}</Label>
                     <Input
+                      ref={lotTambahRef}
                       inputMode="numeric"
                       value={lotTambah}
                       onChange={(e) => setLotTambah(intOnly(e.target.value))}
                       placeholder="0"
                       aria-invalid={!!errLotTambah}
-                      className={cn(inputCls, "tabular", errLotTambah && "border-destructive focus-visible:border-destructive")}
+                      className={cn(inputCls, "tabular", errLotTambah && "border-destructive focus-visible:border-destructive", flashField === "lotTambah" && flashCls)}
                       disabled={lotTambahDisabled}
                       tabIndex={4}
+                    />
+
                     />
                     {errLotTambah && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errLotTambah}</p>}
                   </div>
