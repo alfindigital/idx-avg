@@ -658,12 +658,13 @@ export function Calculator() {
                   {errLot && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errLot}</p>}
                 </div>
               </div>
-              <div className="mt-3 flex items-center justify-between rounded-xl border border-white/70 bg-card/60 px-3 py-2 dark:border-white/5 sm:mt-4 sm:rounded-2xl sm:px-4 sm:py-3">
+              <div className="mt-2 flex items-center justify-between rounded-xl border border-white/70 bg-card/60 px-3 py-1.5 dark:border-white/5 sm:mt-4 sm:rounded-2xl sm:px-4 sm:py-3">
                 <span className="text-xs font-semibold text-muted-foreground sm:text-sm">
                   {t.modalAwal}
                 </span>
-                <span className="font-display text-base font-extrabold tabular sm:text-lg">{formatRupiah(modalAwal)}</span>
+                <span className="font-display text-sm font-extrabold tabular sm:text-lg">{formatRupiah(modalAwal)}</span>
               </div>
+
 
             </section>
 
