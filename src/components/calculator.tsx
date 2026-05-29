@@ -696,6 +696,7 @@ export function Calculator() {
                   {errAvg && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errAvg}</p>}
                 </div>
                 <div>
+                  <Label className={labelCls}>{t.totalLot}</Label>
                   <Input
                     ref={lotRef}
                     inputMode="numeric"
@@ -707,8 +708,6 @@ export function Calculator() {
                     tabIndex={2}
                   />
 
-                    tabIndex={2}
-                  />
                   {errLot && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errLot}</p>}
                 </div>
               </div>
