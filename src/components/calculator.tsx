@@ -324,14 +324,51 @@ export function Calculator() {
         return;
       }
       resultInputsRef.current = snapshot;
-      setResult(out.result);
-      saveHistory(out.result);
+  const focusFirstInvalid = (): boolean => {
+    type FieldCheck = { key: string; bad: boolean; ref: RefObject<HTMLInputElement | null> };
+    const checks: FieldCheck[] = [
+      { key: "avg", bad: !avgPrice || !!errAvg, ref: firstInputRef },
+      { key: "lot", bad: !totalLot || !!errLot, ref: lotRef },
+      { key: "harga", bad: !hargaAvg || !!errHarga, ref: hargaRef },
+    ];
+    if (mode === "new-avg") {
+      checks.push({ key: "lotTambah", bad: !lotTambah || !!errLotTambah, ref: lotTambahRef });
+    } else if (mode === "lots-needed") {
+      checks.push({ key: "target", bad: !targetAvg || !!errTarget, ref: targetRef });
+    } else {
+      // Neither lotTambah nor targetAvg filled — point at lotTambah first
+      checks.push({ key: "lotTambah", bad: true, ref: lotTambahRef });
     }
+    const first = checks.find((c) => c.bad);
+    if (!first) return false;
+    const el = first.ref.current;
+    if (el) {
+      try {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      } catch {}
+      window.setTimeout(() => el.focus({ preventScroll: true }), 150);
+    }
+    setFlashField(first.key);
+    if (flashTimeoutRef.current) window.clearTimeout(flashTimeoutRef.current);
+    flashTimeoutRef.current = window.setTimeout(() => setFlashField(null), 1400);
+    return true;
   };
-  const runCalcRef = useRef(runCalc);
-  runCalcRef.current = runCalc;
+  const focusFirstInvalidRef = useRef(focusFirstInvalid);
+  focusFirstInvalidRef.current = focusFirstInvalid;
 
   const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    const active = document.activeElement as HTMLElement | null;
+    if (active && typeof active.blur === "function") active.blur();
+    setTimeout(() => {
+      if (canCalculateRef.current) {
+        runCalcRef.current();
+      } else {
+        focusFirstInvalidRef.current();
+      }
+    }, 0);
+  };
+
     e.preventDefault();
     const active = document.activeElement as HTMLElement | null;
     if (active && typeof active.blur === "function") active.blur();
