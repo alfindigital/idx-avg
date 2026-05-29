@@ -975,10 +975,6 @@ export function Calculator() {
                       </button>
                     </DrawerTrigger>
                   </div>
-
-                      </button>
-                    </DrawerTrigger>
-                  </div>
                   <DrawerContent className="sm:hidden">
                     <DrawerHeader className="pb-2">
                       <DrawerTitle className="font-display">{t.resultTitle}</DrawerTitle>
