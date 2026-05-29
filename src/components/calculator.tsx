@@ -740,15 +740,17 @@ export function Calculator() {
                   <Label className={labelCls}>{t.hargaAvg}</Label>
 
                   <Input
+                    ref={hargaRef}
                     inputMode="decimal"
                     value={hargaAvg}
                     onChange={(e) => setHargaAvg(numOnly(e.target.value))}
                     onBlur={(e) => handlePriceBlur(e.target.value, setHargaAvg)}
                     placeholder="0"
                     aria-invalid={!!errHarga}
-                    className={cn(inputCls, "tabular", errHarga && "border-destructive focus-visible:border-destructive")}
+                    className={cn(inputCls, "tabular", errHarga && "border-destructive focus-visible:border-destructive", flashField === "harga" && flashCls)}
                     tabIndex={3}
                   />
+
                   {errHarga && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errHarga}</p>}
                 </div>
 
