@@ -128,11 +128,18 @@ export function Calculator() {
   const resultRef = useRef<HTMLDivElement>(null);
   const mobileResultRef = useRef<HTMLDivElement>(null);
   const firstInputRef = useRef<HTMLInputElement>(null);
+  const lotRef = useRef<HTMLInputElement>(null);
+  const hargaRef = useRef<HTMLInputElement>(null);
+  const lotTambahRef = useRef<HTMLInputElement>(null);
+  const targetRef = useRef<HTMLInputElement>(null);
+  const [flashField, setFlashField] = useState<string | null>(null);
+  const flashTimeoutRef = useRef<number | null>(null);
   const resultInputsRef = useRef<string>("");
   const [barOpen, setBarOpen] = useState(false);
   const hydratedRef = useRef(false);
   const [showRecovered, setShowRecovered] = useState(false);
   const recoveredTimeoutRef = useRef<number | null>(null);
+
 
   const feeKey = `${fee.enabled}|${fee.buyPct}|${fee.sellPct}`;
   const currentInputsKey = `${avgPrice}|${totalLot}|${hargaAvg}|${lotTambah}|${targetAvg}|${feeKey}`;
