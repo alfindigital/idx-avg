@@ -756,6 +756,7 @@ export function Calculator() {
 
                 <div className="grid grid-cols-2 gap-2 sm:gap-3">
                   <div className={cn(lotTambahDisabled && "opacity-50")}>
+                    <Label className={labelCls}>{t.lotTambah}</Label>
                     <Input
                       ref={lotTambahRef}
                       inputMode="numeric"
@@ -767,25 +768,25 @@ export function Calculator() {
                       disabled={lotTambahDisabled}
                       tabIndex={4}
                     />
-
-                    />
                     {errLotTambah && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errLotTambah}</p>}
                   </div>
                   <div className={cn(targetAvgDisabled && "opacity-50")}>
                     <Label className={labelCls}>{t.targetAvg}</Label>
                     <Input
+                      ref={targetRef}
                       inputMode="decimal"
                       value={targetAvg}
                       onChange={(e) => setTargetAvg(numOnly(e.target.value))}
                       onBlur={(e) => handlePriceBlur(e.target.value, setTargetAvg)}
                       placeholder="0"
                       aria-invalid={!!errTarget}
-                      className={cn(inputCls, "tabular", errTarget && "border-destructive focus-visible:border-destructive")}
+                      className={cn(inputCls, "tabular", errTarget && "border-destructive focus-visible:border-destructive", flashField === "target" && flashCls)}
                       disabled={targetAvgDisabled}
                       tabIndex={5}
                     />
                     {errTarget && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errTarget}</p>}
                   </div>
+
                 </div>
               </div>
             </section>
