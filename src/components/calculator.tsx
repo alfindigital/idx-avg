@@ -324,6 +324,13 @@ export function Calculator() {
         return;
       }
       resultInputsRef.current = snapshot;
+      setResult(out.result);
+      saveHistory(out.result);
+    }
+  };
+  const runCalcRef = useRef(runCalc);
+  runCalcRef.current = runCalc;
+
   const focusFirstInvalid = (): boolean => {
     type FieldCheck = { key: string; bad: boolean; ref: RefObject<HTMLInputElement | null> };
     const checks: FieldCheck[] = [
@@ -336,7 +343,6 @@ export function Calculator() {
     } else if (mode === "lots-needed") {
       checks.push({ key: "target", bad: !targetAvg || !!errTarget, ref: targetRef });
     } else {
-      // Neither lotTambah nor targetAvg filled — point at lotTambah first
       checks.push({ key: "lotTambah", bad: true, ref: lotTambahRef });
     }
     const first = checks.find((c) => c.bad);
@@ -355,6 +361,7 @@ export function Calculator() {
   };
   const focusFirstInvalidRef = useRef(focusFirstInvalid);
   focusFirstInvalidRef.current = focusFirstInvalid;
+
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
