@@ -542,6 +542,8 @@ export function Calculator() {
     "mb-2 font-display text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground sm:mb-4 sm:text-xs";
   const cardCls =
     "rounded-2xl border border-white/70 bg-secondary/60 p-2.5 shadow-sm dark:border-white/5 sm:rounded-3xl sm:p-5";
+  const flashCls = "border-destructive ring-2 ring-destructive/40 animate-pulse";
+
 
 
   return (
