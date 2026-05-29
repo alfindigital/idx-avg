@@ -696,14 +696,17 @@ export function Calculator() {
                   {errAvg && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errAvg}</p>}
                 </div>
                 <div>
-                  <Label className={labelCls}>{t.totalLot}</Label>
                   <Input
+                    ref={lotRef}
                     inputMode="numeric"
                     value={totalLot}
                     onChange={(e) => setTotalLot(intOnly(e.target.value))}
                     placeholder="0"
                     aria-invalid={!!errLot}
-                    className={cn(inputCls, "tabular", errLot && "border-destructive focus-visible:border-destructive")}
+                    className={cn(inputCls, "tabular", errLot && "border-destructive focus-visible:border-destructive", flashField === "lot" && flashCls)}
+                    tabIndex={2}
+                  />
+
                     tabIndex={2}
                   />
                   {errLot && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errLot}</p>}
