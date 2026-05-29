@@ -488,18 +488,20 @@ export function Calculator() {
   const targetAvgDisabled = !!lotTambah;
 
   const inputCls =
-    "h-auto rounded-xl border-2 border-transparent bg-card px-3 py-2 text-base font-bold text-foreground shadow-none transition-all focus-visible:border-primary focus-visible:ring-0 placeholder:text-muted-foreground/50 sm:px-4 sm:py-2.5 sm:text-lg";
-  const labelCls = "mb-1 ml-0.5 block text-xs font-semibold text-foreground/70 sm:text-sm";
+    "h-auto rounded-xl border-2 border-transparent bg-card px-3 py-1.5 text-sm font-bold text-foreground shadow-none transition-all focus-visible:border-primary focus-visible:ring-0 placeholder:text-muted-foreground/50 sm:px-4 sm:py-2.5 sm:text-lg";
+  const labelCls = "mb-0.5 ml-0.5 block text-[11px] font-semibold text-foreground/70 sm:mb-1 sm:text-sm";
   const sectionHead =
-    "mb-3 font-display text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground sm:mb-4 sm:text-xs";
+    "mb-2 font-display text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground sm:mb-4 sm:text-xs";
   const cardCls =
-    "rounded-2xl border border-white/70 bg-secondary/60 p-3.5 shadow-sm dark:border-white/5 sm:rounded-3xl sm:p-5";
+    "rounded-2xl border border-white/70 bg-secondary/60 p-2.5 shadow-sm dark:border-white/5 sm:rounded-3xl sm:p-5";
+
 
   return (
     <TooltipProvider delayDuration={150}>
       <div className="min-h-screen bg-background text-foreground">
         {/* Header */}
-        <header className="mx-auto flex w-full max-w-[480px] items-center justify-between px-4 pt-6 pb-2 sm:pt-8">
+        <header className="mx-auto flex w-full max-w-[480px] items-center justify-between px-4 pt-3 pb-1 sm:pt-8 sm:pb-2">
+
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/25">
               <Sigma className="h-5 w-5" strokeWidth={2.5} />
@@ -601,18 +603,19 @@ export function Calculator() {
         </header>
 
         {/* Main */}
-        <main className="mx-auto w-full max-w-[480px] px-4 pt-4 pb-[calc(5.5rem+env(safe-area-inset-bottom))] sm:pb-4">
+        <main className="mx-auto w-full max-w-[480px] px-4 pt-2 pb-[calc(4.5rem+env(safe-area-inset-bottom))] sm:pt-4 sm:pb-4">
           {showRecovered && (
-            <div className="mb-3 flex items-center justify-center animate-in fade-in slide-in-from-top-2 duration-300">
-              <Badge variant="secondary" className="rounded-full bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary">
+            <div className="mb-2 flex items-center justify-center animate-in fade-in slide-in-from-top-2 duration-300 sm:mb-3">
+              <Badge variant="secondary" className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
                 <Check className="mr-1 h-3.5 w-3.5" /> {t.recovered}
               </Badge>
             </div>
           )}
-          <form onSubmit={handleSubmit} noValidate className="space-y-3 sm:space-y-5">
+          <form onSubmit={handleSubmit} noValidate className="space-y-2 sm:space-y-5">
+
             {/* Position */}
             <section className={cardCls}>
-              <div className="mb-3 flex items-center justify-between sm:mb-4">
+              <div className="mb-2 flex items-center justify-between sm:mb-4">
                 <h2 className={cn(sectionHead, "mb-0")}>{t.positionTitle}</h2>
                 <Tooltip>
                   <TooltipTrigger asChild aria-label="Info">
@@ -655,18 +658,19 @@ export function Calculator() {
                   {errLot && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errLot}</p>}
                 </div>
               </div>
-              <div className="mt-3 flex items-center justify-between rounded-xl border border-white/70 bg-card/60 px-3 py-2 dark:border-white/5 sm:mt-4 sm:rounded-2xl sm:px-4 sm:py-3">
+              <div className="mt-2 flex items-center justify-between rounded-xl border border-white/70 bg-card/60 px-3 py-1.5 dark:border-white/5 sm:mt-4 sm:rounded-2xl sm:px-4 sm:py-3">
                 <span className="text-xs font-semibold text-muted-foreground sm:text-sm">
                   {t.modalAwal}
                 </span>
-                <span className="font-display text-base font-extrabold tabular sm:text-lg">{formatRupiah(modalAwal)}</span>
+                <span className="font-display text-sm font-extrabold tabular sm:text-lg">{formatRupiah(modalAwal)}</span>
               </div>
+
 
             </section>
 
             {/* Averaging */}
             <section className={cardCls}>
-              <div className="mb-3 flex items-center justify-between sm:mb-4">
+              <div className="mb-2 flex items-center justify-between sm:mb-4">
                 <h2 className={cn(sectionHead, "mb-0")}>{t.averagingTitle}</h2>
                 <Tooltip>
                   <TooltipTrigger asChild aria-label="Info">
@@ -678,7 +682,7 @@ export function Calculator() {
                 </Tooltip>
               </div>
 
-              <div className="space-y-2 sm:space-y-3">
+              <div className="space-y-1.5 sm:space-y-3">
                 <div>
                   <Label className={labelCls}>{t.hargaAvg}</Label>
 
@@ -730,10 +734,10 @@ export function Calculator() {
             </section>
 
             {/* Fee Accordion */}
-            <section className={cn(cardCls, "py-1 sm:py-1")}>
+            <section className={cn(cardCls, "py-0.5 sm:py-1")}>
               <Accordion type="single" collapsible>
                 <AccordionItem value="fee" className="border-b-0">
-                  <AccordionTrigger className="py-3 hover:no-underline">
+                  <AccordionTrigger className="py-2 hover:no-underline sm:py-3">
                     <span className={cn(sectionHead, "mb-0")}>{t.feeTitle}</span>
 
                   </AccordionTrigger>
@@ -781,7 +785,7 @@ export function Calculator() {
 
             <Button
               type="submit"
-              className="font-display flex h-auto w-full items-center justify-center gap-2 rounded-2xl py-3.5 text-base font-extrabold uppercase tracking-[0.15em] shadow-xl shadow-primary/25 transition-all active:scale-[0.98] sm:rounded-3xl sm:py-5 sm:text-lg"
+              className="font-display flex h-auto w-full items-center justify-center gap-2 rounded-2xl py-2.5 text-sm font-extrabold uppercase tracking-[0.15em] shadow-lg shadow-primary/25 transition-all active:scale-[0.98] sm:rounded-3xl sm:py-5 sm:text-lg"
               disabled={!canCalculate}
             >
               <span>{t.hitung}</span>
@@ -934,31 +938,30 @@ export function Calculator() {
                   {resultCard(resultRef)}
                   {actions}
                 </section>
-
                 <Drawer open={barOpen} onOpenChange={setBarOpen}>
-                  <div className="fixed inset-x-0 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-30 flex justify-center px-4 sm:hidden">
+                  <div className="fixed inset-x-0 bottom-[calc(0.5rem+env(safe-area-inset-bottom))] z-30 flex justify-center px-3 sm:hidden">
                     <DrawerTrigger asChild>
                       <button
                         type="button"
-                        className="flex w-full max-w-[440px] items-center justify-between gap-3 rounded-3xl border border-border bg-card px-5 py-4 text-left text-foreground shadow-2xl backdrop-blur transition-transform active:scale-[0.98]"
+                        className="flex w-full max-w-[440px] items-center justify-between gap-2 rounded-2xl border border-border bg-card px-4 py-2.5 text-left text-foreground shadow-2xl backdrop-blur transition-transform active:scale-[0.98]"
                         aria-label={t.resultTitle}
                       >
-                        <div className="min-w-0 space-y-0.5">
-                          <p className="font-display text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+                        <div className="min-w-0 space-y-0">
+                          <p className="font-display text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
                             {headLabel}
                           </p>
-                          <p className="font-display text-xl font-extrabold tabular leading-tight text-foreground">
+                          <p className="font-display text-base font-extrabold tabular leading-tight text-foreground">
                             {headValue}
                           </p>
                         </div>
-                        <div className="h-10 w-px bg-border" />
-                        <div className="min-w-0 space-y-0.5 text-right">
-                          <p className="font-display text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+                        <div className="h-8 w-px bg-border" />
+                        <div className="min-w-0 space-y-0 text-right">
+                          <p className="font-display text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
                             {result.status === "down" ? t.turun : result.status === "up" ? t.naik : t.flat}
                           </p>
                           <p
                             className={cn(
-                              "font-display text-xl font-extrabold tabular leading-tight",
+                              "font-display text-base font-extrabold tabular leading-tight",
                               result.status === "down" && "text-destructive",
                               result.status === "up" && "text-success",
                               result.status === "flat" && "text-foreground"
@@ -968,7 +971,7 @@ export function Calculator() {
                             {result.percentage.toFixed(2)}%
                           </p>
                         </div>
-                        <ChevronUp className="h-5 w-5 shrink-0 text-muted-foreground" />
+                        <ChevronUp className="h-4 w-4 shrink-0 text-muted-foreground" />
                       </button>
                     </DrawerTrigger>
                   </div>
