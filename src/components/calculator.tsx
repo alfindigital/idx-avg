@@ -785,7 +785,7 @@ export function Calculator() {
 
             <Button
               type="submit"
-              className="font-display flex h-auto w-full items-center justify-center gap-2 rounded-2xl py-3.5 text-base font-extrabold uppercase tracking-[0.15em] shadow-xl shadow-primary/25 transition-all active:scale-[0.98] sm:rounded-3xl sm:py-5 sm:text-lg"
+              className="font-display flex h-auto w-full items-center justify-center gap-2 rounded-2xl py-2.5 text-sm font-extrabold uppercase tracking-[0.15em] shadow-lg shadow-primary/25 transition-all active:scale-[0.98] sm:rounded-3xl sm:py-5 sm:text-lg"
               disabled={!canCalculate}
             >
               <span>{t.hitung}</span>
