@@ -338,6 +338,18 @@ export function Calculator() {
     const onKey = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName?.toLowerCase();
       const inInput = tag === "input" || tag === "textarea" || tag === "select";
+
+      // Ctrl/Cmd+Enter or Ctrl/Cmd+K: trigger calculation from anywhere
+      if ((e.ctrlKey || e.metaKey) && (e.key === "Enter" || e.key.toLowerCase() === "k")) {
+        e.preventDefault();
+        const active = document.activeElement as HTMLElement | null;
+        if (active && typeof active.blur === "function") active.blur();
+        setTimeout(() => {
+          if (canCalculateRef.current) runCalcRef.current();
+        }, 0);
+        return;
+      }
+
       if (e.key === "/" && !inInput) {
         e.preventDefault();
         firstInputRef.current?.focus();
@@ -345,13 +357,14 @@ export function Calculator() {
       }
       if (e.key === "Enter" && !inInput) {
         e.preventDefault();
-        if (canCalculate) runCalc();
+        if (canCalculateRef.current) runCalcRef.current();
         return;
       }
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [canCalculate]);
+  }, []);
+
 
   const toggleTheme = () => {
     const n = !isDark;
