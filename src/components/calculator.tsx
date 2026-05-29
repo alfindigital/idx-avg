@@ -128,11 +128,18 @@ export function Calculator() {
   const resultRef = useRef<HTMLDivElement>(null);
   const mobileResultRef = useRef<HTMLDivElement>(null);
   const firstInputRef = useRef<HTMLInputElement>(null);
+  const lotRef = useRef<HTMLInputElement>(null);
+  const hargaRef = useRef<HTMLInputElement>(null);
+  const lotTambahRef = useRef<HTMLInputElement>(null);
+  const targetRef = useRef<HTMLInputElement>(null);
+  const [flashField, setFlashField] = useState<string | null>(null);
+  const flashTimeoutRef = useRef<number | null>(null);
   const resultInputsRef = useRef<string>("");
   const [barOpen, setBarOpen] = useState(false);
   const hydratedRef = useRef(false);
   const [showRecovered, setShowRecovered] = useState(false);
   const recoveredTimeoutRef = useRef<number | null>(null);
+
 
   const feeKey = `${fee.enabled}|${fee.buyPct}|${fee.sellPct}`;
   const currentInputsKey = `${avgPrice}|${totalLot}|${hargaAvg}|${lotTambah}|${targetAvg}|${feeKey}`;
@@ -324,14 +331,52 @@ export function Calculator() {
   const runCalcRef = useRef(runCalc);
   runCalcRef.current = runCalc;
 
+  const focusFirstInvalid = (): boolean => {
+    type FieldCheck = { key: string; bad: boolean; ref: RefObject<HTMLInputElement | null> };
+    const checks: FieldCheck[] = [
+      { key: "avg", bad: !avgPrice || !!errAvg, ref: firstInputRef },
+      { key: "lot", bad: !totalLot || !!errLot, ref: lotRef },
+      { key: "harga", bad: !hargaAvg || !!errHarga, ref: hargaRef },
+    ];
+    if (mode === "new-avg") {
+      checks.push({ key: "lotTambah", bad: !lotTambah || !!errLotTambah, ref: lotTambahRef });
+    } else if (mode === "lots-needed") {
+      checks.push({ key: "target", bad: !targetAvg || !!errTarget, ref: targetRef });
+    } else {
+      checks.push({ key: "lotTambah", bad: true, ref: lotTambahRef });
+    }
+    const first = checks.find((c) => c.bad);
+    if (!first) return false;
+    const el = first.ref.current;
+    if (el) {
+      try {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      } catch {}
+      window.setTimeout(() => el.focus({ preventScroll: true }), 150);
+    }
+    setFlashField(first.key);
+    if (flashTimeoutRef.current) window.clearTimeout(flashTimeoutRef.current);
+    flashTimeoutRef.current = window.setTimeout(() => setFlashField(null), 1400);
+    return true;
+  };
+  const focusFirstInvalidRef = useRef(focusFirstInvalid);
+  focusFirstInvalidRef.current = focusFirstInvalid;
+
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     const active = document.activeElement as HTMLElement | null;
     if (active && typeof active.blur === "function") active.blur();
     setTimeout(() => {
-      if (canCalculateRef.current) runCalcRef.current();
+      if (canCalculateRef.current) {
+        runCalcRef.current();
+      } else {
+        focusFirstInvalidRef.current();
+      }
     }, 0);
   };
+
+
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -346,6 +391,7 @@ export function Calculator() {
         if (active && typeof active.blur === "function") active.blur();
         setTimeout(() => {
           if (canCalculateRef.current) runCalcRef.current();
+          else focusFirstInvalidRef.current();
         }, 0);
         return;
       }
@@ -358,8 +404,10 @@ export function Calculator() {
       if (e.key === "Enter" && !inInput) {
         e.preventDefault();
         if (canCalculateRef.current) runCalcRef.current();
+        else focusFirstInvalidRef.current();
         return;
       }
+
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
@@ -494,6 +542,8 @@ export function Calculator() {
     "mb-2 font-display text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground sm:mb-4 sm:text-xs";
   const cardCls =
     "rounded-2xl border border-white/70 bg-secondary/60 p-2.5 shadow-sm dark:border-white/5 sm:rounded-3xl sm:p-5";
+  const flashCls = "border-destructive ring-2 ring-destructive/40 animate-pulse";
+
 
 
   return (
@@ -638,7 +688,8 @@ export function Calculator() {
                     onBlur={(e) => handlePriceBlur(e.target.value, setAvgPrice)}
                     placeholder="0"
                     aria-invalid={!!errAvg}
-                    className={cn(inputCls, "tabular", errAvg && "border-destructive focus-visible:border-destructive")}
+                    className={cn(inputCls, "tabular", errAvg && "border-destructive focus-visible:border-destructive", flashField === "avg" && flashCls)}
+
                     tabIndex={1}
                     autoFocus
                   />
@@ -647,14 +698,16 @@ export function Calculator() {
                 <div>
                   <Label className={labelCls}>{t.totalLot}</Label>
                   <Input
+                    ref={lotRef}
                     inputMode="numeric"
                     value={totalLot}
                     onChange={(e) => setTotalLot(intOnly(e.target.value))}
                     placeholder="0"
                     aria-invalid={!!errLot}
-                    className={cn(inputCls, "tabular", errLot && "border-destructive focus-visible:border-destructive")}
+                    className={cn(inputCls, "tabular", errLot && "border-destructive focus-visible:border-destructive", flashField === "lot" && flashCls)}
                     tabIndex={2}
                   />
+
                   {errLot && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errLot}</p>}
                 </div>
               </div>
@@ -687,15 +740,17 @@ export function Calculator() {
                   <Label className={labelCls}>{t.hargaAvg}</Label>
 
                   <Input
+                    ref={hargaRef}
                     inputMode="decimal"
                     value={hargaAvg}
                     onChange={(e) => setHargaAvg(numOnly(e.target.value))}
                     onBlur={(e) => handlePriceBlur(e.target.value, setHargaAvg)}
                     placeholder="0"
                     aria-invalid={!!errHarga}
-                    className={cn(inputCls, "tabular", errHarga && "border-destructive focus-visible:border-destructive")}
+                    className={cn(inputCls, "tabular", errHarga && "border-destructive focus-visible:border-destructive", flashField === "harga" && flashCls)}
                     tabIndex={3}
                   />
+
                   {errHarga && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errHarga}</p>}
                 </div>
 
@@ -703,12 +758,13 @@ export function Calculator() {
                   <div className={cn(lotTambahDisabled && "opacity-50")}>
                     <Label className={labelCls}>{t.lotTambah}</Label>
                     <Input
+                      ref={lotTambahRef}
                       inputMode="numeric"
                       value={lotTambah}
                       onChange={(e) => setLotTambah(intOnly(e.target.value))}
                       placeholder="0"
                       aria-invalid={!!errLotTambah}
-                      className={cn(inputCls, "tabular", errLotTambah && "border-destructive focus-visible:border-destructive")}
+                      className={cn(inputCls, "tabular", errLotTambah && "border-destructive focus-visible:border-destructive", flashField === "lotTambah" && flashCls)}
                       disabled={lotTambahDisabled}
                       tabIndex={4}
                     />
@@ -717,18 +773,20 @@ export function Calculator() {
                   <div className={cn(targetAvgDisabled && "opacity-50")}>
                     <Label className={labelCls}>{t.targetAvg}</Label>
                     <Input
+                      ref={targetRef}
                       inputMode="decimal"
                       value={targetAvg}
                       onChange={(e) => setTargetAvg(numOnly(e.target.value))}
                       onBlur={(e) => handlePriceBlur(e.target.value, setTargetAvg)}
                       placeholder="0"
                       aria-invalid={!!errTarget}
-                      className={cn(inputCls, "tabular", errTarget && "border-destructive focus-visible:border-destructive")}
+                      className={cn(inputCls, "tabular", errTarget && "border-destructive focus-visible:border-destructive", flashField === "target" && flashCls)}
                       disabled={targetAvgDisabled}
                       tabIndex={5}
                     />
                     {errTarget && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errTarget}</p>}
                   </div>
+
                 </div>
               </div>
             </section>
@@ -783,12 +841,14 @@ export function Calculator() {
             </section>
 
             <Button
-              type="submit"
-              className="font-display flex h-auto w-full items-center justify-center gap-2 rounded-2xl py-2.5 text-sm font-extrabold uppercase tracking-[0.15em] shadow-lg shadow-primary/25 transition-all active:scale-[0.98] sm:rounded-3xl sm:py-5 sm:text-lg"
-              disabled={!canCalculate}
+              type={canCalculate ? "submit" : "button"}
+              onClick={canCalculate ? undefined : () => focusFirstInvalid()}
+              className="font-display flex h-auto w-full items-center justify-center gap-2 rounded-2xl py-2.5 text-sm font-extrabold uppercase tracking-[0.15em] shadow-lg shadow-primary/25 transition-all active:scale-[0.98] sm:rounded-3xl sm:py-5 sm:text-lg disabled:opacity-50"
+              aria-disabled={!canCalculate}
             >
               <span>{t.hitung}</span>
             </Button>
+
 
           </form>
 
