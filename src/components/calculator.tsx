@@ -938,31 +938,30 @@ export function Calculator() {
                   {resultCard(resultRef)}
                   {actions}
                 </section>
-
                 <Drawer open={barOpen} onOpenChange={setBarOpen}>
-                  <div className="fixed inset-x-0 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-30 flex justify-center px-4 sm:hidden">
+                  <div className="fixed inset-x-0 bottom-[calc(0.5rem+env(safe-area-inset-bottom))] z-30 flex justify-center px-3 sm:hidden">
                     <DrawerTrigger asChild>
                       <button
                         type="button"
-                        className="flex w-full max-w-[440px] items-center justify-between gap-3 rounded-3xl border border-border bg-card px-5 py-4 text-left text-foreground shadow-2xl backdrop-blur transition-transform active:scale-[0.98]"
+                        className="flex w-full max-w-[440px] items-center justify-between gap-2 rounded-2xl border border-border bg-card px-4 py-2.5 text-left text-foreground shadow-2xl backdrop-blur transition-transform active:scale-[0.98]"
                         aria-label={t.resultTitle}
                       >
-                        <div className="min-w-0 space-y-0.5">
-                          <p className="font-display text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+                        <div className="min-w-0 space-y-0">
+                          <p className="font-display text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
                             {headLabel}
                           </p>
-                          <p className="font-display text-xl font-extrabold tabular leading-tight text-foreground">
+                          <p className="font-display text-base font-extrabold tabular leading-tight text-foreground">
                             {headValue}
                           </p>
                         </div>
-                        <div className="h-10 w-px bg-border" />
-                        <div className="min-w-0 space-y-0.5 text-right">
-                          <p className="font-display text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+                        <div className="h-8 w-px bg-border" />
+                        <div className="min-w-0 space-y-0 text-right">
+                          <p className="font-display text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
                             {result.status === "down" ? t.turun : result.status === "up" ? t.naik : t.flat}
                           </p>
                           <p
                             className={cn(
-                              "font-display text-xl font-extrabold tabular leading-tight",
+                              "font-display text-base font-extrabold tabular leading-tight",
                               result.status === "down" && "text-destructive",
                               result.status === "up" && "text-success",
                               result.status === "flat" && "text-foreground"
@@ -972,7 +971,11 @@ export function Calculator() {
                             {result.percentage.toFixed(2)}%
                           </p>
                         </div>
-                        <ChevronUp className="h-5 w-5 shrink-0 text-muted-foreground" />
+                        <ChevronUp className="h-4 w-4 shrink-0 text-muted-foreground" />
+                      </button>
+                    </DrawerTrigger>
+                  </div>
+
                       </button>
                     </DrawerTrigger>
                   </div>
