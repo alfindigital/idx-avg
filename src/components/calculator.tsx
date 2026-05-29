@@ -369,13 +369,7 @@ export function Calculator() {
     }, 0);
   };
 
-    e.preventDefault();
-    const active = document.activeElement as HTMLElement | null;
-    if (active && typeof active.blur === "function") active.blur();
-    setTimeout(() => {
-      if (canCalculateRef.current) runCalcRef.current();
-    }, 0);
-  };
+
 
   // Keyboard shortcuts
   useEffect(() => {
