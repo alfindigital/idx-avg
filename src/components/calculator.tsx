@@ -384,6 +384,7 @@ export function Calculator() {
         if (active && typeof active.blur === "function") active.blur();
         setTimeout(() => {
           if (canCalculateRef.current) runCalcRef.current();
+          else focusFirstInvalidRef.current();
         }, 0);
         return;
       }
@@ -396,8 +397,10 @@ export function Calculator() {
       if (e.key === "Enter" && !inInput) {
         e.preventDefault();
         if (canCalculateRef.current) runCalcRef.current();
+        else focusFirstInvalidRef.current();
         return;
       }
+
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
