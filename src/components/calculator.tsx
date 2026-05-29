@@ -742,15 +742,15 @@ export function Calculator() {
 
                   </AccordionTrigger>
                   <AccordionContent className="pt-1 pb-3">
-                    <label className="mb-3 flex cursor-pointer items-center gap-2">
+                    <label className="mb-2 flex cursor-pointer items-center gap-2 sm:mb-3">
                       <Checkbox
                         checked={fee.enabled}
                         onCheckedChange={(c) => setFee((f) => ({ ...f, enabled: c === true }))}
                       />
                       <span className="text-sm font-semibold">{t.feeInclude}</span>
                     </label>
-                    <div className="grid grid-cols-2 items-end gap-2 sm:gap-3">
-                      <div className="space-y-1.5">
+                    <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                      <div>
                         <Label className={labelCls}>{t.feeBuy} (%)</Label>
                         <Input
                           inputMode="decimal"
@@ -763,7 +763,7 @@ export function Calculator() {
                           className={cn(inputCls, "tabular")}
                         />
                       </div>
-                      <div className="space-y-1.5">
+                      <div>
                         <Label className={labelCls}>{t.feeSell} (%)</Label>
                         <Input
                           inputMode="decimal"
@@ -777,7 +777,6 @@ export function Calculator() {
                         />
                       </div>
                     </div>
-
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
