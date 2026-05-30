@@ -556,14 +556,14 @@ export function Calculator() {
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/25">
               <Sigma className="h-5 w-5" strokeWidth={2.5} />
             </div>
-            <div className="leading-tight">
-              <h1 className="font-display text-2xl font-extrabold tracking-tight">
+            <h1 className="leading-tight">
+              <span className="font-display text-2xl font-extrabold tracking-tight block">
                 {t.appTitle}
-              </h1>
-              <p className="font-sans text-xs font-medium text-muted-foreground">
+              </span>
+              <span className="font-sans text-xs font-medium text-muted-foreground block">
                 {t.appTagline}
-              </p>
-            </div>
+              </span>
+            </h1>
           </div>
 
           <div className="flex items-center gap-0.5 text-muted-foreground">
