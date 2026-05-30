@@ -536,7 +536,7 @@ export function Calculator() {
   const targetAvgDisabled = !!lotTambah;
 
   const inputCls =
-    "h-auto rounded-xl border-2 border-transparent bg-card px-3 py-1.5 text-sm font-bold text-foreground shadow-none transition-all focus-visible:border-primary focus-visible:ring-0 placeholder:text-muted-foreground/50 sm:px-4 sm:py-2.5 sm:text-lg";
+    "h-auto rounded-xl border-2 border-transparent bg-card px-3 py-1.5 text-sm font-bold text-foreground shadow-none transition-all focus-visible:border-primary focus-visible:ring-0 placeholder:text-muted-foreground sm:px-4 sm:py-2.5 sm:text-lg";
   const labelCls = "mb-0.5 ml-0.5 block text-[11px] font-semibold text-foreground/70 sm:mb-1 sm:text-sm";
   const sectionHead =
     "mb-2 font-display text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground sm:mb-4 sm:text-xs";
@@ -1064,7 +1064,7 @@ export function Calculator() {
                 @alfindigital
               </a>
             </span>
-            <span className="text-muted-foreground/40">|</span>
+            <span aria-hidden="true" className="text-muted-foreground">|</span>
             <div className="flex items-center gap-0.5">
               <a href="https://alfin.digital" target="_blank" rel="noreferrer" aria-label="Website" className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary">
                 <Globe className="h-3.5 w-3.5" />
