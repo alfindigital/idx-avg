@@ -1064,7 +1064,7 @@ export function Calculator() {
                 @alfindigital
               </a>
             </span>
-            <span className="text-muted-foreground/40">|</span>
+            <span aria-hidden="true" className="text-muted-foreground">|</span>
             <div className="flex items-center gap-0.5">
               <a href="https://alfin.digital" target="_blank" rel="noreferrer" aria-label="Website" className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary">
                 <Globe className="h-3.5 w-3.5" />
