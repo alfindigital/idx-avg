@@ -664,9 +664,9 @@ export function Calculator() {
           <form onSubmit={handleSubmit} noValidate className="space-y-2 sm:space-y-5">
 
             {/* Position */}
-            <section className={cardCls}>
+            <section aria-labelledby="posisi-heading" className={cardCls}>
               <div className="mb-2 flex items-center justify-between sm:mb-4">
-                <h2 className={cn(sectionHead, "mb-0")}>{t.positionTitle}</h2>
+                <h2 id="posisi-heading" className={cn(sectionHead, "mb-0")}>{t.positionTitle}</h2>
                 <Tooltip>
                   <TooltipTrigger asChild aria-label="Info">
                     <Info className="h-4 w-4 cursor-help text-muted-foreground" />
@@ -722,9 +722,9 @@ export function Calculator() {
             </section>
 
             {/* Averaging */}
-            <section className={cardCls}>
+            <section aria-labelledby="averaging-heading" className={cardCls}>
               <div className="mb-2 flex items-center justify-between sm:mb-4">
-                <h2 className={cn(sectionHead, "mb-0")}>{t.averagingTitle}</h2>
+                <h2 id="averaging-heading" className={cn(sectionHead, "mb-0")}>{t.averagingTitle}</h2>
                 <Tooltip>
                   <TooltipTrigger asChild aria-label="Info">
                     <Info className="h-4 w-4 cursor-help text-muted-foreground" />
