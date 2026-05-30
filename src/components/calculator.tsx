@@ -868,9 +868,9 @@ export function Calculator() {
                 <div className="bg-primary/10 px-5 pt-5 pb-4">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="font-display text-[11px] font-extrabold uppercase tracking-[0.22em] text-primary">
+                      <h2 className="font-display text-[11px] font-extrabold uppercase tracking-[0.22em] text-primary">
                         {headLabel}
-                      </p>
+                      </h2>
                       <p className="mt-2 font-display text-4xl font-extrabold leading-none tabular text-foreground">
                         {headValue}
                       </p>
