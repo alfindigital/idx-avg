@@ -556,14 +556,14 @@ export function Calculator() {
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/25">
               <Sigma className="h-5 w-5" strokeWidth={2.5} />
             </div>
-            <div className="leading-tight">
-              <h1 className="font-display text-2xl font-extrabold tracking-tight">
+            <h1 className="leading-tight">
+              <span className="font-display text-2xl font-extrabold tracking-tight block">
                 {t.appTitle}
-              </h1>
-              <p className="font-sans text-xs font-medium text-muted-foreground">
+              </span>
+              <span className="font-sans text-xs font-medium text-muted-foreground block">
                 {t.appTagline}
-              </p>
-            </div>
+              </span>
+            </h1>
           </div>
 
           <div className="flex items-center gap-0.5 text-muted-foreground">
@@ -664,9 +664,9 @@ export function Calculator() {
           <form onSubmit={handleSubmit} noValidate className="space-y-2 sm:space-y-5">
 
             {/* Position */}
-            <section className={cardCls}>
+            <section aria-labelledby="posisi-heading" className={cardCls}>
               <div className="mb-2 flex items-center justify-between sm:mb-4">
-                <h2 className={cn(sectionHead, "mb-0")}>{t.positionTitle}</h2>
+                <h2 id="posisi-heading" className={cn(sectionHead, "mb-0")}>{t.positionTitle}</h2>
                 <Tooltip>
                   <TooltipTrigger asChild aria-label="Info">
                     <Info className="h-4 w-4 cursor-help text-muted-foreground" />
@@ -722,9 +722,9 @@ export function Calculator() {
             </section>
 
             {/* Averaging */}
-            <section className={cardCls}>
+            <section aria-labelledby="averaging-heading" className={cardCls}>
               <div className="mb-2 flex items-center justify-between sm:mb-4">
-                <h2 className={cn(sectionHead, "mb-0")}>{t.averagingTitle}</h2>
+                <h2 id="averaging-heading" className={cn(sectionHead, "mb-0")}>{t.averagingTitle}</h2>
                 <Tooltip>
                   <TooltipTrigger asChild aria-label="Info">
                     <Info className="h-4 w-4 cursor-help text-muted-foreground" />
@@ -868,9 +868,9 @@ export function Calculator() {
                 <div className="bg-primary/10 px-5 pt-5 pb-4">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="font-display text-[11px] font-extrabold uppercase tracking-[0.22em] text-primary">
+                      <h2 className="font-display text-[11px] font-extrabold uppercase tracking-[0.22em] text-primary">
                         {headLabel}
-                      </p>
+                      </h2>
                       <p className="mt-2 font-display text-4xl font-extrabold leading-none tabular text-foreground">
                         {headValue}
                       </p>
