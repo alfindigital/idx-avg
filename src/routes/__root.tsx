@@ -11,7 +11,7 @@ import {
 import { Toaster } from "@/components/ui/sonner";
 
 import appCss from "../styles.css?url";
-import { registerPWA } from "@/lib/pwa-register.client";
+import { registerPWA } from "@/lib/pwa-register";
 
 function NotFoundComponent() {
   return (
