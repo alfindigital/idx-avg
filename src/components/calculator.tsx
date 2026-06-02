@@ -67,7 +67,7 @@ import {
   calcNewAvg,
 } from "@/lib/calc";
 import { useLang, type Dict } from "@/lib/i18n";
-import { toPng } from "html-to-image";
+// html-to-image is loaded lazily inside saveImage() to keep it out of the initial bundle.
 
 const HISTORY_KEY = "idxavg-history-v1";
 const THEME_KEY = "idxavg-theme";
@@ -495,6 +495,7 @@ export function Calculator() {
       resultRef.current?.offsetParent ? resultRef.current : mobileResultRef.current;
     if (!node) return;
     try {
+      const { toPng } = await import("html-to-image");
       const dataUrl = await toPng(node, {
         pixelRatio: 2,
         cacheBust: true,
