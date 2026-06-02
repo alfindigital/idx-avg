@@ -679,9 +679,10 @@ export function Calculator() {
               </div>
               <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 <div>
-                  <Label className={labelCls}>{t.avgNow}</Label>
+                  <Label htmlFor="avg-now-input" className={labelCls}>{t.avgNow}</Label>
 
                   <Input
+                    id="avg-now-input"
                     ref={firstInputRef}
                     inputMode="decimal"
                     value={avgPrice}
@@ -697,8 +698,9 @@ export function Calculator() {
                   {errAvg && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errAvg}</p>}
                 </div>
                 <div>
-                  <Label className={labelCls}>{t.totalLot}</Label>
+                  <Label htmlFor="total-lot-input" className={labelCls}>{t.totalLot}</Label>
                   <Input
+                    id="total-lot-input"
                     ref={lotRef}
                     inputMode="numeric"
                     value={totalLot}
@@ -738,9 +740,10 @@ export function Calculator() {
 
               <div className="space-y-1.5 sm:space-y-3">
                 <div>
-                  <Label className={labelCls}>{t.hargaAvg}</Label>
+                  <Label htmlFor="harga-avg-input" className={labelCls}>{t.hargaAvg}</Label>
 
                   <Input
+                    id="harga-avg-input"
                     ref={hargaRef}
                     inputMode="decimal"
                     value={hargaAvg}
@@ -757,8 +760,9 @@ export function Calculator() {
 
                 <div className="grid grid-cols-2 gap-2 sm:gap-3">
                   <div className={cn(lotTambahDisabled && "opacity-50")}>
-                    <Label className={labelCls}>{t.lotTambah}</Label>
+                    <Label htmlFor="lot-tambah-input" className={labelCls}>{t.lotTambah}</Label>
                     <Input
+                      id="lot-tambah-input"
                       ref={lotTambahRef}
                       inputMode="numeric"
                       value={lotTambah}
@@ -772,8 +776,9 @@ export function Calculator() {
                     {errLotTambah && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errLotTambah}</p>}
                   </div>
                   <div className={cn(targetAvgDisabled && "opacity-50")}>
-                    <Label className={labelCls}>{t.targetAvg}</Label>
+                    <Label htmlFor="target-avg-input" className={labelCls}>{t.targetAvg}</Label>
                     <Input
+                      id="target-avg-input"
                       ref={targetRef}
                       inputMode="decimal"
                       value={targetAvg}
@@ -810,8 +815,9 @@ export function Calculator() {
                     </label>
                     <div className="grid grid-cols-2 gap-2 sm:gap-3">
                       <div>
-                        <Label className={labelCls}>{t.feeBuy} (%)</Label>
+                        <Label htmlFor="fee-buy-input" className={labelCls}>{t.feeBuy} (%)</Label>
                         <Input
+                          id="fee-buy-input"
                           inputMode="decimal"
                           value={String(fee.buyPct)}
                           onChange={(e) => {
@@ -823,8 +829,9 @@ export function Calculator() {
                         />
                       </div>
                       <div>
-                        <Label className={labelCls}>{t.feeSell} (%)</Label>
+                        <Label htmlFor="fee-sell-input" className={labelCls}>{t.feeSell} (%)</Label>
                         <Input
+                          id="fee-sell-input"
                           inputMode="decimal"
                           value={String(fee.sellPct)}
                           onChange={(e) => {
