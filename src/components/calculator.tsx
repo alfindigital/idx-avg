@@ -575,7 +575,6 @@ export function Calculator() {
               aria-label="Toggle language"
               className="h-10 gap-1 rounded-xl px-2 text-xs font-bold uppercase hover:bg-secondary hover:text-primary"
             >
-              <Languages className="h-4 w-4" />
               {lang.toUpperCase()}
             </Button>
             <Dialog open={historyOpen} onOpenChange={setHistoryOpen}>
