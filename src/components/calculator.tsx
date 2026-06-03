@@ -591,11 +591,13 @@ export function Calculator() {
                     {history.length > 0 && (
                       <Button
                         variant="ghost"
-                        size="sm"
+                        size="icon"
                         onClick={clearHistory}
-                        className="h-8 rounded-lg text-xs font-semibold text-destructive hover:bg-destructive/10 hover:text-destructive"
+                        aria-label={t.clearHistory}
+                        title={t.clearHistory}
+                        className="mr-8 h-8 w-8 rounded-lg text-destructive hover:bg-destructive/10 hover:text-destructive"
                       >
-                        <Trash2 className="mr-1 h-3.5 w-3.5" /> {t.clearHistory}
+                        <Trash2 className="h-4 w-4" />
                       </Button>
                     )}
                   </DialogTitle>
