@@ -802,9 +802,8 @@ export function Calculator() {
             <section className={cn(cardCls, "py-0.5 sm:py-1")}>
               <Accordion type="single" collapsible>
                 <AccordionItem value="fee" className="border-b-0">
-                  <AccordionTrigger className="py-2 hover:no-underline sm:py-3">
-                    <span className={cn(sectionHead, "mb-0")}>{t.feeTitle}</span>
-
+                  <AccordionTrigger className="py-2 hover:no-underline sm:py-3 [&>svg]:self-center">
+                    <span className={cn(sectionHead, "mb-0 leading-none")}>{t.feeTitle}</span>
                   </AccordionTrigger>
                   <AccordionContent className="pt-1 pb-3">
                     <label className="mb-2 flex cursor-pointer items-center gap-2 sm:mb-3">
