@@ -36,13 +36,6 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-
-import {
   Drawer,
   DrawerContent,
   DrawerHeader,
@@ -799,14 +792,17 @@ export function Calculator() {
             </section>
 
             {/* Fee Section */}
-            <section className={cardCls}>
-              <label className="flex cursor-pointer items-center gap-2.5 select-none">
+            <section className={cn(cardCls, "py-3 sm:py-4")}>
+              <label className="flex h-5 cursor-pointer items-center gap-2.5 select-none">
                 <Checkbox
                   checked={fee.enabled}
                   onCheckedChange={(c) => setFee((f) => ({ ...f, enabled: c === true }))}
                   aria-label={t.feeInclude}
+                  className="h-4 w-4 rounded-full border-primary/80 bg-transparent shadow-none data-[state=checked]:bg-primary [&_svg]:h-3 [&_svg]:w-3"
                 />
-                <span className={cn(sectionHead, "mb-0 leading-none")}>{t.feeTitle}</span>
+                <span className="inline-flex h-4 items-center font-display text-[11px] font-bold uppercase leading-none tracking-[0.18em] text-muted-foreground sm:text-xs">
+                  {t.feeTitle}
+                </span>
               </label>
               {fee.enabled && (
                 <div className="mt-3 grid grid-cols-2 gap-2 sm:mt-4 sm:gap-3">
