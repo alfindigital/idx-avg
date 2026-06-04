@@ -657,10 +657,10 @@ export function Calculator() {
         {/* Main */}
         <main className="mx-auto w-full max-w-[480px] px-4 pt-2 pb-[calc(4.5rem+env(safe-area-inset-bottom))] sm:pt-4 sm:pb-4">
           {showRecovered && (
-            <div className="mb-2 flex items-center justify-center animate-in fade-in slide-in-from-top-2 duration-300 sm:mb-3">
-              <Badge variant="secondary" className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-                <Check className="mr-1 h-3.5 w-3.5" /> {t.recovered}
-              </Badge>
+            <div className="pointer-events-none fixed inset-x-0 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] z-40 flex justify-center animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <span className="rounded-full bg-muted/80 px-2.5 py-0.5 text-[10px] font-medium text-muted-foreground backdrop-blur-sm">
+                {t.recovered}
+              </span>
             </div>
           )}
           <form onSubmit={handleSubmit} noValidate className="space-y-2 sm:space-y-5">
@@ -798,56 +798,46 @@ export function Calculator() {
               </div>
             </section>
 
-            {/* Fee Accordion */}
-            <section className={cn(cardCls, "!p-0 overflow-hidden")}>
-              <Accordion type="single" collapsible>
-                <AccordionItem value="fee" className="border-b-0">
-                  <div className="flex items-center gap-2.5 px-3 sm:px-5">
-                    <Checkbox
-                      checked={fee.enabled}
-                      onCheckedChange={(c) => setFee((f) => ({ ...f, enabled: c === true }))}
-                      onClick={(e) => e.stopPropagation()}
-                      aria-label={t.feeInclude}
-                      title={t.feeInclude}
+            {/* Fee Section */}
+            <section className={cardCls}>
+              <label className="flex cursor-pointer items-center gap-2.5 select-none">
+                <Checkbox
+                  checked={fee.enabled}
+                  onCheckedChange={(c) => setFee((f) => ({ ...f, enabled: c === true }))}
+                  aria-label={t.feeInclude}
+                />
+                <span className={cn(sectionHead, "mb-0 leading-none")}>{t.feeTitle}</span>
+              </label>
+              {fee.enabled && (
+                <div className="mt-3 grid grid-cols-2 gap-2 sm:mt-4 sm:gap-3">
+                  <div>
+                    <Label htmlFor="fee-buy-input" className={labelCls}>{t.feeBuy} (%)</Label>
+                    <Input
+                      id="fee-buy-input"
+                      inputMode="decimal"
+                      value={String(fee.buyPct)}
+                      onChange={(e) => {
+                        const v = numOnly(e.target.value);
+                        setFee((f) => ({ ...f, buyPct: v === "" ? 0 : parseFloat(v) || 0 }));
+                      }}
+                      className={cn(inputCls, "tabular")}
                     />
-                    <AccordionTrigger className="flex-1 py-3 hover:no-underline sm:py-4">
-                      <span className={cn(sectionHead, "mb-0 leading-none")}>{t.feeTitle}</span>
-                    </AccordionTrigger>
                   </div>
-                  <AccordionContent className="px-3 pb-3 pt-0 sm:px-5 sm:pb-4">
-                    <div className="grid grid-cols-2 gap-2 sm:gap-3">
-                      <div>
-                        <Label htmlFor="fee-buy-input" className={labelCls}>{t.feeBuy} (%)</Label>
-                        <Input
-                          id="fee-buy-input"
-                          inputMode="decimal"
-                          value={String(fee.buyPct)}
-                          onChange={(e) => {
-                            const v = numOnly(e.target.value);
-                            setFee((f) => ({ ...f, buyPct: v === "" ? 0 : parseFloat(v) || 0 }));
-                          }}
-                          disabled={!fee.enabled}
-                          className={cn(inputCls, "tabular")}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="fee-sell-input" className={labelCls}>{t.feeSell} (%)</Label>
-                        <Input
-                          id="fee-sell-input"
-                          inputMode="decimal"
-                          value={String(fee.sellPct)}
-                          onChange={(e) => {
-                            const v = numOnly(e.target.value);
-                            setFee((f) => ({ ...f, sellPct: v === "" ? 0 : parseFloat(v) || 0 }));
-                          }}
-                          disabled={!fee.enabled}
-                          className={cn(inputCls, "tabular")}
-                        />
-                      </div>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
+                  <div>
+                    <Label htmlFor="fee-sell-input" className={labelCls}>{t.feeSell} (%)</Label>
+                    <Input
+                      id="fee-sell-input"
+                      inputMode="decimal"
+                      value={String(fee.sellPct)}
+                      onChange={(e) => {
+                        const v = numOnly(e.target.value);
+                        setFee((f) => ({ ...f, sellPct: v === "" ? 0 : parseFloat(v) || 0 }));
+                      }}
+                      className={cn(inputCls, "tabular")}
+                    />
+                  </div>
+                </div>
+              )}
             </section>
 
 
