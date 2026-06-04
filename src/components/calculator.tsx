@@ -36,25 +36,13 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-
-import {
   Drawer,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -139,7 +127,6 @@ export function Calculator() {
   const hydratedRef = useRef(false);
   const [showRecovered, setShowRecovered] = useState(false);
   const recoveredTimeoutRef = useRef<number | null>(null);
-
 
   const feeKey = `${fee.enabled}|${fee.buyPct}|${fee.sellPct}`;
   const currentInputsKey = `${avgPrice}|${totalLot}|${hargaAvg}|${lotTambah}|${targetAvg}|${feeKey}`;
@@ -243,7 +230,7 @@ export function Calculator() {
       try {
         localStorage.setItem(
           INPUTS_KEY,
-          JSON.stringify({ avgPrice, totalLot, hargaAvg, lotTambah, targetAvg, mode })
+          JSON.stringify({ avgPrice, totalLot, hargaAvg, lotTambah, targetAvg, mode }),
         );
       } catch {}
       saveTimeoutRef.current = null;
@@ -273,7 +260,19 @@ export function Calculator() {
     if (mode === "new-avg") return !!lotTambah && !errLotTambah;
     if (mode === "lots-needed") return !!targetAvg && !errTarget;
     return false;
-  }, [avgPrice, totalLot, hargaAvg, lotTambah, targetAvg, mode, errAvg, errLot, errHarga, errLotTambah, errTarget]);
+  }, [
+    avgPrice,
+    totalLot,
+    hargaAvg,
+    lotTambah,
+    targetAvg,
+    mode,
+    errAvg,
+    errLot,
+    errHarga,
+    errLotTambah,
+    errTarget,
+  ]);
 
   const canCalculateRef = useRef(canCalculate);
   canCalculateRef.current = canCalculate;
@@ -362,7 +361,6 @@ export function Calculator() {
   const focusFirstInvalidRef = useRef(focusFirstInvalid);
   focusFirstInvalidRef.current = focusFirstInvalid;
 
-
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     const active = document.activeElement as HTMLElement | null;
@@ -375,8 +373,6 @@ export function Calculator() {
       }
     }, 0);
   };
-
-
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -407,12 +403,10 @@ export function Calculator() {
         else focusFirstInvalidRef.current();
         return;
       }
-
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, []);
-
 
   const toggleTheme = () => {
     const n = !isDark;
@@ -491,8 +485,7 @@ export function Calculator() {
 
   const saveImage = async () => {
     if (!result) return;
-    const node =
-      resultRef.current?.offsetParent ? resultRef.current : mobileResultRef.current;
+    const node = resultRef.current?.offsetParent ? resultRef.current : mobileResultRef.current;
     if (!node) return;
     try {
       const { toPng } = await import("html-to-image");
@@ -538,21 +531,19 @@ export function Calculator() {
 
   const inputCls =
     "h-auto rounded-xl border-2 border-transparent bg-card px-3 py-1.5 text-sm font-bold text-foreground shadow-none transition-all focus-visible:border-primary focus-visible:ring-0 placeholder:text-muted-foreground sm:px-4 sm:py-2.5 sm:text-lg";
-  const labelCls = "mb-0.5 ml-0.5 block text-[11px] font-semibold text-foreground/70 sm:mb-1 sm:text-sm";
+  const labelCls =
+    "mb-0.5 ml-0.5 block text-[11px] font-semibold text-foreground/70 sm:mb-1 sm:text-sm";
   const sectionHead =
     "mb-2 font-display text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground sm:mb-4 sm:text-xs";
   const cardCls =
     "rounded-2xl border border-white/70 bg-secondary/60 p-2.5 shadow-sm dark:border-white/5 sm:rounded-3xl sm:p-5";
   const flashCls = "border-destructive ring-2 ring-destructive/40 animate-pulse";
 
-
-
   return (
     <TooltipProvider delayDuration={150}>
       <div className="min-h-screen bg-background text-foreground">
         {/* Header */}
         <header className="mx-auto flex w-full max-w-[480px] items-center justify-between px-4 pt-3 pb-1 sm:pt-8 sm:pb-2">
-
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/25">
               <Sigma className="h-5 w-5" strokeWidth={2.5} />
@@ -579,7 +570,12 @@ export function Calculator() {
             </Button>
             <Dialog open={historyOpen} onOpenChange={setHistoryOpen}>
               <DialogTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-secondary hover:text-primary" aria-label={t.history}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-10 w-10 rounded-xl hover:bg-secondary hover:text-primary"
+                  aria-label={t.history}
+                >
                   <History className="h-5 w-5" />
                 </Button>
               </DialogTrigger>
@@ -618,7 +614,9 @@ export function Calculator() {
                             {formatRupiah(h.avgSekarang)} → {formatRupiah(h.newAvgPrice)}
                           </span>
                           <span className="text-xs font-medium text-muted-foreground">
-                            {new Date(h.timestamp).toLocaleDateString(lang === "id" ? "id-ID" : "en-US")}
+                            {new Date(h.timestamp).toLocaleDateString(
+                              lang === "id" ? "id-ID" : "en-US",
+                            )}
                           </span>
                         </div>
                         <div className="mt-1 flex items-center justify-between text-xs font-medium text-muted-foreground tabular">
@@ -629,7 +627,7 @@ export function Calculator() {
                             className={cn(
                               "font-bold",
                               h.status === "down" && "text-destructive",
-                              h.status === "up" && "text-success"
+                              h.status === "up" && "text-success",
                             )}
                           >
                             {h.status === "down" ? "↓" : h.status === "up" ? "↑" : "→"}{" "}
@@ -664,11 +662,12 @@ export function Calculator() {
             </div>
           )}
           <form onSubmit={handleSubmit} noValidate className="space-y-2 sm:space-y-5">
-
             {/* Position */}
             <section aria-labelledby="posisi-heading" className={cardCls}>
               <div className="mb-2 flex items-center justify-between sm:mb-4">
-                <h2 id="posisi-heading" className={cn(sectionHead, "mb-0")}>{t.positionTitle}</h2>
+                <h2 id="posisi-heading" className={cn(sectionHead, "mb-0")}>
+                  {t.positionTitle}
+                </h2>
                 <Tooltip>
                   <TooltipTrigger asChild aria-label="Info">
                     <Info className="h-4 w-4 cursor-help text-muted-foreground" />
@@ -680,7 +679,9 @@ export function Calculator() {
               </div>
               <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 <div>
-                  <Label htmlFor="avg-now-input" className={labelCls}>{t.avgNow}</Label>
+                  <Label htmlFor="avg-now-input" className={labelCls}>
+                    {t.avgNow}
+                  </Label>
 
                   <Input
                     id="avg-now-input"
@@ -691,15 +692,23 @@ export function Calculator() {
                     onBlur={(e) => handlePriceBlur(e.target.value, setAvgPrice)}
                     placeholder="0"
                     aria-invalid={!!errAvg}
-                    className={cn(inputCls, "tabular", errAvg && "border-destructive focus-visible:border-destructive", flashField === "avg" && flashCls)}
-
+                    className={cn(
+                      inputCls,
+                      "tabular",
+                      errAvg && "border-destructive focus-visible:border-destructive",
+                      flashField === "avg" && flashCls,
+                    )}
                     tabIndex={1}
                     autoFocus
                   />
-                  {errAvg && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errAvg}</p>}
+                  {errAvg && (
+                    <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errAvg}</p>
+                  )}
                 </div>
                 <div>
-                  <Label htmlFor="total-lot-input" className={labelCls}>{t.totalLot}</Label>
+                  <Label htmlFor="total-lot-input" className={labelCls}>
+                    {t.totalLot}
+                  </Label>
                   <Input
                     id="total-lot-input"
                     ref={lotRef}
@@ -708,27 +717,36 @@ export function Calculator() {
                     onChange={(e) => setTotalLot(intOnly(e.target.value))}
                     placeholder="0"
                     aria-invalid={!!errLot}
-                    className={cn(inputCls, "tabular", errLot && "border-destructive focus-visible:border-destructive", flashField === "lot" && flashCls)}
+                    className={cn(
+                      inputCls,
+                      "tabular",
+                      errLot && "border-destructive focus-visible:border-destructive",
+                      flashField === "lot" && flashCls,
+                    )}
                     tabIndex={2}
                   />
 
-                  {errLot && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errLot}</p>}
+                  {errLot && (
+                    <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errLot}</p>
+                  )}
                 </div>
               </div>
               <div className="mt-2 flex items-center justify-between rounded-xl border border-white/70 bg-card/60 px-3 py-1.5 dark:border-white/5 sm:mt-4 sm:rounded-2xl sm:px-4 sm:py-3">
                 <span className="text-xs font-semibold text-muted-foreground sm:text-sm">
                   {t.modalAwal}
                 </span>
-                <span className="font-display text-sm font-extrabold tabular sm:text-lg">{formatRupiah(modalAwal)}</span>
+                <span className="font-display text-sm font-extrabold tabular sm:text-lg">
+                  {formatRupiah(modalAwal)}
+                </span>
               </div>
-
-
             </section>
 
             {/* Averaging */}
             <section aria-labelledby="averaging-heading" className={cardCls}>
               <div className="mb-2 flex items-center justify-between sm:mb-4">
-                <h2 id="averaging-heading" className={cn(sectionHead, "mb-0")}>{t.averagingTitle}</h2>
+                <h2 id="averaging-heading" className={cn(sectionHead, "mb-0")}>
+                  {t.averagingTitle}
+                </h2>
                 <Tooltip>
                   <TooltipTrigger asChild aria-label="Info">
                     <Info className="h-4 w-4 cursor-help text-muted-foreground" />
@@ -741,7 +759,9 @@ export function Calculator() {
 
               <div className="space-y-1.5 sm:space-y-3">
                 <div>
-                  <Label htmlFor="harga-avg-input" className={labelCls}>{t.hargaAvg}</Label>
+                  <Label htmlFor="harga-avg-input" className={labelCls}>
+                    {t.hargaAvg}
+                  </Label>
 
                   <Input
                     id="harga-avg-input"
@@ -752,16 +772,25 @@ export function Calculator() {
                     onBlur={(e) => handlePriceBlur(e.target.value, setHargaAvg)}
                     placeholder="0"
                     aria-invalid={!!errHarga}
-                    className={cn(inputCls, "tabular", errHarga && "border-destructive focus-visible:border-destructive", flashField === "harga" && flashCls)}
+                    className={cn(
+                      inputCls,
+                      "tabular",
+                      errHarga && "border-destructive focus-visible:border-destructive",
+                      flashField === "harga" && flashCls,
+                    )}
                     tabIndex={3}
                   />
 
-                  {errHarga && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errHarga}</p>}
+                  {errHarga && (
+                    <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errHarga}</p>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 sm:gap-3">
                   <div className={cn(lotTambahDisabled && "opacity-50")}>
-                    <Label htmlFor="lot-tambah-input" className={labelCls}>{t.lotTambah}</Label>
+                    <Label htmlFor="lot-tambah-input" className={labelCls}>
+                      {t.lotTambah}
+                    </Label>
                     <Input
                       id="lot-tambah-input"
                       ref={lotTambahRef}
@@ -770,14 +799,25 @@ export function Calculator() {
                       onChange={(e) => setLotTambah(intOnly(e.target.value))}
                       placeholder="0"
                       aria-invalid={!!errLotTambah}
-                      className={cn(inputCls, "tabular", errLotTambah && "border-destructive focus-visible:border-destructive", flashField === "lotTambah" && flashCls)}
+                      className={cn(
+                        inputCls,
+                        "tabular",
+                        errLotTambah && "border-destructive focus-visible:border-destructive",
+                        flashField === "lotTambah" && flashCls,
+                      )}
                       disabled={lotTambahDisabled}
                       tabIndex={4}
                     />
-                    {errLotTambah && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errLotTambah}</p>}
+                    {errLotTambah && (
+                      <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">
+                        {errLotTambah}
+                      </p>
+                    )}
                   </div>
                   <div className={cn(targetAvgDisabled && "opacity-50")}>
-                    <Label htmlFor="target-avg-input" className={labelCls}>{t.targetAvg}</Label>
+                    <Label htmlFor="target-avg-input" className={labelCls}>
+                      {t.targetAvg}
+                    </Label>
                     <Input
                       id="target-avg-input"
                       ref={targetRef}
@@ -787,31 +827,44 @@ export function Calculator() {
                       onBlur={(e) => handlePriceBlur(e.target.value, setTargetAvg)}
                       placeholder="0"
                       aria-invalid={!!errTarget}
-                      className={cn(inputCls, "tabular", errTarget && "border-destructive focus-visible:border-destructive", flashField === "target" && flashCls)}
+                      className={cn(
+                        inputCls,
+                        "tabular",
+                        errTarget && "border-destructive focus-visible:border-destructive",
+                        flashField === "target" && flashCls,
+                      )}
                       disabled={targetAvgDisabled}
                       tabIndex={5}
                     />
-                    {errTarget && <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errTarget}</p>}
+                    {errTarget && (
+                      <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">
+                        {errTarget}
+                      </p>
+                    )}
                   </div>
-
                 </div>
               </div>
             </section>
 
             {/* Fee Section */}
-            <section className={cardCls}>
-              <label className="flex cursor-pointer items-center gap-2.5 select-none">
+            <section className={cn(cardCls, "py-3 sm:py-4")}>
+              <label className="flex h-5 cursor-pointer items-center gap-2.5 select-none">
                 <Checkbox
                   checked={fee.enabled}
                   onCheckedChange={(c) => setFee((f) => ({ ...f, enabled: c === true }))}
                   aria-label={t.feeInclude}
+                  className="h-4 w-4 rounded-full border-primary/80 bg-transparent shadow-none data-[state=checked]:bg-primary [&_svg]:h-3 [&_svg]:w-3"
                 />
-                <span className={cn(sectionHead, "mb-0 leading-none")}>{t.feeTitle}</span>
+                <span className="inline-flex h-4 items-center font-display text-[11px] font-bold uppercase leading-none tracking-[0.18em] text-muted-foreground sm:text-xs">
+                  {t.feeTitle}
+                </span>
               </label>
               {fee.enabled && (
                 <div className="mt-3 grid grid-cols-2 gap-2 sm:mt-4 sm:gap-3">
                   <div>
-                    <Label htmlFor="fee-buy-input" className={labelCls}>{t.feeBuy} (%)</Label>
+                    <Label htmlFor="fee-buy-input" className={labelCls}>
+                      {t.feeBuy} (%)
+                    </Label>
                     <Input
                       id="fee-buy-input"
                       inputMode="decimal"
@@ -824,7 +877,9 @@ export function Calculator() {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="fee-sell-input" className={labelCls}>{t.feeSell} (%)</Label>
+                    <Label htmlFor="fee-sell-input" className={labelCls}>
+                      {t.feeSell} (%)
+                    </Label>
                     <Input
                       id="fee-sell-input"
                       inputMode="decimal"
@@ -840,7 +895,6 @@ export function Calculator() {
               )}
             </section>
 
-
             <Button
               type={canCalculate ? "submit" : "button"}
               onClick={canCalculate ? undefined : () => focusFirstInvalid()}
@@ -849,206 +903,245 @@ export function Calculator() {
             >
               <span>{t.hitung}</span>
             </Button>
-
-
           </form>
 
           {/* Result */}
-          {result && (() => {
-            const headLabel = result.mode === "new-avg" ? t.avgBaru : t.lotDiperlukan;
-            const headValue =
-              result.mode === "new-avg"
-                ? formatRupiah(result.newAvgPrice)
-                : `${result.lotDelta} lot`;
-            const resultCard = (ref: RefObject<HTMLDivElement | null>) => (
-              <div
-                ref={ref}
-                data-result-card
-                className="overflow-hidden rounded-3xl border border-white/70 bg-card shadow-sm dark:border-white/5"
-              >
-                <div className="bg-primary/10 px-5 pt-5 pb-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <h2 className="font-display text-[11px] font-extrabold uppercase tracking-[0.22em] text-primary">
-                        {headLabel}
-                      </h2>
-                      <p className="mt-2 font-display text-4xl font-extrabold leading-none tabular text-foreground">
-                        {headValue}
-                      </p>
-                      {result.mode === "lots-needed" && (
-                        <p className="mt-2 font-sans text-sm font-semibold text-muted-foreground tabular">
-                          {t.avgJadi} {formatRupiah(result.newAvgPrice)}
+          {result &&
+            (() => {
+              const headLabel = result.mode === "new-avg" ? t.avgBaru : t.lotDiperlukan;
+              const headValue =
+                result.mode === "new-avg"
+                  ? formatRupiah(result.newAvgPrice)
+                  : `${result.lotDelta} lot`;
+              const resultCard = (ref: RefObject<HTMLDivElement | null>) => (
+                <div
+                  ref={ref}
+                  data-result-card
+                  className="overflow-hidden rounded-3xl border border-white/70 bg-card shadow-sm dark:border-white/5"
+                >
+                  <div className="bg-primary/10 px-5 pt-5 pb-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <h2 className="font-display text-[11px] font-extrabold uppercase tracking-[0.22em] text-primary">
+                          {headLabel}
+                        </h2>
+                        <p className="mt-2 font-display text-4xl font-extrabold leading-none tabular text-foreground">
+                          {headValue}
                         </p>
-                      )}
+                        {result.mode === "lots-needed" && (
+                          <p className="mt-2 font-sans text-sm font-semibold text-muted-foreground tabular">
+                            {t.avgJadi} {formatRupiah(result.newAvgPrice)}
+                          </p>
+                        )}
+                      </div>
+                      <Badge
+                        variant="secondary"
+                        className={cn(
+                          "shrink-0 gap-1 rounded-full px-3 py-1.5 text-xs font-bold",
+                          result.status === "down" &&
+                            "bg-destructive/15 text-destructive hover:bg-destructive/15",
+                          result.status === "up" &&
+                            "bg-success/15 text-success hover:bg-success/15",
+                        )}
+                      >
+                        {result.status === "down" ? (
+                          <TrendingDown className="h-3.5 w-3.5" />
+                        ) : (
+                          <TrendingUp className="h-3.5 w-3.5" />
+                        )}
+                        {result.percentage.toFixed(2)}%
+                      </Badge>
                     </div>
-                    <Badge
-                      variant="secondary"
-                      className={cn(
-                        "shrink-0 gap-1 rounded-full px-3 py-1.5 text-xs font-bold",
-                        result.status === "down" &&
-                          "bg-destructive/15 text-destructive hover:bg-destructive/15",
-                        result.status === "up" &&
-                          "bg-success/15 text-success hover:bg-success/15"
-                      )}
-                    >
-                      {result.status === "down" ? (
-                        <TrendingDown className="h-3.5 w-3.5" />
-                      ) : (
-                        <TrendingUp className="h-3.5 w-3.5" />
-                      )}
-                      {result.percentage.toFixed(2)}%
-                    </Badge>
-                  </div>
-                </div>
-
-                <div className="space-y-2.5 px-5 py-4 text-sm font-medium">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">{t.avgSekarangRow}</span>
-                    <span className="font-bold tabular text-foreground">
-                      {formatRupiah(result.avgSekarang)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">{t.totalLot}</span>
-                    <span className="font-bold tabular text-foreground">
-                      {result.lotSekarang.toLocaleString("id-ID")}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">{t.hargaAveragingRow}</span>
-                    <span className="font-bold tabular text-foreground">
-                      {formatRupiah(result.hargaAveraging)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between border-t border-border/70 pt-2.5">
-                    <span className="text-muted-foreground">{t.lotBaru}</span>
-                    <span className="font-bold tabular text-foreground">
-                      {result.totalLotBaru.toLocaleString("id-ID")} <span className="text-muted-foreground">(+{result.lotDelta.toLocaleString("id-ID")})</span>
-                    </span>
                   </div>
 
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">{t.modalTambahan}</span>
-                    <button
-                      type="button"
-                      onClick={() => copyValue(t.modalTambahan, formatRupiah(result.modalTambahan))}
-                      className="flex items-center gap-1 rounded-lg px-1.5 py-0.5 text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
-                    >
-                      <span className="font-bold tabular text-foreground">{formatRupiah(result.modalTambahan)}</span>
-                      <Copy className="h-3 w-3 text-muted-foreground" />
-                    </button>
-                  </div>
-                  {result.feeEnabled && (
-                    <>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">{t.feeBeliLabel} ({result.buyPct}%)</span>
-                        <span className="font-bold tabular text-foreground">
-                          {formatRupiah(result.feeBeli ?? 0)}
+                  <div className="space-y-2.5 px-5 py-4 text-sm font-medium">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t.avgSekarangRow}</span>
+                      <span className="font-bold tabular text-foreground">
+                        {formatRupiah(result.avgSekarang)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t.totalLot}</span>
+                      <span className="font-bold tabular text-foreground">
+                        {result.lotSekarang.toLocaleString("id-ID")}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t.hargaAveragingRow}</span>
+                      <span className="font-bold tabular text-foreground">
+                        {formatRupiah(result.hargaAveraging)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between border-t border-border/70 pt-2.5">
+                      <span className="text-muted-foreground">{t.lotBaru}</span>
+                      <span className="font-bold tabular text-foreground">
+                        {result.totalLotBaru.toLocaleString("id-ID")}{" "}
+                        <span className="text-muted-foreground">
+                          (+{result.lotDelta.toLocaleString("id-ID")})
                         </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">{t.feeJualLabel} ({result.sellPct}%)</span>
-                        <span className="font-bold tabular text-foreground">
-                          {formatRupiah(result.feeJualEst ?? 0)}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">{t.breakEven}</span>
-                        <span className="font-bold tabular text-foreground">
-                          {formatRupiah(result.breakEvenPrice ?? 0)}
-                        </span>
-                      </div>
-                    </>
-                  )}
-                  <div className="flex items-center justify-between border-t border-border/70 pt-2.5">
-                    <span className="text-muted-foreground">{t.totalModal}</span>
-                    <button
-                      type="button"
-                      onClick={() => copyValue(t.totalModal, formatRupiah(result.totalModal))}
-                      className="flex items-center gap-1 rounded-lg px-1.5 py-0.5 text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
-                    >
-                      <span className="font-display text-base font-extrabold tabular text-foreground">{formatRupiah(result.totalModal)}</span>
-                      <Copy className="h-3 w-3 text-muted-foreground" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            );
+                      </span>
+                    </div>
 
-            const actions = (
-              <div className="mt-4 flex items-center justify-center gap-2">
-                <Button variant="outline" size="icon" onClick={copySummary} aria-label={t.copy} className="h-11 w-11 rounded-2xl border-border bg-card hover:border-primary/40 hover:bg-secondary hover:text-primary">
-                  <Copy className="h-4 w-4" />
-                </Button>
-                <Button variant="outline" size="icon" onClick={shareLink} aria-label={t.share} className="h-11 w-11 rounded-2xl border-border bg-card hover:border-primary/40 hover:bg-secondary hover:text-primary">
-                  <Link2 className="h-4 w-4" />
-                </Button>
-                <Button variant="outline" size="icon" onClick={saveImage} aria-label={t.savePng} className="h-11 w-11 rounded-2xl border-border bg-card hover:border-primary/40 hover:bg-secondary hover:text-primary">
-                  <Download className="h-4 w-4" />
-                </Button>
-                <Button variant="outline" size="icon" onClick={resetAll} aria-label={t.reset} className="h-11 w-11 rounded-2xl border-border bg-card hover:border-destructive/40 hover:bg-destructive/10 hover:text-destructive">
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-            );
-
-            return (
-              <>
-                <section className="mt-5 hidden sm:block">
-                  {resultCard(resultRef)}
-                  {actions}
-                </section>
-                <Drawer open={barOpen} onOpenChange={setBarOpen}>
-                  <div className="fixed inset-x-0 bottom-[calc(0.5rem+env(safe-area-inset-bottom))] z-30 flex justify-center px-3 sm:hidden">
-                    <DrawerTrigger asChild>
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">{t.modalTambahan}</span>
                       <button
                         type="button"
-                        className="flex w-full max-w-[440px] items-center justify-between gap-2 rounded-2xl border border-border bg-card px-4 py-2.5 text-left text-foreground shadow-2xl backdrop-blur transition-transform active:scale-[0.98]"
-                        aria-label={t.resultTitle}
+                        onClick={() =>
+                          copyValue(t.modalTambahan, formatRupiah(result.modalTambahan))
+                        }
+                        className="flex items-center gap-1 rounded-lg px-1.5 py-0.5 text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
                       >
-                        <div className="min-w-0 space-y-0">
-                          <p className="font-display text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
-                            {headLabel}
-                          </p>
-                          <p className="font-display text-base font-extrabold tabular leading-tight text-foreground">
-                            {headValue}
-                          </p>
-                        </div>
-                        <div className="h-8 w-px bg-border" />
-                        <div className="min-w-0 space-y-0 text-right">
-                          <p className="font-display text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
-                            {result.status === "down" ? t.turun : result.status === "up" ? t.naik : t.flat}
-                          </p>
-                          <p
-                            className={cn(
-                              "font-display text-base font-extrabold tabular leading-tight",
-                              result.status === "down" && "text-destructive",
-                              result.status === "up" && "text-success",
-                              result.status === "flat" && "text-foreground"
-                            )}
-                          >
-                            {result.status === "down" ? "↓" : result.status === "up" ? "↑" : "→"}{" "}
-                            {result.percentage.toFixed(2)}%
-                          </p>
-                        </div>
-                        <ChevronUp className="h-4 w-4 shrink-0 text-muted-foreground" />
+                        <span className="font-bold tabular text-foreground">
+                          {formatRupiah(result.modalTambahan)}
+                        </span>
+                        <Copy className="h-3 w-3 text-muted-foreground" />
                       </button>
-                    </DrawerTrigger>
-                  </div>
-                  <DrawerContent className="sm:hidden">
-                    <DrawerHeader className="pb-2">
-                      <DrawerTitle className="font-display">{t.resultTitle}</DrawerTitle>
-                    </DrawerHeader>
-                    <div className="px-4 pb-6">
-                      {resultCard(mobileResultRef)}
-                      {actions}
                     </div>
-                  </DrawerContent>
-                </Drawer>
-              </>
-            );
-          })()}
+                    {result.feeEnabled && (
+                      <>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">
+                            {t.feeBeliLabel} ({result.buyPct}%)
+                          </span>
+                          <span className="font-bold tabular text-foreground">
+                            {formatRupiah(result.feeBeli ?? 0)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">
+                            {t.feeJualLabel} ({result.sellPct}%)
+                          </span>
+                          <span className="font-bold tabular text-foreground">
+                            {formatRupiah(result.feeJualEst ?? 0)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">{t.breakEven}</span>
+                          <span className="font-bold tabular text-foreground">
+                            {formatRupiah(result.breakEvenPrice ?? 0)}
+                          </span>
+                        </div>
+                      </>
+                    )}
+                    <div className="flex items-center justify-between border-t border-border/70 pt-2.5">
+                      <span className="text-muted-foreground">{t.totalModal}</span>
+                      <button
+                        type="button"
+                        onClick={() => copyValue(t.totalModal, formatRupiah(result.totalModal))}
+                        className="flex items-center gap-1 rounded-lg px-1.5 py-0.5 text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
+                      >
+                        <span className="font-display text-base font-extrabold tabular text-foreground">
+                          {formatRupiah(result.totalModal)}
+                        </span>
+                        <Copy className="h-3 w-3 text-muted-foreground" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
 
+              const actions = (
+                <div className="mt-4 flex items-center justify-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={copySummary}
+                    aria-label={t.copy}
+                    className="h-11 w-11 rounded-2xl border-border bg-card hover:border-primary/40 hover:bg-secondary hover:text-primary"
+                  >
+                    <Copy className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={shareLink}
+                    aria-label={t.share}
+                    className="h-11 w-11 rounded-2xl border-border bg-card hover:border-primary/40 hover:bg-secondary hover:text-primary"
+                  >
+                    <Link2 className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={saveImage}
+                    aria-label={t.savePng}
+                    className="h-11 w-11 rounded-2xl border-border bg-card hover:border-primary/40 hover:bg-secondary hover:text-primary"
+                  >
+                    <Download className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={resetAll}
+                    aria-label={t.reset}
+                    className="h-11 w-11 rounded-2xl border-border bg-card hover:border-destructive/40 hover:bg-destructive/10 hover:text-destructive"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              );
+
+              return (
+                <>
+                  <section className="mt-5 hidden sm:block">
+                    {resultCard(resultRef)}
+                    {actions}
+                  </section>
+                  <Drawer open={barOpen} onOpenChange={setBarOpen}>
+                    <div className="fixed inset-x-0 bottom-[calc(0.5rem+env(safe-area-inset-bottom))] z-30 flex justify-center px-3 sm:hidden">
+                      <DrawerTrigger asChild>
+                        <button
+                          type="button"
+                          className="flex w-full max-w-[440px] items-center justify-between gap-2 rounded-2xl border border-border bg-card px-4 py-2.5 text-left text-foreground shadow-2xl backdrop-blur transition-transform active:scale-[0.98]"
+                          aria-label={t.resultTitle}
+                        >
+                          <div className="min-w-0 space-y-0">
+                            <p className="font-display text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+                              {headLabel}
+                            </p>
+                            <p className="font-display text-base font-extrabold tabular leading-tight text-foreground">
+                              {headValue}
+                            </p>
+                          </div>
+                          <div className="h-8 w-px bg-border" />
+                          <div className="min-w-0 space-y-0 text-right">
+                            <p className="font-display text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+                              {result.status === "down"
+                                ? t.turun
+                                : result.status === "up"
+                                  ? t.naik
+                                  : t.flat}
+                            </p>
+                            <p
+                              className={cn(
+                                "font-display text-base font-extrabold tabular leading-tight",
+                                result.status === "down" && "text-destructive",
+                                result.status === "up" && "text-success",
+                                result.status === "flat" && "text-foreground",
+                              )}
+                            >
+                              {result.status === "down" ? "↓" : result.status === "up" ? "↑" : "→"}{" "}
+                              {result.percentage.toFixed(2)}%
+                            </p>
+                          </div>
+                          <ChevronUp className="h-4 w-4 shrink-0 text-muted-foreground" />
+                        </button>
+                      </DrawerTrigger>
+                    </div>
+                    <DrawerContent className="sm:hidden">
+                      <DrawerHeader className="pb-2">
+                        <DrawerTitle className="font-display">{t.resultTitle}</DrawerTitle>
+                      </DrawerHeader>
+                      <div className="px-4 pb-6">
+                        {resultCard(mobileResultRef)}
+                        {actions}
+                      </div>
+                    </DrawerContent>
+                  </Drawer>
+                </>
+              );
+            })()}
         </main>
 
         {/* Footer */}
@@ -1065,28 +1158,71 @@ export function Calculator() {
                 @alfindigital
               </a>
             </span>
-            <span aria-hidden="true" className="text-muted-foreground">|</span>
+            <span aria-hidden="true" className="text-muted-foreground">
+              |
+            </span>
             <div className="flex items-center gap-0.5">
-              <a href="https://alfin.digital" target="_blank" rel="noreferrer" aria-label="Website" className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary">
+              <a
+                href="https://alfin.digital"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Website"
+                className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary"
+              >
                 <Globe className="h-3.5 w-3.5" />
               </a>
-              <a href="https://facebook.com/alfindigital" target="_blank" rel="noreferrer" aria-label="Facebook" className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary">
+              <a
+                href="https://facebook.com/alfindigital"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Facebook"
+                className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary"
+              >
                 <Facebook className="h-3.5 w-3.5" />
               </a>
-              <a href="https://youtube.com/@alfindigital" target="_blank" rel="noreferrer" aria-label="YouTube" className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary">
+              <a
+                href="https://youtube.com/@alfindigital"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="YouTube"
+                className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary"
+              >
                 <Youtube className="h-3.5 w-3.5" />
               </a>
-              <a href="https://tiktok.com/@alfindigital" target="_blank" rel="noreferrer" aria-label="TikTok" className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary">
-                <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor" aria-hidden="true">
+              <a
+                href="https://tiktok.com/@alfindigital"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="TikTok"
+                className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  className="h-3.5 w-3.5"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
                   <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.83a8.16 8.16 0 0 0 4.77 1.52V6.9a4.85 4.85 0 0 1-1.84-.21Z" />
                 </svg>
               </a>
-              <a href="https://x.com/alfindigital" target="_blank" rel="noreferrer" aria-label="X (Twitter)" className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary">
+              <a
+                href="https://x.com/alfindigital"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="X (Twitter)"
+                className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary"
+              >
                 <svg viewBox="0 0 24 24" className="h-3 w-3" fill="currentColor" aria-hidden="true">
                   <path d="M18.244 2H21.5l-7.5 8.575L23 22h-6.844l-5.36-6.99L4.5 22H1.244l8.02-9.166L1 2h7.02l4.85 6.41L18.244 2Zm-2.4 18h1.9L7.27 4H5.27l10.574 16Z" />
                 </svg>
               </a>
-              <a href="https://t.me/alfindx" target="_blank" rel="noreferrer" aria-label="Telegram" className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary">
+              <a
+                href="https://t.me/alfindx"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Telegram"
+                className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-primary"
+              >
                 <Send className="h-3.5 w-3.5" />
               </a>
             </div>
