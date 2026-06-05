@@ -597,6 +597,7 @@ export function Calculator() {
               size="sm"
               onClick={toggleLang}
               aria-label="Toggle language"
+              title="Alt+L"
               className="h-10 gap-1 rounded-xl px-2 text-xs font-bold uppercase hover:bg-secondary hover:text-primary"
             >
               {lang.toUpperCase()}
