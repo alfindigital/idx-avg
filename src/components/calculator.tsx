@@ -374,13 +374,16 @@ export function Calculator() {
     }, 0);
   };
 
-  // Keyboard shortcuts
+  // Keyboard shortcuts (stable refs to avoid re-binding)
+  const resetAllRef = useRef<() => void>(() => {});
+  const toggleLangRef = useRef<() => void>(() => {});
+  const toggleThemeRef = useRef<() => void>(() => {});
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName?.toLowerCase();
       const inInput = tag === "input" || tag === "textarea" || tag === "select";
 
-      // Ctrl/Cmd+Enter or Ctrl/Cmd+K: trigger calculation from anywhere
+      // Ctrl/Cmd+Enter or Ctrl/Cmd+K → calculate (works inside inputs too)
       if ((e.ctrlKey || e.metaKey) && (e.key === "Enter" || e.key.toLowerCase() === "k")) {
         e.preventDefault();
         const active = document.activeElement as HTMLElement | null;
@@ -392,16 +395,43 @@ export function Calculator() {
         return;
       }
 
-      if (e.key === "/" && !inInput) {
+      // Alt+R → reset, Alt+L → toggle language, Alt+T → toggle theme
+      // Use e.code so it works on macOS where Alt+letter produces special chars.
+      if (e.altKey && !e.ctrlKey && !e.metaKey) {
+        const code = e.code;
+        if (code === "KeyR") {
+          e.preventDefault();
+          resetAllRef.current();
+          return;
+        }
+        if (code === "KeyL") {
+          e.preventDefault();
+          toggleLangRef.current();
+          return;
+        }
+        if (code === "KeyT") {
+          e.preventDefault();
+          toggleThemeRef.current();
+          return;
+        }
+      }
+
+      if (inInput) return;
+
+      if (e.key === "/") {
         e.preventDefault();
         firstInputRef.current?.focus();
         return;
       }
-      if (e.key === "Enter" && !inInput) {
+      if (e.key === "Enter") {
         e.preventDefault();
         if (canCalculateRef.current) runCalcRef.current();
         else focusFirstInvalidRef.current();
         return;
+      }
+      if (e.key === "Escape") {
+        e.preventDefault();
+        resetAllRef.current();
       }
     };
     document.addEventListener("keydown", onKey);
@@ -432,6 +462,9 @@ export function Calculator() {
     } catch {}
     toast(t.formReset);
   };
+  resetAllRef.current = resetAll;
+  toggleLangRef.current = toggleLang;
+  toggleThemeRef.current = toggleTheme;
 
   const shareLink = async () => {
     if (!result) return;
@@ -564,6 +597,7 @@ export function Calculator() {
               size="sm"
               onClick={toggleLang}
               aria-label="Toggle language"
+              title="Alt+L"
               className="h-10 gap-1 rounded-xl px-2 text-xs font-bold uppercase hover:bg-secondary hover:text-primary"
             >
               {lang.toUpperCase()}
@@ -646,6 +680,7 @@ export function Calculator() {
               className="h-10 w-10 rounded-xl hover:bg-secondary hover:text-primary"
               onClick={toggleTheme}
               aria-label="Toggle theme"
+              title="Alt+T"
             >
               {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
@@ -898,6 +933,7 @@ export function Calculator() {
             <Button
               type={canCalculate ? "submit" : "button"}
               onClick={canCalculate ? undefined : () => focusFirstInvalid()}
+              title="Ctrl/Cmd+Enter"
               className="font-display flex h-auto w-full items-center justify-center gap-2 rounded-2xl py-2.5 text-sm font-extrabold uppercase tracking-[0.15em] shadow-lg shadow-primary/25 transition-all active:scale-[0.98] sm:rounded-3xl sm:py-5 sm:text-lg disabled:opacity-50"
               aria-disabled={!canCalculate}
             >
@@ -1075,6 +1111,7 @@ export function Calculator() {
                     size="icon"
                     onClick={resetAll}
                     aria-label={t.reset}
+                    title="Alt+R / Esc"
                     className="h-11 w-11 rounded-2xl border-border bg-card hover:border-destructive/40 hover:bg-destructive/10 hover:text-destructive"
                   >
                     <X className="h-4 w-4" />
