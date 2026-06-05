@@ -1110,6 +1110,7 @@ export function Calculator() {
                     size="icon"
                     onClick={resetAll}
                     aria-label={t.reset}
+                    title="Alt+R / Esc"
                     className="h-11 w-11 rounded-2xl border-border bg-card hover:border-destructive/40 hover:bg-destructive/10 hover:text-destructive"
                   >
                     <X className="h-4 w-4" />
