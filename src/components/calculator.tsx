@@ -396,20 +396,20 @@ export function Calculator() {
       }
 
       // Alt+R → reset, Alt+L → toggle language, Alt+T → toggle theme
-      // Alt+letter doesn't interfere with numeric input.
+      // Use e.code so it works on macOS where Alt+letter produces special chars.
       if (e.altKey && !e.ctrlKey && !e.metaKey) {
-        const k = e.key.toLowerCase();
-        if (k === "r") {
+        const code = e.code;
+        if (code === "KeyR") {
           e.preventDefault();
           resetAllRef.current();
           return;
         }
-        if (k === "l") {
+        if (code === "KeyL") {
           e.preventDefault();
           toggleLangRef.current();
           return;
         }
-        if (k === "t") {
+        if (code === "KeyT") {
           e.preventDefault();
           toggleThemeRef.current();
           return;
