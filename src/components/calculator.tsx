@@ -374,13 +374,16 @@ export function Calculator() {
     }, 0);
   };
 
-  // Keyboard shortcuts
+  // Keyboard shortcuts (stable refs to avoid re-binding)
+  const resetAllRef = useRef<() => void>(() => {});
+  const toggleLangRef = useRef<() => void>(() => {});
+  const toggleThemeRef = useRef<() => void>(() => {});
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName?.toLowerCase();
       const inInput = tag === "input" || tag === "textarea" || tag === "select";
 
-      // Ctrl/Cmd+Enter or Ctrl/Cmd+K: trigger calculation from anywhere
+      // Ctrl/Cmd+Enter or Ctrl/Cmd+K → calculate (works inside inputs too)
       if ((e.ctrlKey || e.metaKey) && (e.key === "Enter" || e.key.toLowerCase() === "k")) {
         e.preventDefault();
         const active = document.activeElement as HTMLElement | null;
@@ -392,16 +395,43 @@ export function Calculator() {
         return;
       }
 
-      if (e.key === "/" && !inInput) {
+      // Alt+R → reset, Alt+L → toggle language, Alt+T → toggle theme
+      // Alt+letter doesn't interfere with numeric input.
+      if (e.altKey && !e.ctrlKey && !e.metaKey) {
+        const k = e.key.toLowerCase();
+        if (k === "r") {
+          e.preventDefault();
+          resetAllRef.current();
+          return;
+        }
+        if (k === "l") {
+          e.preventDefault();
+          toggleLangRef.current();
+          return;
+        }
+        if (k === "t") {
+          e.preventDefault();
+          toggleThemeRef.current();
+          return;
+        }
+      }
+
+      if (inInput) return;
+
+      if (e.key === "/") {
         e.preventDefault();
         firstInputRef.current?.focus();
         return;
       }
-      if (e.key === "Enter" && !inInput) {
+      if (e.key === "Enter") {
         e.preventDefault();
         if (canCalculateRef.current) runCalcRef.current();
         else focusFirstInvalidRef.current();
         return;
+      }
+      if (e.key === "Escape") {
+        e.preventDefault();
+        resetAllRef.current();
       }
     };
     document.addEventListener("keydown", onKey);
