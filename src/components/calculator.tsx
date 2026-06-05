@@ -462,6 +462,9 @@ export function Calculator() {
     } catch {}
     toast(t.formReset);
   };
+  resetAllRef.current = resetAll;
+  toggleLangRef.current = toggleLang;
+  toggleThemeRef.current = toggleTheme;
 
   const shareLink = async () => {
     if (!result) return;
