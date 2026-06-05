@@ -680,6 +680,7 @@ export function Calculator() {
               className="h-10 w-10 rounded-xl hover:bg-secondary hover:text-primary"
               onClick={toggleTheme}
               aria-label="Toggle theme"
+              title="Alt+T"
             >
               {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
