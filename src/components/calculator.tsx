@@ -198,11 +198,11 @@ export function Calculator() {
     const h = p.get("harga");
     const lt = p.get("lotTambah");
     const tg = p.get("target");
-    if (a) setAvgPrice(a);
-    if (l) setTotalLot(l);
-    if (h) setHargaAvg(h);
-    if (lt) setLotTambah(lt);
-    if (tg) setTargetAvg(tg);
+    if (a) setAvgPrice(numOnly(a));
+    if (l) setTotalLot(intOnly(l));
+    if (h) setHargaAvg(numOnly(h));
+    if (lt) setLotTambah(intOnly(lt));
+    if (tg) setTargetAvg(numOnly(tg));
 
     hydratedRef.current = true;
     return () => {
