@@ -285,8 +285,6 @@ export function Calculator() {
     if (rounded !== n) setter(String(rounded));
   };
 
-  const intOnly = (v: string) => v.replace(/[^\d]/g, "");
-  const numOnly = (v: string) => v.replace(/[^\d.]/g, "");
 
   const saveHistory = (r: CalcResult) => {
     const next = [r, ...history].slice(0, 20);
