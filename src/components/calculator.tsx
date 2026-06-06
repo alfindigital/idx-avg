@@ -91,6 +91,9 @@ function validateLot(v: string, t: Dict): string | null {
   return null;
 }
 
+const intOnly = (v: string) => v.replace(/[^\d]/g, "");
+const numOnly = (v: string) => v.replace(/[^\d.]/g, "");
+
 export function Calculator() {
   const { lang, toggle: toggleLang, t } = useLang();
 
