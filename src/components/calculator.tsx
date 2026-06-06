@@ -15,12 +15,10 @@ import {
   Info,
   ChevronUp,
   Send,
-  Check,
   Sigma,
   Globe,
   Facebook,
   Youtube,
-  Languages,
 } from "lucide-react";
 
 import {
