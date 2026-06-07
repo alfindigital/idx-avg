@@ -613,7 +613,7 @@ export function Calculator() {
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-[440px] gap-3 rounded-3xl border-border bg-card p-6">
-                <DialogHeader>
+                <DialogHeader className="pt-4">
                   <DialogTitle className="flex items-center justify-between gap-2 font-display text-lg font-extrabold tracking-tight">
                     <span>{t.history}</span>
                     {history.length > 0 && (
