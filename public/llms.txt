@@ -4,4 +4,5 @@
 
 ## Pages
 
-- [Home](/): Kalkulator averaging saham IDX dengan auto tick-size.
+- [Home](https://idx-avg.lovable.app/): Kalkulator averaging saham IDX dengan auto tick-size.
+- [Buat / Kalkulator](https://idx-avg.lovable.app/buat): Buka langsung kalkulator average saham IDX, hitung average down dan lot tambahan.
