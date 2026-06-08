@@ -1,16 +1,45 @@
 {
-  "name": "IDXAvg — Kalkulator Averaging Saham IDX",
+  "name": "IDXAvg — Kalkulator Average Saham IDX",
   "short_name": "IDXAvg",
-  "description": "Hitung average price & lot tambahan sebelum beli saham IDX.",
+  "description": "Hitung average price, lot tambahan, dan break-even sebelum beli saham IDX. Auto tick-size, mobile-first, gratis.",
+  "lang": "id-ID",
+  "dir": "ltr",
   "start_url": "/",
+  "id": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#3b82f6",
+  "categories": ["finance", "productivity", "utilities"],
   "icons": [
     { "src": "/icon-512.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
     { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
     { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Hitung Average Baru",
+      "short_name": "Hitung",
+      "description": "Langsung buka kalkulator average saham",
+      "url": "/buat",
+      "icons": [{ "src": "/icon-512.png", "sizes": "192x192", "type": "image/png" }]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-mobile.jpg",
+      "sizes": "720x1280",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Kalkulator average saham IDX di mobile"
+    },
+    {
+      "src": "/screenshot-desktop.jpg",
+      "sizes": "1280x800",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "Kalkulator average saham IDX di desktop"
+    }
   ]
 }
