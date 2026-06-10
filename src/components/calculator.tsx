@@ -14,6 +14,7 @@ import {
   X,
   Info,
   ChevronUp,
+  ChevronDown,
   Send,
   Sigma,
   Globe,
@@ -41,6 +42,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -114,6 +116,7 @@ export function Calculator() {
   const [history, setHistory] = useState<CalcResult[]>([]);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
+  const [feeOpen, setFeeOpen] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
   const mobileResultRef = useRef<HTMLDivElement>(null);
   const firstInputRef = useRef<HTMLInputElement>(null);
@@ -881,53 +884,61 @@ export function Calculator() {
             </section>
 
             {/* Fee Section */}
-            <section className={cn(cardCls, "py-3 sm:py-4")}>
-              <label className="flex h-5 cursor-pointer items-center gap-2.5 select-none">
-                <Checkbox
-                  checked={fee.enabled}
-                  onCheckedChange={(c) => setFee((f) => ({ ...f, enabled: c === true }))}
-                  aria-label={t.feeInclude}
-                  className="h-4 w-4 rounded-full border-primary/80 bg-transparent shadow-none data-[state=checked]:bg-primary [&_svg]:h-3 [&_svg]:w-3"
-                />
+            <Collapsible open={feeOpen} onOpenChange={setFeeOpen} className={cn(cardCls, "py-3 sm:py-4")}>
+              <CollapsibleTrigger className="flex w-full items-center justify-between select-none [&[data-state=open]>svg]:rotate-180">
                 <span className="inline-flex h-4 items-center font-display text-[11px] font-bold uppercase leading-none tracking-[0.18em] text-muted-foreground sm:text-xs">
                   {t.feeTitle}
                 </span>
-              </label>
-              {fee.enabled && (
-                <div className="mt-3 grid grid-cols-2 gap-2 sm:mt-4 sm:gap-3">
-                  <div>
-                    <Label htmlFor="fee-buy-input" className={labelCls}>
-                      {t.feeBuy} (%)
-                    </Label>
-                    <Input
-                      id="fee-buy-input"
-                      inputMode="decimal"
-                      value={String(fee.buyPct)}
-                      onChange={(e) => {
-                        const v = numOnly(e.target.value);
-                        setFee((f) => ({ ...f, buyPct: v === "" ? 0 : parseFloat(v) || 0 }));
-                      }}
-                      className={cn(inputCls, "tabular")}
+                <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200" />
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <div className="mt-3 space-y-3 sm:mt-4">
+                  <label className="flex h-5 cursor-pointer items-center gap-2.5 select-none">
+                    <Checkbox
+                      checked={fee.enabled}
+                      onCheckedChange={(c) => setFee((f) => ({ ...f, enabled: c === true }))}
+                      aria-label={t.feeInclude}
+                      className="h-4 w-4 rounded-full border-primary/80 bg-transparent shadow-none data-[state=checked]:bg-primary [&_svg]:h-3 [&_svg]:w-3"
                     />
-                  </div>
-                  <div>
-                    <Label htmlFor="fee-sell-input" className={labelCls}>
-                      {t.feeSell} (%)
-                    </Label>
-                    <Input
-                      id="fee-sell-input"
-                      inputMode="decimal"
-                      value={String(fee.sellPct)}
-                      onChange={(e) => {
-                        const v = numOnly(e.target.value);
-                        setFee((f) => ({ ...f, sellPct: v === "" ? 0 : parseFloat(v) || 0 }));
-                      }}
-                      className={cn(inputCls, "tabular")}
-                    />
-                  </div>
+                    <span className="text-xs font-semibold text-foreground sm:text-sm">{t.feeInclude}</span>
+                  </label>
+                  {fee.enabled && (
+                    <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                      <div>
+                        <Label htmlFor="fee-buy-input" className={labelCls}>
+                          {t.feeBuy} (%)
+                        </Label>
+                        <Input
+                          id="fee-buy-input"
+                          inputMode="decimal"
+                          value={String(fee.buyPct)}
+                          onChange={(e) => {
+                            const v = numOnly(e.target.value);
+                            setFee((f) => ({ ...f, buyPct: v === "" ? 0 : parseFloat(v) || 0 }));
+                          }}
+                          className={cn(inputCls, "tabular")}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="fee-sell-input" className={labelCls}>
+                          {t.feeSell} (%)
+                        </Label>
+                        <Input
+                          id="fee-sell-input"
+                          inputMode="decimal"
+                          value={String(fee.sellPct)}
+                          onChange={(e) => {
+                            const v = numOnly(e.target.value);
+                            setFee((f) => ({ ...f, sellPct: v === "" ? 0 : parseFloat(v) || 0 }));
+                          }}
+                          className={cn(inputCls, "tabular")}
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
-            </section>
+              </CollapsibleContent>
+            </Collapsible>
 
             <Button
               type={canCalculate ? "submit" : "button"}
