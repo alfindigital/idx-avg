@@ -116,6 +116,7 @@ export function Calculator() {
   const [history, setHistory] = useState<CalcResult[]>([]);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
+  const [feeOpen, setFeeOpen] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
   const mobileResultRef = useRef<HTMLDivElement>(null);
   const firstInputRef = useRef<HTMLInputElement>(null);
