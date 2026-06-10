@@ -14,6 +14,7 @@ import {
   X,
   Info,
   ChevronUp,
+  ChevronDown,
   Send,
   Sigma,
   Globe,
