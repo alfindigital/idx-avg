@@ -380,6 +380,7 @@ export function Calculator() {
   const resetAllRef = useRef<() => void>(() => {});
   const toggleLangRef = useRef<() => void>(() => {});
   const toggleThemeRef = useRef<() => void>(() => {});
+  const toggleFeeRef = useRef<() => void>(() => {});
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName?.toLowerCase();
@@ -397,7 +398,7 @@ export function Calculator() {
         return;
       }
 
-      // Alt+R → reset, Alt+L → toggle language, Alt+T → toggle theme
+      // Alt+R → reset, Alt+L → toggle language, Alt+T → toggle theme, Alt+F → toggle fee
       // Use e.code so it works on macOS where Alt+letter produces special chars.
       if (e.altKey && !e.ctrlKey && !e.metaKey) {
         const code = e.code;
@@ -414,6 +415,11 @@ export function Calculator() {
         if (code === "KeyT") {
           e.preventDefault();
           toggleThemeRef.current();
+          return;
+        }
+        if (code === "KeyF") {
+          e.preventDefault();
+          toggleFeeRef.current();
           return;
         }
       }
@@ -467,6 +473,7 @@ export function Calculator() {
   resetAllRef.current = resetAll;
   toggleLangRef.current = toggleLang;
   toggleThemeRef.current = toggleTheme;
+  toggleFeeRef.current = () => setFeeOpen((o) => !o);
 
   const shareLink = async () => {
     if (!result) return;
