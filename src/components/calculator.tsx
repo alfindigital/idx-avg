@@ -13,7 +13,6 @@ import {
   TrendingUp,
   X,
   Info,
-  ChevronUp,
   ChevronDown,
   Send,
   Sigma,
