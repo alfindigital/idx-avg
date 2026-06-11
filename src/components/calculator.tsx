@@ -972,7 +972,7 @@ export function Calculator() {
                   data-result-card
                   className="overflow-hidden rounded-3xl border border-white/70 bg-card shadow-sm dark:border-white/5"
                 >
-                  <div className="bg-primary/10 px-5 pt-5 pb-4">
+                  <div className="bg-primary/10 px-4 pt-4 pb-3 sm:px-5 sm:pt-5 sm:pb-4">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <h2 className="font-display text-[11px] font-extrabold uppercase tracking-[0.22em] text-primary">
