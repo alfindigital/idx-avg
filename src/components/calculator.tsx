@@ -1038,7 +1038,6 @@ export function Calculator() {
                         <span className="font-bold tabular text-foreground">
                           {formatRupiah(result.modalTambahan)}
                         </span>
-                        <Copy className="h-3 w-3 text-muted-foreground" />
                       </button>
                     </div>
                     {result.feeEnabled && (
@@ -1077,7 +1076,6 @@ export function Calculator() {
                         <span className="font-display text-base font-extrabold tabular text-foreground">
                           {formatRupiah(result.totalModal)}
                         </span>
-                        <Copy className="h-3 w-3 text-muted-foreground" />
                       </button>
                     </div>
                   </div>
@@ -1086,15 +1084,6 @@ export function Calculator() {
 
               const actions = (
                 <div className="mt-4 flex items-center justify-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={copySummary}
-                    aria-label={t.copy}
-                    className="h-11 w-11 rounded-2xl border-border bg-card hover:border-primary/40 hover:bg-secondary hover:text-primary"
-                  >
-                    <Copy className="h-4 w-4" />
-                  </Button>
                   <Button
                     variant="outline"
                     size="icon"
