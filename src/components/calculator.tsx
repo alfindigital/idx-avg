@@ -518,7 +518,7 @@ export function Calculator() {
 
   const saveImage = async () => {
     if (!result) return;
-    const node = resultRef.current?.offsetParent ? resultRef.current : mobileResultRef.current;
+    const node = resultRef.current;
     if (!node) return;
     try {
       const { toPng } = await import("html-to-image");
