@@ -118,7 +118,7 @@ export function Calculator() {
   const [flashField, setFlashField] = useState<string | null>(null);
   const flashTimeoutRef = useRef<number | null>(null);
   const resultInputsRef = useRef<string>("");
-  const [barOpen, setBarOpen] = useState(false);
+  
   const hydratedRef = useRef(false);
   const [showRecovered, setShowRecovered] = useState(false);
   const recoveredTimeoutRef = useRef<number | null>(null);
