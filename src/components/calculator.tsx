@@ -110,7 +110,6 @@ export function Calculator() {
   const [isDark, setIsDark] = useState(false);
   const [feeOpen, setFeeOpen] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
-  const mobileResultRef = useRef<HTMLDivElement>(null);
   const firstInputRef = useRef<HTMLInputElement>(null);
   const lotRef = useRef<HTMLInputElement>(null);
   const hargaRef = useRef<HTMLInputElement>(null);
