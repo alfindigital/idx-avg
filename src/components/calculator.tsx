@@ -585,22 +585,22 @@ export function Calculator() {
     <TooltipProvider delayDuration={150}>
       <div className="min-h-screen bg-background text-foreground">
         {/* Header */}
-        <header className="mx-auto flex w-full max-w-[480px] items-center justify-between px-4 pt-3 pb-1 sm:pt-8 sm:pb-2">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/25">
+        <header className="mx-auto flex w-full max-w-[480px] items-center justify-between gap-2 px-3 pt-3 pb-1 sm:px-4 sm:pt-8 sm:pb-2">
+          <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/25 sm:h-11 sm:w-11">
               <Sigma className="h-5 w-5" strokeWidth={2.5} />
             </div>
-            <h1 className="leading-tight">
-              <span className="font-display text-2xl font-extrabold tracking-tight block">
+            <h1 className="min-w-0 leading-tight">
+              <span className="font-display text-xl font-extrabold tracking-tight block truncate sm:text-2xl">
                 {t.appTitle}
               </span>
-              <span className="font-sans text-xs font-medium text-muted-foreground block">
+              <span className="font-sans text-[11px] font-medium text-muted-foreground block truncate sm:text-xs">
                 {t.appTagline}
               </span>
             </h1>
           </div>
 
-          <div className="flex items-center gap-0.5 text-muted-foreground">
+          <div className="flex shrink-0 items-center gap-0.5 text-muted-foreground">
             <Button
               variant="ghost"
               size="sm"
@@ -697,7 +697,7 @@ export function Calculator() {
         </header>
 
         {/* Main */}
-        <main className="mx-auto w-full max-w-[480px] px-4 pt-2 pb-[calc(4.5rem+env(safe-area-inset-bottom))] sm:pt-4 sm:pb-4">
+        <main className="mx-auto w-full max-w-[480px] px-3 pt-2 pb-[calc(4.5rem+env(safe-area-inset-bottom))] sm:px-4 sm:pt-4 sm:pb-4">
           {showRecovered && (
             <div className="pointer-events-none fixed inset-x-0 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] z-40 flex justify-center animate-in fade-in slide-in-from-bottom-2 duration-300">
               <span className="rounded-full bg-muted/80 px-2.5 py-0.5 text-[10px] font-medium text-muted-foreground backdrop-blur-sm">
@@ -972,13 +972,13 @@ export function Calculator() {
                   data-result-card
                   className="overflow-hidden rounded-3xl border border-white/70 bg-card shadow-sm dark:border-white/5"
                 >
-                  <div className="bg-primary/10 px-5 pt-5 pb-4">
+                  <div className="bg-primary/10 px-4 pt-4 pb-3 sm:px-5 sm:pt-5 sm:pb-4">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <h2 className="font-display text-[11px] font-extrabold uppercase tracking-[0.22em] text-primary">
                           {headLabel}
                         </h2>
-                        <p className="mt-2 font-display text-4xl font-extrabold leading-none tabular text-foreground">
+                        <p className="mt-2 font-display text-3xl font-extrabold leading-none tabular text-foreground break-words sm:text-4xl">
                           {headValue}
                         </p>
                         {result.mode === "lots-needed" && (
@@ -1007,7 +1007,7 @@ export function Calculator() {
                     </div>
                   </div>
 
-                  <div className="space-y-2.5 px-5 py-4 text-sm font-medium">
+                  <div className="space-y-2 px-4 py-3 text-sm font-medium sm:space-y-2.5 sm:px-5 sm:py-4">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">{t.avgSekarangRow}</span>
                       <span className="font-bold tabular text-foreground">
@@ -1138,7 +1138,7 @@ export function Calculator() {
 
               return (
                 <>
-                  <section className="mt-5 hidden sm:block">
+                  <section className="mt-4 hidden sm:block">
                     {resultCard(resultRef)}
                     {actions}
                   </section>
