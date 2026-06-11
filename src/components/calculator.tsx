@@ -1200,14 +1200,14 @@ export function Calculator() {
 
         {/* Footer */}
         <footer className="mx-auto mt-6 w-full max-w-[480px] border-t border-border/60 px-4 py-3 font-sans sm:mt-8 sm:py-4">
-          <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs font-medium text-muted-foreground">
+          <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs font-normal text-muted-foreground">
             <span>
               {t.footerBy}{" "}
               <a
                 href="https://x.com/alfindigital"
                 target="_blank"
                 rel="noreferrer"
-                className="font-semibold text-foreground/80 hover:text-primary"
+                className="font-normal text-foreground/80 hover:text-primary"
               >
                 @alfindigital
               </a>
