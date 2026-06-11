@@ -1138,7 +1138,7 @@ export function Calculator() {
 
               return (
                 <>
-                  <section className="mt-5 hidden sm:block">
+                  <section className="mt-4 hidden sm:block">
                     {resultCard(resultRef)}
                     {actions}
                   </section>
