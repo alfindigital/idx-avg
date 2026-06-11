@@ -585,16 +585,16 @@ export function Calculator() {
     <TooltipProvider delayDuration={150}>
       <div className="min-h-screen bg-background text-foreground">
         {/* Header */}
-        <header className="mx-auto flex w-full max-w-[480px] items-center justify-between px-4 pt-3 pb-1 sm:pt-8 sm:pb-2">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/25">
+        <header className="mx-auto flex w-full max-w-[480px] items-center justify-between gap-2 px-3 pt-3 pb-1 sm:px-4 sm:pt-8 sm:pb-2">
+          <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/25 sm:h-11 sm:w-11">
               <Sigma className="h-5 w-5" strokeWidth={2.5} />
             </div>
-            <h1 className="leading-tight">
-              <span className="font-display text-2xl font-extrabold tracking-tight block">
+            <h1 className="min-w-0 leading-tight">
+              <span className="font-display text-xl font-extrabold tracking-tight block truncate sm:text-2xl">
                 {t.appTitle}
               </span>
-              <span className="font-sans text-xs font-medium text-muted-foreground block">
+              <span className="font-sans text-[11px] font-medium text-muted-foreground block truncate sm:text-xs">
                 {t.appTagline}
               </span>
             </h1>
