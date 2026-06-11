@@ -1007,7 +1007,7 @@ export function Calculator() {
                     </div>
                   </div>
 
-                  <div className="space-y-2.5 px-5 py-4 text-sm font-medium">
+                  <div className="space-y-2 px-4 py-3 text-sm font-medium sm:space-y-2.5 sm:px-5 sm:py-4">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">{t.avgSekarangRow}</span>
                       <span className="font-bold tabular text-foreground">
