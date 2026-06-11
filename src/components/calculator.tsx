@@ -573,7 +573,7 @@ export function Calculator() {
 
   return (
     <TooltipProvider delayDuration={150}>
-      <div className="min-h-screen bg-background text-foreground">
+      <div className="flex min-h-screen flex-col bg-background text-foreground">
         {/* Header */}
         <header className="mx-auto flex w-full max-w-[480px] items-center justify-between gap-2 px-3 pt-1 pb-0.5 sm:px-4 sm:pt-2 sm:pb-1">
           <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
