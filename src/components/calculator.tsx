@@ -7,7 +7,6 @@ import {
   History,
   Trash2,
   Link2,
-  Copy,
   Download,
   TrendingDown,
   TrendingUp,
