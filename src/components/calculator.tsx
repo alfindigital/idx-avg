@@ -573,9 +573,9 @@ export function Calculator() {
 
   return (
     <TooltipProvider delayDuration={150}>
-      <div className="min-h-screen bg-background text-foreground">
+      <div className="flex min-h-screen flex-col bg-background text-foreground">
         {/* Header */}
-        <header className="mx-auto flex w-full max-w-[480px] items-center justify-between gap-2 px-3 pt-1 pb-0.5 sm:px-4 sm:pt-2 sm:pb-1">
+        <header className="mx-auto flex w-full max-w-[480px] items-center justify-between gap-2 px-3 pt-1 pb-3 sm:px-4 sm:pt-2 sm:pb-1">
           <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/25 sm:h-11 sm:w-11">
               <Sigma className="h-5 w-5" strokeWidth={2.5} />
@@ -687,7 +687,7 @@ export function Calculator() {
         </header>
 
         {/* Main */}
-        <main className="mx-auto w-full max-w-[480px] px-3 pt-2 pb-[calc(4.5rem+env(safe-area-inset-bottom))] sm:px-4 sm:pt-4 sm:pb-4">
+        <main className="mx-auto w-full max-w-[480px] flex-1 px-3 pt-4 pb-[calc(4.5rem+env(safe-area-inset-bottom))] sm:px-4 sm:pt-4 sm:pb-4">
           {showRecovered && (
             <div className="pointer-events-none fixed inset-x-0 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] z-40 flex justify-center animate-in fade-in slide-in-from-bottom-2 duration-300">
               <span className="rounded-full bg-muted/80 px-2.5 py-0.5 text-[10px] font-medium text-muted-foreground backdrop-blur-sm">
@@ -1127,8 +1127,8 @@ export function Calculator() {
         </main>
 
         {/* Footer */}
-        <footer className="mx-auto mt-6 w-full max-w-[480px] border-t border-border/60 px-4 py-3 font-sans sm:mt-8 sm:py-4">
-          <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs font-normal text-muted-foreground">
+        <footer className="mx-auto mt-auto w-full max-w-[480px] border-t border-border/60 px-3 py-2 font-sans sm:mt-8 sm:px-4 sm:py-4">
+          <div className="flex flex-wrap items-center justify-end gap-x-2 gap-y-1 text-xs font-normal text-muted-foreground sm:justify-center">
             <span>
               {t.footerBy}{" "}
               <a
