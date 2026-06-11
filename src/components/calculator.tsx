@@ -1128,7 +1128,7 @@ export function Calculator() {
 
         {/* Footer */}
         <footer className="mx-auto mt-auto w-full max-w-[480px] border-t border-border/60 px-3 py-2 font-sans sm:mt-8 sm:px-4 sm:py-4">
-          <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs font-normal text-muted-foreground">
+          <div className="flex flex-wrap items-center justify-end gap-x-2 gap-y-1 text-xs font-normal text-muted-foreground sm:justify-center">
             <span>
               {t.footerBy}{" "}
               <a
