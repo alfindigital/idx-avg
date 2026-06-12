@@ -59,7 +59,7 @@ class AppErrorBoundary extends Component<
   }
 }
 
-import { registerPWA } from "@/lib/pwa-register";
+
 
 function NotFoundComponent() {
   return (
