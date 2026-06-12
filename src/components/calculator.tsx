@@ -137,18 +137,63 @@ export function Calculator() {
       setIsDark(true);
       document.documentElement.classList.add("dark");
     }
+    // Sanitize a stored/URL price string: drop non-numeric, parse, and only
+    // return it if it falls within the valid input bounds. Returns "" otherwise.
+    const sanitizePrice = (raw: unknown): string => {
+      if (typeof raw !== "string") return "";
+      const cleaned = numOnly(raw);
+      if (!cleaned) return "";
+      const n = parseFloat(cleaned);
+      if (!isFinite(n) || n <= 0 || n > MAX_PRICE) return "";
+      return cleaned;
+    };
+    const sanitizeLot = (raw: unknown): string => {
+      if (typeof raw !== "string") return "";
+      const cleaned = intOnly(raw);
+      if (!cleaned) return "";
+      const n = Number(cleaned);
+      if (!Number.isInteger(n) || n <= 0 || n > MAX_LOT) return "";
+      return cleaned;
+    };
+    // Validate a CalcResult shape before trusting it from storage. A future
+    // schema change or hand-edited storage value must never crash the History UI.
+    const isValidHistoryItem = (h: unknown): h is CalcResult => {
+      if (!h || typeof h !== "object") return false;
+      const o = h as Record<string, unknown>;
+      return (
+        typeof o.id === "string" &&
+        typeof o.timestamp === "number" &&
+        (o.mode === "new-avg" || o.mode === "lots-needed") &&
+        typeof o.avgSekarang === "number" &&
+        typeof o.lotSekarang === "number" &&
+        typeof o.newAvgPrice === "number" &&
+        typeof o.totalLotBaru === "number" &&
+        typeof o.lotDelta === "number" &&
+        typeof o.totalModal === "number" &&
+        (o.status === "down" || o.status === "up" || o.status === "flat") &&
+        typeof o.percentage === "number"
+      );
+    };
+
     try {
       const h = localStorage.getItem(HISTORY_KEY);
-      if (h) setHistory(JSON.parse(h));
+      if (h) {
+        const parsed = JSON.parse(h);
+        if (Array.isArray(parsed)) {
+          setHistory(parsed.filter(isValidHistoryItem).slice(0, 20));
+        }
+      }
     } catch {}
     try {
       const f = localStorage.getItem(FEE_KEY);
       if (f) {
         const v = JSON.parse(f);
+        const clampPct = (n: unknown, fallback: number) =>
+          typeof n === "number" && isFinite(n) && n >= 0 && n <= 5 ? n : fallback;
         setFee({
           enabled: typeof v.enabled === "boolean" ? v.enabled : true,
-          buyPct: typeof v.buyPct === "number" ? v.buyPct : 0.15,
-          sellPct: typeof v.sellPct === "number" ? v.sellPct : 0.25,
+          buyPct: clampPct(v.buyPct, 0.15),
+          sellPct: clampPct(v.sellPct, 0.25),
         });
       }
     } catch {}
@@ -158,20 +203,25 @@ export function Calculator() {
       const saved = localStorage.getItem(INPUTS_KEY);
       if (saved) {
         const v = JSON.parse(saved);
-        if (typeof v.avgPrice === "string") setAvgPrice(v.avgPrice);
-        if (typeof v.totalLot === "string") setTotalLot(v.totalLot);
-        if (typeof v.hargaAvg === "string") setHargaAvg(v.hargaAvg);
+        const sAvg = sanitizePrice(v.avgPrice);
+        const sLot = sanitizeLot(v.totalLot);
+        const sHarga = sanitizePrice(v.hargaAvg);
+        const sLotTambah = sanitizeLot(v.lotTambah);
+        const sTarget = sanitizePrice(v.targetAvg);
+        if (sAvg) setAvgPrice(sAvg);
+        if (sLot) setTotalLot(sLot);
+        if (sHarga) setHargaAvg(sHarga);
         if (v.mode === "new-avg") {
-          if (typeof v.lotTambah === "string") setLotTambah(v.lotTambah);
+          if (sLotTambah) setLotTambah(sLotTambah);
           setTargetAvg("");
         } else if (v.mode === "lots-needed") {
-          if (typeof v.targetAvg === "string") setTargetAvg(v.targetAvg);
+          if (sTarget) setTargetAvg(sTarget);
           setLotTambah("");
         } else {
-          if (typeof v.lotTambah === "string") setLotTambah(v.lotTambah);
-          if (typeof v.targetAvg === "string") setTargetAvg(v.targetAvg);
+          if (sLotTambah) setLotTambah(sLotTambah);
+          if (sTarget) setTargetAvg(sTarget);
         }
-        recovered = true;
+        recovered = !!(sAvg || sLot || sHarga || sLotTambah || sTarget);
       }
     } catch {}
 
@@ -184,18 +234,19 @@ export function Calculator() {
       }, 3000);
     }
 
-    // URL params
+    // URL params — sanitize and clamp to MAX_PRICE / MAX_LOT so a crafted link
+    // can never push an out-of-range value into state on first paint.
     const p = new URLSearchParams(window.location.search);
-    const a = p.get("avg");
-    const l = p.get("lot");
-    const h = p.get("harga");
-    const lt = p.get("lotTambah");
-    const tg = p.get("target");
-    if (a) setAvgPrice(numOnly(a));
-    if (l) setTotalLot(intOnly(l));
-    if (h) setHargaAvg(numOnly(h));
-    if (lt) setLotTambah(intOnly(lt));
-    if (tg) setTargetAvg(numOnly(tg));
+    const urlAvg = sanitizePrice(p.get("avg") ?? "");
+    const urlLot = sanitizeLot(p.get("lot") ?? "");
+    const urlHarga = sanitizePrice(p.get("harga") ?? "");
+    const urlLotTambah = sanitizeLot(p.get("lotTambah") ?? "");
+    const urlTarget = sanitizePrice(p.get("target") ?? "");
+    if (urlAvg) setAvgPrice(urlAvg);
+    if (urlLot) setTotalLot(urlLot);
+    if (urlHarga) setHargaAvg(urlHarga);
+    if (urlLotTambah) setLotTambah(urlLotTambah);
+    if (urlTarget) setTargetAvg(urlTarget);
 
     hydratedRef.current = true;
     return () => {
@@ -282,7 +333,12 @@ export function Calculator() {
   const saveHistory = (r: CalcResult) => {
     const next = [r, ...history].slice(0, 20);
     setHistory(next);
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(next));
+    try {
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(next));
+    } catch {
+      // Storage quota exceeded or unavailable (Safari private mode); history
+      // stays in memory for this session.
+    }
   };
 
   const runCalc = () => {
@@ -441,10 +497,13 @@ export function Calculator() {
     setIsDark(n);
     if (n) {
       document.documentElement.classList.add("dark");
-      localStorage.setItem(THEME_KEY, "dark");
     } else {
       document.documentElement.classList.remove("dark");
-      localStorage.setItem(THEME_KEY, "light");
+    }
+    try {
+      localStorage.setItem(THEME_KEY, n ? "dark" : "light");
+    } catch {
+      // Storage unavailable; theme applies for this session only.
     }
   };
 

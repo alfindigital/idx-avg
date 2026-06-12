@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { Component, useEffect, type ErrorInfo, type ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -12,6 +12,54 @@ import { Toaster } from "@/components/ui/sonner";
 
 import appCss from "../styles.css?url";
 import { registerPWA } from "@/lib/pwa-register";
+
+class AppErrorBoundary extends Component<
+  { children: ReactNode },
+  { error: Error | null }
+> {
+  state: { error: Error | null } = { error: null };
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.error("App error boundary caught:", error, info);
+  }
+  reset = () => this.setState({ error: null });
+  render() {
+    if (!this.state.error) return this.props.children;
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background px-4">
+        <div className="max-w-md text-center">
+          <h1 className="text-xl font-semibold tracking-tight text-foreground">
+            Terjadi kesalahan
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Aplikasi mengalami error tak terduga. Coba muat ulang halaman.
+          </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-2">
+            <button
+              onClick={() => {
+                this.reset();
+                if (typeof window !== "undefined") window.location.reload();
+              }}
+              className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            >
+              Muat ulang
+            </button>
+            <a
+              href="/"
+              className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+            >
+              Ke beranda
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+
 
 function NotFoundComponent() {
   return (
@@ -142,7 +190,9 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <AppErrorBoundary>
+        <Outlet />
+      </AppErrorBoundary>
       <Toaster />
     </QueryClientProvider>
   );
