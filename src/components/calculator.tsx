@@ -999,8 +999,49 @@ export function Calculator() {
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div className={cn(lotTambahDisabled && "opacity-50")}>
+                {/* Mode picker — these two calculations are mutually exclusive */}
+                <div
+                  role="tablist"
+                  aria-label={t.averagingTip}
+                  className="relative grid grid-cols-2 gap-1 rounded-xl bg-card/70 p-1 ring-1 ring-border/60"
+                >
+                  <span
+                    aria-hidden
+                    className={cn(
+                      "pointer-events-none absolute inset-y-1 left-1 w-[calc(50%-0.25rem)] rounded-lg bg-primary shadow-sm transition-transform duration-300 ease-out",
+                      pickedMode === "lots-needed" && "translate-x-[calc(100%+0.25rem)]",
+                    )}
+                  />
+                  {(
+                    [
+                      { key: "new-avg" as const, label: t.lotTambah },
+                      { key: "lots-needed" as const, label: t.targetAvg },
+                    ]
+                  ).map((opt) => {
+                    const active = pickedMode === opt.key;
+                    return (
+                      <button
+                        key={opt.key}
+                        type="button"
+                        role="tab"
+                        aria-selected={active}
+                        onClick={() => selectMode(opt.key)}
+                        className={cn(
+                          "relative z-10 h-9 rounded-lg px-3 text-xs font-bold uppercase tracking-wider transition-colors",
+                          active ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground",
+                        )}
+                      >
+                        {opt.label}
+                      </button>
+                    );
+                  })}
+                </div>
+                <p className="-mt-1 ml-0.5 text-[11px] text-muted-foreground">
+                  {t.averagingTip}
+                </p>
+
+                {pickedMode === "new-avg" ? (
+                  <div>
                     <Label htmlFor="lot-tambah-input" className={labelCls}>
                       {t.lotTambah}
                     </Label>
@@ -1018,7 +1059,6 @@ export function Calculator() {
                         errLotTambah && "border-destructive focus-visible:border-destructive",
                         flashField === "lotTambah" && flashCls,
                       )}
-                      disabled={lotTambahDisabled}
                       tabIndex={4}
                     />
                     {errLotTambah && (
@@ -1027,7 +1067,8 @@ export function Calculator() {
                       </p>
                     )}
                   </div>
-                  <div className={cn(targetAvgDisabled && "opacity-50")}>
+                ) : (
+                  <div>
                     <Label htmlFor="target-avg-input" className={labelCls}>
                       {t.targetAvg}
                     </Label>
@@ -1046,8 +1087,7 @@ export function Calculator() {
                         errTarget && "border-destructive focus-visible:border-destructive",
                         flashField === "target" && flashCls,
                       )}
-                      disabled={targetAvgDisabled}
-                      tabIndex={5}
+                      tabIndex={4}
                     />
                     {errTarget && (
                       <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">
@@ -1055,7 +1095,7 @@ export function Calculator() {
                       </p>
                     )}
                   </div>
-                </div>
+                )}
               </div>
             </section>
 
