@@ -741,18 +741,53 @@ export function Calculator() {
                 <DialogHeader className="pt-4">
                   <DialogTitle className="flex items-center justify-between gap-2 font-display text-lg font-extrabold tracking-tight">
                     <span>{t.history}</span>
-                    {history.length > 0 && (
+                    <div className="mr-8 flex items-center gap-1">
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="application/json,.json"
+                        className="hidden"
+                        onChange={(e) => {
+                          const f = e.target.files?.[0];
+                          if (f) importHistory(f);
+                          e.target.value = "";
+                        }}
+                      />
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={clearHistory}
-                        aria-label={t.clearHistory}
-                        title={t.clearHistory}
-                        className="mr-8 h-8 w-8 rounded-lg text-destructive hover:bg-destructive/10 hover:text-destructive"
+                        onClick={() => fileInputRef.current?.click()}
+                        aria-label={t.importHistory}
+                        title={t.importHistory}
+                        className="h-8 w-8 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Upload className="h-4 w-4" />
                       </Button>
-                    )}
+                      {history.length > 0 && (
+                        <>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={exportHistory}
+                            aria-label={t.exportHistory}
+                            title={t.exportHistory}
+                            className="h-8 w-8 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground"
+                          >
+                            <FileDown className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={clearHistory}
+                            aria-label={t.clearHistory}
+                            title={t.clearHistory}
+                            className="h-8 w-8 rounded-lg text-destructive hover:bg-destructive/10 hover:text-destructive"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </>
+                      )}
+                    </div>
                   </DialogTitle>
                 </DialogHeader>
                 <div className="max-h-[60vh] space-y-2 overflow-y-auto pr-1">
