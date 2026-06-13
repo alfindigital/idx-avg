@@ -101,6 +101,14 @@ export function Calculator() {
   const [hargaAvg, setHargaAvg] = useState("");
   const [lotTambah, setLotTambah] = useState("");
   const [targetAvg, setTargetAvg] = useState("");
+  // Which averaging mode the user picked — exclusive. Default: compute new avg from Add Lots.
+  const [pickedMode, setPickedMode] = useState<CalcMode>("new-avg");
+
+  const selectMode = (m: CalcMode) => {
+    setPickedMode(m);
+    if (m === "new-avg") setTargetAvg("");
+    else setLotTambah("");
+  };
 
   // Fee
   const [fee, setFee] = useState<FeeOptions>(DEFAULT_FEE);
