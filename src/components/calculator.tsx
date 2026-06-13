@@ -1130,7 +1130,7 @@ export function Calculator() {
                         <h2 className="font-display text-[11px] font-extrabold uppercase tracking-[0.22em] text-primary">
                           {headLabel}
                         </h2>
-                        <p className="mt-2 font-display text-3xl font-extrabold leading-none tabular text-foreground break-words sm:text-4xl">
+                        <p className="mt-2 font-display text-3xl font-extrabold leading-none tabular text-foreground break-words">
                           {headValue}
                         </p>
                         {result.mode === "lots-needed" && (
