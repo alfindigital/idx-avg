@@ -54,7 +54,7 @@ import { useLang, type Dict } from "@/lib/i18n";
 const HISTORY_KEY = "idxavg-history-v1";
 const THEME_KEY = "idxavg-theme";
 const INPUTS_KEY = "idxavg-inputs-v2";
-const FEE_KEY = "idxavg-fee-v1";
+const FEE_KEY = "idxavg-fee-v2";
 
 const MAX_PRICE = 1_000_000;
 const MAX_LOT = 1_000_000;
