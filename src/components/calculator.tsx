@@ -937,7 +937,7 @@ export function Calculator() {
 
             {/* Averaging */}
             <section aria-labelledby="averaging-heading" className={cardCls}>
-              <div className="mb-2 flex items-center justify-between sm:mb-4">
+              <div className="mb-3 flex items-center justify-between">
                 <h2 id="averaging-heading" className={cn(sectionHead, "mb-0")}>
                   {t.averagingTitle}
                 </h2>
@@ -951,7 +951,7 @@ export function Calculator() {
                 </Tooltip>
               </div>
 
-              <div className="space-y-1.5 sm:space-y-3">
+              <div className="space-y-3">
                 <div>
                   <Label htmlFor="harga-avg-input" className={labelCls}>
                     {t.hargaAvg}
