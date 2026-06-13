@@ -225,12 +225,15 @@ export function Calculator() {
         if (v.mode === "new-avg") {
           if (sLotTambah) setLotTambah(sLotTambah);
           setTargetAvg("");
+          setPickedMode("new-avg");
         } else if (v.mode === "lots-needed") {
           if (sTarget) setTargetAvg(sTarget);
           setLotTambah("");
+          setPickedMode("lots-needed");
         } else {
           if (sLotTambah) setLotTambah(sLotTambah);
           if (sTarget) setTargetAvg(sTarget);
+          if (sTarget && !sLotTambah) setPickedMode("lots-needed");
         }
         recovered = !!(sAvg || sLot || sHarga || sLotTambah || sTarget);
       }
