@@ -39,6 +39,7 @@ import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/component
 
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { SiteFooter } from "@/components/site-footer";
 import { formatRupiah, getTickSize, roundToTick } from "@/lib/idx-tick";
 import {
   type CalcMode,
