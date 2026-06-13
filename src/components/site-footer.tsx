@@ -35,23 +35,23 @@ const SOCIALS: Social[] = [
 ];
 
 const FOOTER_CSS = `
-.afd-foot{position:relative;overflow:hidden;font-family:inherit;background:var(--card,var(--background));border-top:1px solid var(--border);padding:17px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.afd-foot{position:relative;overflow:hidden;font-family:inherit;background:var(--card,var(--background));border-top:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .afd-foot>*{position:relative;z-index:1}
 .afd-glow{position:absolute;top:-40%;bottom:-40%;width:48%;border-radius:50%;z-index:0;pointer-events:none;left:-48%;background:radial-gradient(closest-side, color-mix(in oklab, var(--primary) 22%, transparent), transparent);filter:blur(8px);transition:left 6s ease-in-out, top 6s ease-in-out}
-.afd-cr{font-size:13px;color:var(--muted-foreground);display:inline-flex;align-items:center;border-left:3px solid var(--primary);padding-left:11px}
+.afd-cr{font-size:11px;color:var(--muted-foreground);display:inline-flex;align-items:center;border-left:3px solid var(--primary);padding-left:9px}
 .afd-brand{color:var(--primary);font-weight:600;text-decoration:none;margin-left:4px}
 .afd-brand:hover{text-decoration:underline}
-.afd-caret{display:inline-block;width:8px;height:15px;background:var(--primary);margin-left:3px;animation:afd-blink 1.1s step-end infinite}
+.afd-caret{display:inline-block;width:6px;height:12px;background:var(--primary);margin-left:3px;animation:afd-blink 1.1s step-end infinite}
 @keyframes afd-blink{50%{opacity:0}}
-.afd-rot{position:relative;height:36px;min-width:200px;flex:0 0 auto}
-.afd-item{position:absolute;right:0;top:0;height:36px;display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--foreground);font-size:14px;opacity:0;transform:translateY(9px);transition:opacity .5s,transform .5s;pointer-events:none}
+.afd-rot{position:relative;height:28px;min-width:160px;flex:0 0 auto}
+.afd-item{position:absolute;right:0;top:0;height:28px;display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--foreground);font-size:12px;opacity:0;transform:translateY(6px);transition:opacity .5s,transform .5s;pointer-events:none}
 .afd-item.afd-active{opacity:1;transform:translateY(0);pointer-events:auto}
 .afd-item b{color:var(--primary);font-weight:600}
-.afd-ico{position:relative;width:36px;height:36px;border-radius:50%;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:color-mix(in oklab, var(--primary) 11%, transparent);color:var(--primary);transition:all .25s}
-.afd-ico svg{width:19px;height:19px}
+.afd-ico{position:relative;width:28px;height:28px;border-radius:50%;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:color-mix(in oklab, var(--primary) 11%, transparent);color:var(--primary);transition:all .25s}
+.afd-ico svg{width:15px;height:15px}
 .afd-rot:hover .afd-item.afd-active .afd-ico{background:var(--primary);color:var(--card,var(--background))}
 .afd-rot:hover .afd-item.afd-active .afd-ico::after{content:"";position:absolute;inset:0;border-radius:50%;animation:afd-ripple 1.3s ease-out infinite}
-@keyframes afd-ripple{0%{box-shadow:0 0 0 0 color-mix(in oklab, var(--primary) 50%, transparent)}100%{box-shadow:0 0 0 22px color-mix(in oklab, var(--primary) 0%, transparent)}}
+@keyframes afd-ripple{0%{box-shadow:0 0 0 0 color-mix(in oklab, var(--primary) 50%, transparent)}100%{box-shadow:0 0 0 16px color-mix(in oklab, var(--primary) 0%, transparent)}}
 `;
 
 export function SiteFooter() {
