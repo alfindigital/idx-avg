@@ -28,9 +28,23 @@ export function registerPWA() {
   }
 
   // Register Workbox-generated SW (vite-plugin-pwa output).
-  import("virtual:pwa-register")
-    .then(({ registerSW }) => {
-      registerSW({ immediate: true });
+  Promise.all([
+    import("virtual:pwa-register"),
+    import("sonner"),
+  ])
+    .then(([{ registerSW }, { toast }]) => {
+      const updateSW = registerSW({
+        immediate: true,
+        onNeedRefresh() {
+          toast("Versi baru tersedia", {
+            duration: Infinity,
+            action: {
+              label: "Muat ulang",
+              onClick: () => updateSW(true),
+            },
+          });
+        },
+      });
     })
     .catch(() => {
       // virtual module unavailable (e.g. dev without PWA) — ignore.
