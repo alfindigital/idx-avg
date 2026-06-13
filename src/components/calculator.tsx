@@ -858,7 +858,7 @@ export function Calculator() {
           <form onSubmit={handleSubmit} noValidate className="space-y-3">
             {/* Position */}
             <section aria-labelledby="posisi-heading" className={cardCls}>
-              <div className="mb-2 flex items-center justify-between sm:mb-4">
+              <div className="mb-3 flex items-center justify-between">
                 <h2 id="posisi-heading" className={cn(sectionHead, "mb-0")}>
                   {t.positionTitle}
                 </h2>
@@ -871,7 +871,7 @@ export function Calculator() {
                   </TooltipContent>
                 </Tooltip>
               </div>
-              <div className="grid grid-cols-2 gap-2 sm:gap-3">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
                   <Label htmlFor="avg-now-input" className={labelCls}>
                     {t.avgNow}
