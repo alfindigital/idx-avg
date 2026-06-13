@@ -101,6 +101,14 @@ export function Calculator() {
   const [hargaAvg, setHargaAvg] = useState("");
   const [lotTambah, setLotTambah] = useState("");
   const [targetAvg, setTargetAvg] = useState("");
+  // Which averaging mode the user picked — exclusive. Default: compute new avg from Add Lots.
+  const [pickedMode, setPickedMode] = useState<CalcMode>("new-avg");
+
+  const selectMode = (m: CalcMode) => {
+    setPickedMode(m);
+    if (m === "new-avg") setTargetAvg("");
+    else setLotTambah("");
+  };
 
   // Fee
   const [fee, setFee] = useState<FeeOptions>(DEFAULT_FEE);
@@ -217,12 +225,15 @@ export function Calculator() {
         if (v.mode === "new-avg") {
           if (sLotTambah) setLotTambah(sLotTambah);
           setTargetAvg("");
+          setPickedMode("new-avg");
         } else if (v.mode === "lots-needed") {
           if (sTarget) setTargetAvg(sTarget);
           setLotTambah("");
+          setPickedMode("lots-needed");
         } else {
           if (sLotTambah) setLotTambah(sLotTambah);
           if (sTarget) setTargetAvg(sTarget);
+          if (sTarget && !sLotTambah) setPickedMode("lots-needed");
         }
         recovered = !!(sAvg || sLot || sHarga || sLotTambah || sTarget);
       }
@@ -248,8 +259,15 @@ export function Calculator() {
     if (urlAvg) setAvgPrice(urlAvg);
     if (urlLot) setTotalLot(urlLot);
     if (urlHarga) setHargaAvg(urlHarga);
-    if (urlLotTambah) setLotTambah(urlLotTambah);
-    if (urlTarget) setTargetAvg(urlTarget);
+    if (urlLotTambah) {
+      setLotTambah(urlLotTambah);
+      setTargetAvg("");
+      setPickedMode("new-avg");
+    } else if (urlTarget) {
+      setTargetAvg(urlTarget);
+      setLotTambah("");
+      setPickedMode("lots-needed");
+    }
 
     hydratedRef.current = true;
     return () => {
@@ -676,16 +694,16 @@ export function Calculator() {
     if (r.mode === "new-avg") {
       setLotTambah(String(r.lotDelta));
       setTargetAvg("");
+      setPickedMode("new-avg");
     } else {
       setTargetAvg(String(r.targetAvg ?? ""));
       setLotTambah("");
+      setPickedMode("lots-needed");
     }
     setResult(r);
     setHistoryOpen(false);
   };
 
-  const lotTambahDisabled = !!targetAvg;
-  const targetAvgDisabled = !!lotTambah;
 
   const inputCls =
     "h-11 rounded-xl border-2 border-transparent bg-card px-3.5 text-base font-bold text-foreground shadow-none transition-all focus-visible:border-primary focus-visible:ring-0 placeholder:text-muted-foreground";
@@ -981,8 +999,49 @@ export function Calculator() {
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div className={cn(lotTambahDisabled && "opacity-50")}>
+                {/* Mode picker — these two calculations are mutually exclusive */}
+                <div
+                  role="tablist"
+                  aria-label={t.averagingTip}
+                  className="relative grid grid-cols-2 gap-1 rounded-xl bg-card/70 p-1 ring-1 ring-border/60"
+                >
+                  <span
+                    aria-hidden
+                    className={cn(
+                      "pointer-events-none absolute inset-y-1 left-1 w-[calc(50%-0.25rem)] rounded-lg bg-primary shadow-sm transition-transform duration-300 ease-out",
+                      pickedMode === "lots-needed" && "translate-x-[calc(100%+0.25rem)]",
+                    )}
+                  />
+                  {(
+                    [
+                      { key: "new-avg" as const, label: t.lotTambah },
+                      { key: "lots-needed" as const, label: t.targetAvg },
+                    ]
+                  ).map((opt) => {
+                    const active = pickedMode === opt.key;
+                    return (
+                      <button
+                        key={opt.key}
+                        type="button"
+                        role="tab"
+                        aria-selected={active}
+                        onClick={() => selectMode(opt.key)}
+                        className={cn(
+                          "relative z-10 h-9 rounded-lg px-3 text-xs font-bold uppercase tracking-wider transition-colors",
+                          active ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground",
+                        )}
+                      >
+                        {opt.label}
+                      </button>
+                    );
+                  })}
+                </div>
+                <p className="-mt-1 ml-0.5 text-[11px] text-muted-foreground">
+                  {t.averagingTip}
+                </p>
+
+                {pickedMode === "new-avg" ? (
+                  <div>
                     <Label htmlFor="lot-tambah-input" className={labelCls}>
                       {t.lotTambah}
                     </Label>
@@ -1000,7 +1059,6 @@ export function Calculator() {
                         errLotTambah && "border-destructive focus-visible:border-destructive",
                         flashField === "lotTambah" && flashCls,
                       )}
-                      disabled={lotTambahDisabled}
                       tabIndex={4}
                     />
                     {errLotTambah && (
@@ -1009,7 +1067,8 @@ export function Calculator() {
                       </p>
                     )}
                   </div>
-                  <div className={cn(targetAvgDisabled && "opacity-50")}>
+                ) : (
+                  <div>
                     <Label htmlFor="target-avg-input" className={labelCls}>
                       {t.targetAvg}
                     </Label>
@@ -1028,8 +1087,7 @@ export function Calculator() {
                         errTarget && "border-destructive focus-visible:border-destructive",
                         flashField === "target" && flashCls,
                       )}
-                      disabled={targetAvgDisabled}
-                      tabIndex={5}
+                      tabIndex={4}
                     />
                     {errTarget && (
                       <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">
@@ -1037,7 +1095,7 @@ export function Calculator() {
                       </p>
                     )}
                   </div>
-                </div>
+                )}
               </div>
             </section>
 
