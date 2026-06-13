@@ -970,7 +970,8 @@ export function Calculator() {
                           value={String(fee.buyPct)}
                           onChange={(e) => {
                             const v = numOnly(e.target.value);
-                            setFee((f) => ({ ...f, buyPct: v === "" ? 0 : parseFloat(v) || 0 }));
+                            const n = v === "" ? 0 : parseFloat(v) || 0;
+                            setFee((f) => ({ ...f, buyPct: Math.min(5, Math.max(0, n)) }));
                           }}
                           className={cn(inputCls, "tabular")}
                         />
@@ -985,7 +986,8 @@ export function Calculator() {
                           value={String(fee.sellPct)}
                           onChange={(e) => {
                             const v = numOnly(e.target.value);
-                            setFee((f) => ({ ...f, sellPct: v === "" ? 0 : parseFloat(v) || 0 }));
+                            const n = v === "" ? 0 : parseFloat(v) || 0;
+                            setFee((f) => ({ ...f, sellPct: Math.min(5, Math.max(0, n)) }));
                           }}
                           className={cn(inputCls, "tabular")}
                         />
