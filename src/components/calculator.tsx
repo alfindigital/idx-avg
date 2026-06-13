@@ -757,57 +757,57 @@ export function Calculator() {
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-[440px] gap-3 rounded-3xl border-border bg-card p-6">
-                <DialogHeader className="pt-4">
-                  <DialogTitle className="flex items-center justify-between gap-2 font-display text-lg font-extrabold tracking-tight">
-                    <span>{t.history}</span>
-                    <div className="mr-8 flex items-center gap-1">
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        accept="application/json,.json"
-                        className="hidden"
-                        onChange={(e) => {
-                          const f = e.target.files?.[0];
-                          if (f) importHistory(f);
-                          e.target.value = "";
-                        }}
-                      />
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => fileInputRef.current?.click()}
-                        aria-label={t.importHistory}
-                        title={t.importHistory}
-                        className="h-8 w-8 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground"
-                      >
-                        <Upload className="h-4 w-4" />
-                      </Button>
-                      {history.length > 0 && (
-                        <>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={exportHistory}
-                            aria-label={t.exportHistory}
-                            title={t.exportHistory}
-                            className="h-8 w-8 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground"
-                          >
-                            <FileDown className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={clearHistory}
-                            aria-label={t.clearHistory}
-                            title={t.clearHistory}
-                            className="h-8 w-8 rounded-lg text-destructive hover:bg-destructive/10 hover:text-destructive"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </>
-                      )}
-                    </div>
+                <DialogHeader>
+                  <DialogTitle className="font-display text-lg font-extrabold tracking-tight">
+                    {t.history}
                   </DialogTitle>
+                  <div className="absolute right-12 top-3 flex items-center gap-1">
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="application/json,.json"
+                      className="hidden"
+                      onChange={(e) => {
+                        const f = e.target.files?.[0];
+                        if (f) importHistory(f);
+                        e.target.value = "";
+                      }}
+                    />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => fileInputRef.current?.click()}
+                      aria-label={t.importHistory}
+                      title={t.importHistory}
+                      className="h-8 w-8 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground"
+                    >
+                      <Upload className="h-4 w-4" />
+                    </Button>
+                    {history.length > 0 && (
+                      <>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={exportHistory}
+                          aria-label={t.exportHistory}
+                          title={t.exportHistory}
+                          className="h-8 w-8 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground"
+                        >
+                          <FileDown className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={clearHistory}
+                          aria-label={t.clearHistory}
+                          title={t.clearHistory}
+                          className="h-8 w-8 rounded-lg text-destructive hover:bg-destructive/10 hover:text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </>
+                    )}
+                  </div>
                 </DialogHeader>
                 <div className="max-h-[60vh] space-y-2 overflow-y-auto pr-1">
                   {history.length === 0 ? (
