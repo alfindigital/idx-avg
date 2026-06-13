@@ -847,7 +847,7 @@ export function Calculator() {
         </header>
 
         {/* Main */}
-        <main className="mx-auto w-full max-w-[480px] flex-1 px-3 pt-4 pb-[calc(4.5rem+env(safe-area-inset-bottom))] sm:px-4 sm:pt-4 sm:pb-4">
+        <main className="mx-auto w-full max-w-[480px] flex-1 px-4 pt-4 pb-[calc(4.5rem+env(safe-area-inset-bottom))]">
           {showRecovered && (
             <div className="pointer-events-none fixed inset-x-0 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] z-40 flex justify-center animate-in fade-in slide-in-from-bottom-2 duration-300">
               <span className="rounded-full bg-muted/80 px-2.5 py-0.5 text-[10px] font-medium text-muted-foreground backdrop-blur-sm">
@@ -855,7 +855,7 @@ export function Calculator() {
               </span>
             </div>
           )}
-          <form onSubmit={handleSubmit} noValidate className="space-y-2 sm:space-y-5">
+          <form onSubmit={handleSubmit} noValidate className="space-y-3">
             {/* Position */}
             <section aria-labelledby="posisi-heading" className={cardCls}>
               <div className="mb-2 flex items-center justify-between sm:mb-4">
