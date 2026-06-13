@@ -8,6 +8,8 @@ import {
   Trash2,
   Link2,
   Download,
+  Upload,
+  FileDown,
   TrendingDown,
   TrendingUp,
   X,
