@@ -980,7 +980,7 @@ export function Calculator() {
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                <div className="grid grid-cols-2 gap-3">
                   <div className={cn(lotTambahDisabled && "opacity-50")}>
                     <Label htmlFor="lot-tambah-input" className={labelCls}>
                       {t.lotTambah}
