@@ -687,29 +687,29 @@ export function Calculator() {
   const targetAvgDisabled = !!lotTambah;
 
   const inputCls =
-    "h-auto rounded-xl border-2 border-transparent bg-card px-3 py-1.5 text-sm font-bold text-foreground shadow-none transition-all focus-visible:border-primary focus-visible:ring-0 placeholder:text-muted-foreground sm:px-4 sm:py-2.5 sm:text-lg";
+    "h-11 rounded-xl border-2 border-transparent bg-card px-3.5 text-base font-bold text-foreground shadow-none transition-all focus-visible:border-primary focus-visible:ring-0 placeholder:text-muted-foreground";
   const labelCls =
-    "mb-0.5 ml-0.5 block text-[11px] font-semibold text-foreground/70 sm:mb-1 sm:text-sm";
+    "mb-1 ml-0.5 block text-xs font-semibold text-foreground/70";
   const sectionHead =
-    "mb-2 font-display text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground sm:mb-4 sm:text-xs";
+    "mb-3 font-display text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground";
   const cardCls =
-    "rounded-2xl border border-white/70 bg-secondary/60 p-2.5 shadow-sm dark:border-white/5 sm:rounded-3xl sm:p-5";
+    "rounded-2xl border border-white/70 bg-secondary/60 p-4 shadow-sm dark:border-white/5";
   const flashCls = "border-destructive ring-2 ring-destructive/40 animate-pulse";
 
   return (
     <TooltipProvider delayDuration={150}>
       <div className="flex min-h-screen flex-col bg-background text-foreground">
         {/* Header */}
-        <header className="mx-auto flex w-full max-w-[480px] items-center justify-between gap-2 px-3 pt-1 pb-3 sm:px-4 sm:pt-2 sm:pb-1">
-          <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/25 sm:h-11 sm:w-11">
+        <header className="mx-auto flex w-full max-w-[480px] items-center justify-between gap-2 px-4 pt-2 pb-3">
+          <div className="flex min-w-0 items-center gap-2.5">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/25">
               <Sigma className="h-5 w-5" strokeWidth={2.5} />
             </div>
             <h1 className="min-w-0 leading-tight">
-              <span className="font-display text-xl font-extrabold tracking-tight block truncate sm:text-2xl">
+              <span className="font-display text-xl font-extrabold tracking-tight block truncate">
                 {t.appTitle}
               </span>
-              <span className="font-sans text-[11px] font-medium text-muted-foreground block truncate sm:text-xs">
+              <span className="font-sans text-[11px] font-medium text-muted-foreground block truncate">
                 {t.appTagline}
               </span>
             </h1>
@@ -847,7 +847,7 @@ export function Calculator() {
         </header>
 
         {/* Main */}
-        <main className="mx-auto w-full max-w-[480px] flex-1 px-3 pt-4 pb-[calc(4.5rem+env(safe-area-inset-bottom))] sm:px-4 sm:pt-4 sm:pb-4">
+        <main className="mx-auto w-full max-w-[480px] flex-1 px-4 pt-4 pb-[calc(4.5rem+env(safe-area-inset-bottom))]">
           {showRecovered && (
             <div className="pointer-events-none fixed inset-x-0 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] z-40 flex justify-center animate-in fade-in slide-in-from-bottom-2 duration-300">
               <span className="rounded-full bg-muted/80 px-2.5 py-0.5 text-[10px] font-medium text-muted-foreground backdrop-blur-sm">
@@ -855,10 +855,10 @@ export function Calculator() {
               </span>
             </div>
           )}
-          <form onSubmit={handleSubmit} noValidate className="space-y-2 sm:space-y-5">
+          <form onSubmit={handleSubmit} noValidate className="space-y-3">
             {/* Position */}
             <section aria-labelledby="posisi-heading" className={cardCls}>
-              <div className="mb-2 flex items-center justify-between sm:mb-4">
+              <div className="mb-3 flex items-center justify-between">
                 <h2 id="posisi-heading" className={cn(sectionHead, "mb-0")}>
                   {t.positionTitle}
                 </h2>
@@ -871,7 +871,7 @@ export function Calculator() {
                   </TooltipContent>
                 </Tooltip>
               </div>
-              <div className="grid grid-cols-2 gap-2 sm:gap-3">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
                   <Label htmlFor="avg-now-input" className={labelCls}>
                     {t.avgNow}
@@ -925,11 +925,11 @@ export function Calculator() {
                   )}
                 </div>
               </div>
-              <div className="mt-2 flex items-center justify-between rounded-xl border border-white/70 bg-card/60 px-3 py-1.5 dark:border-white/5 sm:mt-4 sm:rounded-2xl sm:px-4 sm:py-3">
-                <span className="text-xs font-semibold text-muted-foreground sm:text-sm">
+              <div className="mt-3 flex items-center justify-between rounded-xl border border-white/70 bg-card/60 px-4 py-2.5 dark:border-white/5">
+                <span className="text-sm font-semibold text-muted-foreground">
                   {t.modalAwal}
                 </span>
-                <span className="font-display text-sm font-extrabold tabular sm:text-lg">
+                <span className="font-display text-base font-extrabold tabular">
                   {formatRupiah(modalAwal)}
                 </span>
               </div>
@@ -937,7 +937,7 @@ export function Calculator() {
 
             {/* Averaging */}
             <section aria-labelledby="averaging-heading" className={cardCls}>
-              <div className="mb-2 flex items-center justify-between sm:mb-4">
+              <div className="mb-3 flex items-center justify-between">
                 <h2 id="averaging-heading" className={cn(sectionHead, "mb-0")}>
                   {t.averagingTitle}
                 </h2>
@@ -951,7 +951,7 @@ export function Calculator() {
                 </Tooltip>
               </div>
 
-              <div className="space-y-1.5 sm:space-y-3">
+              <div className="space-y-3">
                 <div>
                   <Label htmlFor="harga-avg-input" className={labelCls}>
                     {t.hargaAvg}
@@ -980,7 +980,7 @@ export function Calculator() {
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                <div className="grid grid-cols-2 gap-3">
                   <div className={cn(lotTambahDisabled && "opacity-50")}>
                     <Label htmlFor="lot-tambah-input" className={labelCls}>
                       {t.lotTambah}
@@ -1041,15 +1041,15 @@ export function Calculator() {
             </section>
 
             {/* Fee Section */}
-            <Collapsible open={feeOpen} onOpenChange={setFeeOpen} className={cn(cardCls, "py-3 sm:py-4")}>
+            <Collapsible open={feeOpen} onOpenChange={setFeeOpen} className={cn(cardCls, "py-3.5")}>
               <CollapsibleTrigger className="flex w-full items-center justify-between select-none [&[data-state=open]>svg]:rotate-180">
-                <span className="inline-flex h-4 items-center font-display text-[11px] font-bold uppercase leading-none tracking-[0.18em] text-muted-foreground sm:text-xs">
+                <span className="inline-flex h-4 items-center font-display text-xs font-bold uppercase leading-none tracking-[0.18em] text-muted-foreground">
                   {t.feeTitle}
                 </span>
                 <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200" />
               </CollapsibleTrigger>
               <CollapsibleContent>
-                <div className="mt-3 space-y-3 sm:mt-4">
+                <div className="mt-3 space-y-3">
                   <label className="flex h-5 cursor-pointer items-center gap-2.5 select-none">
                     <Checkbox
                       checked={fee.enabled}
@@ -1057,10 +1057,10 @@ export function Calculator() {
                       aria-label={t.feeInclude}
                       className="h-4 w-4 rounded-full border-primary/80 bg-transparent shadow-none data-[state=checked]:bg-primary [&_svg]:h-3 [&_svg]:w-3"
                     />
-                    <span className="text-xs font-semibold text-foreground sm:text-sm">{t.feeInclude}</span>
+                    <span className="text-sm font-semibold text-foreground">{t.feeInclude}</span>
                   </label>
                   {fee.enabled && (
-                    <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                    <div className="grid grid-cols-2 gap-3">
                       <div>
                         <Label htmlFor="fee-buy-input" className={labelCls}>
                           {t.feeBuy} (%)
@@ -1103,7 +1103,7 @@ export function Calculator() {
               type={canCalculate ? "submit" : "button"}
               onClick={canCalculate ? undefined : () => focusFirstInvalid()}
               title="Ctrl/Cmd+Enter"
-              className="font-display flex h-auto w-full items-center justify-center gap-2 rounded-2xl py-2.5 text-sm font-extrabold uppercase tracking-[0.15em] shadow-lg shadow-primary/25 transition-all active:scale-[0.98] sm:rounded-3xl sm:py-5 sm:text-lg disabled:opacity-50"
+              className="font-display flex h-12 w-full items-center justify-center gap-2 rounded-2xl text-base font-extrabold uppercase tracking-[0.15em] shadow-lg shadow-primary/25 transition-all active:scale-[0.98] disabled:opacity-50"
               aria-disabled={!canCalculate}
             >
               <span>{t.hitung}</span>
@@ -1124,13 +1124,13 @@ export function Calculator() {
                   data-result-card
                   className="overflow-hidden rounded-3xl border border-white/70 bg-card shadow-sm dark:border-white/5"
                 >
-                  <div className="bg-primary/10 px-4 pt-4 pb-3 sm:px-5 sm:pt-5 sm:pb-4">
+                  <div className="bg-primary/10 px-4 pt-4 pb-3">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <h2 className="font-display text-[11px] font-extrabold uppercase tracking-[0.22em] text-primary">
                           {headLabel}
                         </h2>
-                        <p className="mt-2 font-display text-3xl font-extrabold leading-none tabular text-foreground break-words sm:text-4xl">
+                        <p className="mt-2 font-display text-3xl font-extrabold leading-none tabular text-foreground break-words">
                           {headValue}
                         </p>
                         {result.mode === "lots-needed" && (
@@ -1159,7 +1159,7 @@ export function Calculator() {
                     </div>
                   </div>
 
-                  <div className="space-y-2 px-4 py-3 text-sm font-medium sm:space-y-2.5 sm:px-5 sm:py-4">
+                  <div className="space-y-2.5 px-4 py-4 text-sm font-medium">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">{t.avgSekarangRow}</span>
                       <span className="font-bold tabular text-foreground">
@@ -1289,8 +1289,8 @@ export function Calculator() {
         </main>
 
         {/* Footer */}
-        <footer className="mx-auto mt-auto w-full max-w-[480px] border-t border-border/60 px-3 py-2 font-sans sm:mt-8 sm:px-4 sm:py-4">
-          <div className="flex flex-wrap items-center justify-end gap-x-2 gap-y-1 text-xs font-normal text-muted-foreground sm:justify-center">
+        <footer className="mx-auto mt-auto w-full max-w-[480px] border-t border-border/60 px-4 py-3 font-sans">
+          <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs font-normal text-muted-foreground">
             <span>
               {t.footerBy}{" "}
               <a
