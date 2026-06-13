@@ -259,8 +259,15 @@ export function Calculator() {
     if (urlAvg) setAvgPrice(urlAvg);
     if (urlLot) setTotalLot(urlLot);
     if (urlHarga) setHargaAvg(urlHarga);
-    if (urlLotTambah) setLotTambah(urlLotTambah);
-    if (urlTarget) setTargetAvg(urlTarget);
+    if (urlLotTambah) {
+      setLotTambah(urlLotTambah);
+      setTargetAvg("");
+      setPickedMode("new-avg");
+    } else if (urlTarget) {
+      setTargetAvg(urlTarget);
+      setLotTambah("");
+      setPickedMode("lots-needed");
+    }
 
     hydratedRef.current = true;
     return () => {
