@@ -604,6 +604,70 @@ export function Calculator() {
     toast(t.historyCleared);
   };
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const exportHistory = () => {
+    try {
+      const blob = new Blob([JSON.stringify(history, null, 2)], {
+        type: "application/json",
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `idxavg-history-${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast.success(t.historyExported);
+    } catch {
+      toast.error(t.copyFail);
+    }
+  };
+
+  const importHistory = async (file: File) => {
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+      if (!Array.isArray(parsed)) throw new Error("not array");
+      const isValid = (h: unknown): h is CalcResult => {
+        if (!h || typeof h !== "object") return false;
+        const o = h as Record<string, unknown>;
+        return (
+          typeof o.id === "string" &&
+          typeof o.timestamp === "number" &&
+          (o.mode === "new-avg" || o.mode === "lots-needed") &&
+          typeof o.avgSekarang === "number" &&
+          typeof o.lotSekarang === "number" &&
+          typeof o.newAvgPrice === "number" &&
+          typeof o.totalLotBaru === "number" &&
+          typeof o.lotDelta === "number" &&
+          typeof o.totalModal === "number" &&
+          (o.status === "down" || o.status === "up" || o.status === "flat") &&
+          typeof o.percentage === "number"
+        );
+      };
+      const valid = parsed.filter(isValid);
+      if (valid.length === 0) {
+        toast.error(t.historyImportFail);
+        return;
+      }
+      // Merge by id, newest first, cap 20
+      const map = new Map<string, CalcResult>();
+      [...valid, ...history].forEach((h) => map.set(h.id, h));
+      const merged = Array.from(map.values())
+        .sort((a, b) => b.timestamp - a.timestamp)
+        .slice(0, 20);
+      setHistory(merged);
+      try {
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(merged));
+      } catch {}
+      toast.success(t.historyImported(valid.length));
+    } catch {
+      toast.error(t.historyImportFail);
+    }
+  };
+
   const loadHistory = (r: CalcResult) => {
     setAvgPrice(String(r.avgSekarang));
     setTotalLot(String(r.lotSekarang));
