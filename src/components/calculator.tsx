@@ -694,16 +694,16 @@ export function Calculator() {
     if (r.mode === "new-avg") {
       setLotTambah(String(r.lotDelta));
       setTargetAvg("");
+      setPickedMode("new-avg");
     } else {
       setTargetAvg(String(r.targetAvg ?? ""));
       setLotTambah("");
+      setPickedMode("lots-needed");
     }
     setResult(r);
     setHistoryOpen(false);
   };
 
-  const lotTambahDisabled = !!targetAvg;
-  const targetAvgDisabled = !!lotTambah;
 
   const inputCls =
     "h-11 rounded-xl border-2 border-transparent bg-card px-3.5 text-base font-bold text-foreground shadow-none transition-all focus-visible:border-primary focus-visible:ring-0 placeholder:text-muted-foreground";
