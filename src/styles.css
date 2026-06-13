@@ -132,6 +132,28 @@
     border-color: var(--color-border);
   }
 
+  /* Smooth theme transitions: animate color/background/border/fill/stroke when
+     the `dark` class flips on <html>. Skipped for users who prefer reduced motion. */
+  html,
+  body,
+  body * {
+    transition:
+      background-color 320ms ease,
+      border-color 320ms ease,
+      color 320ms ease,
+      fill 320ms ease,
+      stroke 320ms ease,
+      box-shadow 320ms ease;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html,
+    body,
+    body * {
+      transition: none;
+    }
+  }
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
@@ -139,6 +161,7 @@
     font-feature-settings: "cv11", "ss01";
     -webkit-font-smoothing: antialiased;
   }
+
 
   .font-display {
     font-family: var(--font-display);
