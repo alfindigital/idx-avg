@@ -883,7 +883,7 @@ export function Calculator() {
                 </h2>
                 <Tooltip>
                   <TooltipTrigger asChild aria-label="Info">
-                    <Info className="h-4 w-4 cursor-help text-muted-foreground" />
+                    <Info className="h-4 w-4 cursor-help text-primary/60" />
                   </TooltipTrigger>
                   <TooltipContent side="left" className="max-w-[220px] text-xs">
                     {t.positionTip}
