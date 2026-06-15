@@ -1036,10 +1036,6 @@ export function Calculator() {
                     );
                   })}
                 </div>
-                <p className="-mt-1 ml-0.5 text-[11px] text-muted-foreground">
-                  {t.averagingTip}
-                </p>
-
                 {pickedMode === "new-avg" ? (
                   <div>
                     <Label htmlFor="lot-tambah-input" className={labelCls}>
