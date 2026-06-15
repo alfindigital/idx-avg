@@ -712,7 +712,7 @@ export function Calculator() {
   const sectionHead =
     "mb-3 font-display text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground";
   const cardCls =
-    "rounded-2xl border border-white/70 bg-secondary/60 p-4 shadow-sm dark:border-white/5";
+    "rounded-2xl border border-white/70 bg-secondary/60 p-4 shadow-sm dark:border-white/5 border-l-2 border-l-primary/15";
   const flashCls = "border-destructive ring-2 ring-destructive/40 animate-pulse";
 
   return (
