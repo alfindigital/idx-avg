@@ -712,7 +712,7 @@ export function Calculator() {
   const sectionHead =
     "mb-3 font-display text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground";
   const cardCls =
-    "rounded-2xl border border-white/70 bg-secondary/60 p-4 shadow-sm dark:border-white/5";
+    "rounded-2xl border border-white/70 bg-secondary/60 p-4 shadow-sm dark:border-white/5 border-l-2 border-l-primary/15";
   const flashCls = "border-destructive ring-2 ring-destructive/40 animate-pulse";
 
   return (
@@ -883,7 +883,7 @@ export function Calculator() {
                 </h2>
                 <Tooltip>
                   <TooltipTrigger asChild aria-label="Info">
-                    <Info className="h-4 w-4 cursor-help text-muted-foreground" />
+                    <Info className="h-4 w-4 cursor-help text-primary/60" />
                   </TooltipTrigger>
                   <TooltipContent side="left" className="max-w-[220px] text-xs">
                     {t.positionTip}
@@ -944,8 +944,8 @@ export function Calculator() {
                   )}
                 </div>
               </div>
-              <div className="mt-3 flex items-center justify-between rounded-xl border border-white/70 bg-card/60 px-4 py-2.5 dark:border-white/5">
-                <span className="text-sm font-semibold text-muted-foreground">
+              <div className="mt-3 flex items-center justify-between rounded-xl border border-white/70 bg-primary/[0.04] px-4 py-2.5 dark:border-white/5">
+                <span className="text-sm font-semibold text-primary/70">
                   {t.modalAwal}
                 </span>
                 <span className="font-display text-base font-extrabold tabular">
@@ -962,7 +962,7 @@ export function Calculator() {
                 </h2>
                 <Tooltip>
                   <TooltipTrigger asChild aria-label="Info">
-                    <Info className="h-4 w-4 cursor-help text-muted-foreground" />
+                    <Info className="h-4 w-4 cursor-help text-primary/60" />
                   </TooltipTrigger>
                   <TooltipContent side="left" className="max-w-[220px] text-xs">
                     {t.averagingTip}
