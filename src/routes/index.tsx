@@ -21,6 +21,7 @@ export const Route = createFileRoute("/")({
   validateSearch: searchSchema,
   head: () => {
     const ogImage = OG_IMAGE;
+    return {
       meta: [
         { title: "IDXAvg — Kalkulator Averaging Saham IDX" },
         {
