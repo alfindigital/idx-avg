@@ -14,27 +14,13 @@ const searchSchema = z.object({
 }).catch({});
 
 const SITE = "https://idx-avg.lovable.app";
-
-function buildOgImage(search: Record<string, unknown>): string {
-  const keys = ["avg", "lot", "harga", "lotTambah", "target", "t"] as const;
-  const params = new URLSearchParams();
-  let hasAny = false;
-  for (const k of keys) {
-    const v = search[k];
-    if (v !== undefined && v !== null && String(v) !== "") {
-      params.set(k, String(v));
-      hasAny = true;
-    }
-  }
-  return hasAny ? `${SITE}/api/og?${params.toString()}` : `${SITE}/api/og`;
-}
+const OG_IMAGE = `${SITE}/og.jpg`;
 
 export const Route = createFileRoute("/")({
   component: Index,
   validateSearch: searchSchema,
-  head: ({ match }) => {
-    const search = (match.search ?? {}) as Record<string, unknown>;
-    const ogImage = buildOgImage(search);
+  head: () => {
+    const ogImage = OG_IMAGE;
     return {
       meta: [
         { title: "IDXAvg — Kalkulator Averaging Saham IDX" },
