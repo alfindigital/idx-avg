@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ImageResponse } from "workers-og";
 
 function fmtRp(n: number) {
   if (!isFinite(n)) return "-";
