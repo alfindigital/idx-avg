@@ -19,10 +19,8 @@ const OG_IMAGE = `${SITE}/og.jpg`;
 export const Route = createFileRoute("/")({
   component: Index,
   validateSearch: searchSchema,
-  head: ({ match }) => {
-    const search = (match.search ?? {}) as Record<string, unknown>;
-    const ogImage = buildOgImage(search);
-    return {
+  head: () => {
+    const ogImage = OG_IMAGE;
       meta: [
         { title: "IDXAvg — Kalkulator Averaging Saham IDX" },
         {
