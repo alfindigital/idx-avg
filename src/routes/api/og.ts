@@ -96,6 +96,7 @@ export const Route = createFileRoute("/api/og")({
   <div style="display:flex;margin-top:32px;font-size:20px;color:#64748b;">idx-avg.lovable.app</div>
 </div>`;
 
+        const { ImageResponse } = await import("workers-og");
         return new ImageResponse(html, {
           width: 1200,
           height: 630,
