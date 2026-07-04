@@ -761,7 +761,7 @@ export function Calculator() {
                   <DialogTitle className="font-display text-lg font-extrabold tracking-tight">
                     {t.history}
                   </DialogTitle>
-                  <div className="absolute right-10 top-3.5 flex items-center gap-0.5">
+                  <div className="absolute right-10 top-2.5 flex items-center gap-0.5">
                     <input
                       ref={fileInputRef}
                       type="file"
