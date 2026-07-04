@@ -761,7 +761,7 @@ export function Calculator() {
                   <DialogTitle className="font-display text-lg font-extrabold tracking-tight">
                     {t.history}
                   </DialogTitle>
-                  <div className="absolute right-12 top-3 flex items-center gap-1">
+                  <div className="absolute right-10 top-3.5 flex items-center gap-0.5">
                     <input
                       ref={fileInputRef}
                       type="file"
@@ -779,7 +779,7 @@ export function Calculator() {
                       onClick={() => fileInputRef.current?.click()}
                       aria-label={t.importHistory}
                       title={t.importHistory}
-                      className="h-8 w-8 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground"
+                      className="h-7 w-7 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground"
                     >
                       <Upload className="h-4 w-4" />
                     </Button>
@@ -791,7 +791,7 @@ export function Calculator() {
                           onClick={exportHistory}
                           aria-label={t.exportHistory}
                           title={t.exportHistory}
-                          className="h-8 w-8 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground"
+                          className="h-7 w-7 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground"
                         >
                           <FileDown className="h-4 w-4" />
                         </Button>
@@ -801,7 +801,7 @@ export function Calculator() {
                           onClick={clearHistory}
                           aria-label={t.clearHistory}
                           title={t.clearHistory}
-                          className="h-8 w-8 rounded-lg text-destructive hover:bg-destructive/10 hover:text-destructive"
+                          className="h-7 w-7 rounded-md text-destructive hover:bg-destructive/10 hover:text-destructive"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -1297,39 +1297,6 @@ export function Calculator() {
                     </div>
                   </div>
 
-                  {(() => {
-                    const ref = result.breakEvenPrice ?? result.newAvgPrice;
-                    if (!ref || !isFinite(ref)) return null;
-                    const tp5 = ref * 1.05;
-                    const tp10 = ref * 1.10;
-                    const cl5 = ref * 0.95;
-                    const cl10 = ref * 0.90;
-                    return (
-                      <div className="border-t border-border/70 bg-primary/[0.03] px-4 py-3">
-                        <div className="mb-2 font-display text-[10px] font-extrabold uppercase tracking-[0.22em] text-primary/70">
-                          {t.projTitle}
-                        </div>
-                        <div className="grid grid-cols-2 gap-2 text-xs">
-                          <div className="rounded-xl border border-success/20 bg-success/5 px-2.5 py-2">
-                            <div className="text-[10px] font-semibold uppercase tracking-wider text-success/80">{t.projTP} +5%</div>
-                            <div className="mt-0.5 font-bold tabular text-foreground">{formatRupiah(tp5)}</div>
-                          </div>
-                          <div className="rounded-xl border border-success/25 bg-success/10 px-2.5 py-2">
-                            <div className="text-[10px] font-semibold uppercase tracking-wider text-success/80">{t.projTP} +10%</div>
-                            <div className="mt-0.5 font-bold tabular text-foreground">{formatRupiah(tp10)}</div>
-                          </div>
-                          <div className="rounded-xl border border-destructive/20 bg-destructive/5 px-2.5 py-2">
-                            <div className="text-[10px] font-semibold uppercase tracking-wider text-destructive/80">{t.projCL} -5%</div>
-                            <div className="mt-0.5 font-bold tabular text-foreground">{formatRupiah(cl5)}</div>
-                          </div>
-                          <div className="rounded-xl border border-destructive/25 bg-destructive/10 px-2.5 py-2">
-                            <div className="text-[10px] font-semibold uppercase tracking-wider text-destructive/80">{t.projCL} -10%</div>
-                            <div className="mt-0.5 font-bold tabular text-foreground">{formatRupiah(cl10)}</div>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })()}
                 </div>
               );
 
