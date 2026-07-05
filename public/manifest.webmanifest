@@ -1,7 +1,7 @@
 {
-  "name": "IDXAvg — Kalkulator Average Saham IDX",
+  "name": "IDXAvg — Kalkulator Rata-rata Saham IDX",
   "short_name": "IDXAvg",
-  "description": "Hitung average price, lot tambahan, dan break-even sebelum beli saham IDX. Auto tick-size, mobile-first, gratis.",
+  "description": "Hitung harga rata-rata, lot tambahan, dan break-even sebelum beli saham IDX. Auto tick-size, mobile-first, gratis.",
   "lang": "id-ID",
   "dir": "ltr",
   "start_url": "/",
@@ -18,9 +18,9 @@
   ],
   "shortcuts": [
     {
-      "name": "Hitung Average Baru",
+      "name": "Hitung Rata-rata Baru",
       "short_name": "Hitung",
-      "description": "Langsung buka kalkulator average saham",
+      "description": "Langsung buka kalkulator rata-rata saham",
       "url": "/buat",
       "icons": [{ "src": "/icon-512.png", "sizes": "192x192", "type": "image/png" }]
     }
@@ -31,14 +31,14 @@
       "sizes": "720x1280",
       "type": "image/jpeg",
       "form_factor": "narrow",
-      "label": "Kalkulator average saham IDX di mobile"
+      "label": "Kalkulator rata-rata saham IDX di mobile"
     },
     {
       "src": "/screenshot-desktop.jpg",
       "sizes": "1280x800",
       "type": "image/jpeg",
       "form_factor": "wide",
-      "label": "Kalkulator average saham IDX di desktop"
+      "label": "Kalkulator rata-rata saham IDX di desktop"
     }
   ]
 }

@@ -1,8 +1,8 @@
 # IDXAvg
 
-> Kalkulator averaging saham IDX — hitung average price & lot tambahan sebelum beli, dengan auto tick-size, mobile-first, dan gratis.
+> Kalkulator rata-rata saham IDX — hitung harga rata-rata & lot tambahan sebelum beli, dengan auto tick-size, mobile-first, dan gratis.
 
 ## Pages
 
-- [Home](https://idx-avg.lovable.app/): Kalkulator averaging saham IDX dengan auto tick-size.
-- [Buat / Kalkulator](https://idx-avg.lovable.app/buat): Buka langsung kalkulator average saham IDX, hitung average down dan lot tambahan.
+- [Home](https://idx-avg.lovable.app/): Kalkulator rata-rata saham IDX dengan auto tick-size.
+- [Buat / Kalkulator](https://idx-avg.lovable.app/buat): Buka langsung kalkulator rata-rata saham IDX, hitung rata-rata turun dan lot tambahan.
