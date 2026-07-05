@@ -5,20 +5,20 @@ export const Route = createFileRoute("/buat")({
   component: BuatPage,
   head: () => ({
     meta: [
-      { title: "Hitung Average Saham — IDXAvg" },
+      { title: "Hitung Rata-rata Saham — IDXAvg" },
       {
         name: "description",
         content:
-          "Buka langsung kalkulator average saham IDX. Hitung average down, lot tambahan, dan break-even dengan auto tick-size.",
+          "Buka langsung kalkulator rata-rata saham IDX. Hitung rata-rata turun, lot tambahan, dan break-even dengan auto tick-size.",
       },
       {
         property: "og:title",
-        content: "Hitung Average Saham — IDXAvg",
+        content: "Hitung Rata-rata Saham — IDXAvg",
       },
       {
         property: "og:description",
         content:
-          "Buka langsung kalkulator average saham IDX. Hitung average down, lot tambahan, dan break-even dengan auto tick-size.",
+          "Buka langsung kalkulator rata-rata saham IDX. Hitung rata-rata turun, lot tambahan, dan break-even dengan auto tick-size.",
       },
       { property: "og:url", content: "https://idx-avg.lovable.app/buat" },
       { property: "og:type", content: "website" },
@@ -41,7 +41,7 @@ export const Route = createFileRoute("/buat")({
             {
               "@type": "ListItem",
               position: 2,
-              name: "Hitung Average",
+              name: "Hitung Rata-rata",
               item: "https://idx-avg.lovable.app/buat",
             },
           ],
