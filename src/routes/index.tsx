@@ -23,17 +23,17 @@ export const Route = createFileRoute("/")({
     const ogImage = OG_IMAGE;
     return {
       meta: [
-        { title: "IDXAvg — Kalkulator Averaging Saham IDX" },
+        { title: "IDXAvg — Kalkulator Rata-rata Saham IDX" },
         {
           name: "description",
           content:
-            "Hitung average price & lot tambahan sebelum beli saham IDX. Auto tick-size, mobile-first, gratis.",
+            "Hitung harga rata-rata & lot tambahan sebelum beli saham IDX. Auto tick-size, mobile-first, gratis.",
         },
-        { property: "og:title", content: "IDXAvg — Kalkulator Averaging Saham IDX" },
+        { property: "og:title", content: "IDXAvg — Kalkulator Rata-rata Saham IDX" },
         {
           property: "og:description",
           content:
-            "Hitung average price & lot tambahan sebelum beli saham IDX. Auto tick-size, mobile-first, gratis.",
+            "Hitung harga rata-rata & lot tambahan sebelum beli saham IDX. Auto tick-size, mobile-first, gratis.",
         },
         { property: "og:url", content: `${SITE}/` },
         { property: "og:type", content: "website" },
@@ -41,11 +41,11 @@ export const Route = createFileRoute("/")({
         { property: "og:image:width", content: "1200" },
         { property: "og:image:height", content: "630" },
         { name: "twitter:card", content: "summary_large_image" },
-        { name: "twitter:title", content: "IDXAvg — Kalkulator Averaging Saham IDX" },
+        { name: "twitter:title", content: "IDXAvg — Kalkulator Rata-rata Saham IDX" },
         {
           name: "twitter:description",
           content:
-            "Hitung average price & lot tambahan sebelum beli saham IDX. Auto tick-size, mobile-first, gratis.",
+            "Hitung harga rata-rata & lot tambahan sebelum beli saham IDX. Auto tick-size, mobile-first, gratis.",
         },
         { name: "twitter:image", content: ogImage },
       ],
