@@ -61,7 +61,7 @@ export const Route = createFileRoute("/")({
             operatingSystem: "Any",
             browserRequirements: "Requires JavaScript. Requires HTML5.",
             description:
-              "Kalkulator averaging saham IDX — hitung average price & lot tambahan sebelum beli, dengan auto tick-size.",
+              "Kalkulator rata-rata saham IDX — hitung harga rata-rata & lot tambahan sebelum beli, dengan auto tick-size.",
             url: `${SITE}/`,
             inLanguage: "id-ID",
             offers: { "@type": "Offer", price: "0", priceCurrency: "IDR" },
@@ -75,18 +75,18 @@ export const Route = createFileRoute("/")({
             mainEntity: [
               {
                 "@type": "Question",
-                name: "Apa itu averaging saham?",
+                name: "Apa itu rata-rata saham?",
                 acceptedAnswer: {
                   "@type": "Answer",
-                  text: "Averaging saham adalah strategi membeli tambahan lot saham di harga berbeda untuk menurunkan (average down) atau menaikkan (average up) harga rata-rata pembelian. IDXAvg membantu menghitung avg baru dan lot yang dibutuhkan sebelum eksekusi.",
+                  text: "Rata-rata saham adalah strategi membeli tambahan lot saham di harga berbeda untuk menurunkan (rata-rata turun) atau menaikkan (rata-rata naik) harga rata-rata pembelian. IDXAvg membantu menghitung rata-rata baru dan lot yang dibutuhkan sebelum eksekusi.",
                 },
               },
               {
                 "@type": "Question",
-                name: "Bagaimana cara menghitung average down saham?",
+                name: "Bagaimana cara menghitung rata-rata turun saham?",
                 acceptedAnswer: {
                   "@type": "Answer",
-                  text: "Rumus: avg baru = (avg lama × lot lama × 100 + harga beli × lot tambah × 100) ÷ ((lot lama + lot tambah) × 100). IDXAvg melakukan ini otomatis dengan validasi tick-size IDX.",
+                  text: "Rumus: rata-rata baru = (rata-rata lama × lot lama × 100 + harga beli × lot tambah × 100) ÷ ((lot lama + lot tambah) × 100). IDXAvg melakukan ini otomatis dengan validasi tick-size IDX.",
                 },
               },
               {
