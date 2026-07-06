@@ -708,7 +708,7 @@ export function Calculator() {
   const inputCls =
     "h-11 rounded-xl border-2 border-transparent bg-card px-3.5 text-base font-bold text-foreground shadow-none transition-all focus-visible:border-primary focus-visible:ring-0 placeholder:text-muted-foreground";
   const labelCls =
-    "mb-1 ml-0.5 block text-xs font-semibold text-foreground/70";
+    "mb-1 ml-0.5 flex min-h-8 items-end text-xs font-semibold leading-tight text-foreground/70";
   const sectionHead =
     "mb-3 font-display text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground";
   const cardCls =
