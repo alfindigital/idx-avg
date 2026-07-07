@@ -16,7 +16,6 @@ import {
   Info,
   ChevronDown,
   Send,
-  Send,
   Globe,
   Facebook,
   Youtube,
