@@ -55,12 +55,12 @@ const FOOTER_CSS = `
 .afd-brand:hover{text-decoration:underline}
 .afd-caret{display:inline-block;width:6px;height:12px;background:var(--primary);margin-left:3px;animation:afd-blink 1.1s step-end infinite}
 @keyframes afd-blink{50%{opacity:0}}
-.afd-rot{position:relative;height:28px;min-width:160px;flex:0 0 auto}
-.afd-item{position:absolute;right:0;top:0;height:28px;display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--foreground);font-size:12px;opacity:0;transform:translateY(6px);transition:opacity .5s,transform .5s;pointer-events:none}
+.afd-rot{position:relative;height:24px;min-width:150px;flex:0 0 auto}
+.afd-item{position:absolute;right:0;top:0;height:24px;display:flex;align-items:center;gap:6px;text-decoration:none;color:var(--foreground);font-size:11px;opacity:0;transform:translateY(6px);transition:opacity .5s,transform .5s;pointer-events:none}
 .afd-item.afd-active{opacity:1;transform:translateY(0);pointer-events:auto}
 .afd-item b{color:var(--primary);font-weight:600}
-.afd-ico{position:relative;width:28px;height:28px;border-radius:50%;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:color-mix(in oklab, var(--primary) 11%, transparent);color:var(--primary);transition:all .25s}
-.afd-ico svg{width:15px;height:15px}
+.afd-ico{position:relative;width:24px;height:24px;border-radius:50%;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:color-mix(in oklab, var(--primary) 11%, transparent);color:var(--primary);transition:all .25s}
+.afd-ico svg{width:13px;height:13px}
 .afd-rot:hover .afd-item.afd-active .afd-ico{background:var(--primary);color:var(--card,var(--background))}
 .afd-rot:hover .afd-item.afd-active .afd-ico::after{content:"";position:absolute;inset:0;border-radius:50%;animation:afd-ripple 1.3s ease-out infinite}
 @keyframes afd-ripple{0%{box-shadow:0 0 0 0 color-mix(in oklab, var(--primary) 50%, transparent)}100%{box-shadow:0 0 0 16px color-mix(in oklab, var(--primary) 0%, transparent)}}
