@@ -10,6 +10,7 @@ import {
 } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
 
+import "../styles.css";
 import appCss from "../styles.css?url";
 import { registerPWA } from "@/lib/pwa-register";
 
