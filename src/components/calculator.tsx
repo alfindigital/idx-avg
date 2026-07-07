@@ -721,8 +721,14 @@ export function Calculator() {
         {/* Header */}
         <header className="mx-auto flex w-full max-w-[480px] items-center justify-between gap-2 px-4 pt-2 pb-3">
           <div className="flex min-w-0 items-center gap-2.5">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/25">
-              <Sigma className="h-5 w-5" strokeWidth={2.5} />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-primary shadow-lg shadow-primary/25">
+              <img
+                src="/icon-512.png"
+                alt="IDXAvg"
+                width={40}
+                height={40}
+                className="h-full w-full object-cover"
+              />
             </div>
             <h1 className="min-w-0 leading-tight">
               <span className="font-display text-xl font-extrabold tracking-tight block truncate">
