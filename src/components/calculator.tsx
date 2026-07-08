@@ -951,6 +951,9 @@ export function Calculator() {
                     id="total-lot-input"
                     ref={lotRef}
                     inputMode="numeric"
+                    enterKeyHint="next"
+                    autoComplete="off"
+                    onKeyDown={advanceOnEnter(hargaRef)}
                     value={totalLot}
                     onChange={(e) => setTotalLot(intOnly(e.target.value))}
                     placeholder="0"
