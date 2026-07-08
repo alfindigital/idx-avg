@@ -952,6 +952,7 @@ export function Calculator() {
                     onBlur={(e) => handlePriceBlur(e.target.value, setAvgPrice)}
                     placeholder="0"
                     aria-invalid={!!errAvg}
+                    aria-describedby={errAvg ? "avg-now-error" : undefined}
                     className={cn(
                       inputCls,
                       "tabular",
@@ -961,9 +962,13 @@ export function Calculator() {
                     tabIndex={1}
                     autoFocus
                   />
-                  {errAvg && (
-                    <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errAvg}</p>
-                  )}
+                  <p
+                    id="avg-now-error"
+                    role="alert"
+                    className="mt-1 ml-0.5 min-h-[1rem] text-xs font-medium text-destructive"
+                  >
+                    {errAvg ?? ""}
+                  </p>
                 </div>
                 <div>
                   <Label htmlFor="total-lot-input" className={labelCls}>
