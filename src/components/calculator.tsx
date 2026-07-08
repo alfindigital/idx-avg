@@ -922,6 +922,9 @@ export function Calculator() {
                     id="avg-now-input"
                     ref={firstInputRef}
                     inputMode="decimal"
+                    enterKeyHint="next"
+                    autoComplete="off"
+                    onKeyDown={advanceOnEnter(lotRef)}
                     value={avgPrice}
                     onChange={(e) => setAvgPrice(numOnly(e.target.value))}
                     onBlur={(e) => handlePriceBlur(e.target.value, setAvgPrice)}
