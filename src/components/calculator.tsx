@@ -1152,6 +1152,7 @@ export function Calculator() {
                       onBlur={(e) => handlePriceBlur(e.target.value, setTargetAvg)}
                       placeholder="0"
                       aria-invalid={!!errTarget}
+                      aria-describedby={errTarget ? "target-avg-error" : undefined}
                       className={cn(
                         inputCls,
                         "tabular",
@@ -1160,11 +1161,13 @@ export function Calculator() {
                       )}
                       tabIndex={4}
                     />
-                    {errTarget && (
-                      <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">
-                        {errTarget}
-                      </p>
-                    )}
+                    <p
+                      id="target-avg-error"
+                      role="alert"
+                      className="mt-1 ml-0.5 min-h-[1rem] text-xs font-medium text-destructive"
+                    >
+                      {errTarget ?? ""}
+                    </p>
                   </div>
                 )}
               </div>
