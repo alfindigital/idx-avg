@@ -1119,6 +1119,7 @@ export function Calculator() {
                       onChange={(e) => setLotTambah(intOnly(e.target.value))}
                       placeholder="0"
                       aria-invalid={!!errLotTambah}
+                      aria-describedby={errLotTambah ? "lot-tambah-error" : undefined}
                       className={cn(
                         inputCls,
                         "tabular",
@@ -1127,11 +1128,13 @@ export function Calculator() {
                       )}
                       tabIndex={4}
                     />
-                    {errLotTambah && (
-                      <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">
-                        {errLotTambah}
-                      </p>
-                    )}
+                    <p
+                      id="lot-tambah-error"
+                      role="alert"
+                      className="mt-1 ml-0.5 min-h-[1rem] text-xs font-medium text-destructive"
+                    >
+                      {errLotTambah ?? ""}
+                    </p>
                   </div>
                 ) : (
                   <div>
