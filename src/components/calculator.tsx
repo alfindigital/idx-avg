@@ -1008,6 +1008,9 @@ export function Calculator() {
                     id="harga-avg-input"
                     ref={hargaRef}
                     inputMode="decimal"
+                    enterKeyHint="next"
+                    autoComplete="off"
+                    onKeyDown={advanceOnEnter(lastInputRef)}
                     value={hargaAvg}
                     onChange={(e) => setHargaAvg(numOnly(e.target.value))}
                     onBlur={(e) => handlePriceBlur(e.target.value, setHargaAvg)}
