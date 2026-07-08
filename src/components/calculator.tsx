@@ -1048,6 +1048,7 @@ export function Calculator() {
                     onBlur={(e) => handlePriceBlur(e.target.value, setHargaAvg)}
                     placeholder="0"
                     aria-invalid={!!errHarga}
+                    aria-describedby={errHarga ? "harga-avg-error" : undefined}
                     className={cn(
                       inputCls,
                       "tabular",
@@ -1057,9 +1058,13 @@ export function Calculator() {
                     tabIndex={3}
                   />
 
-                  {errHarga && (
-                    <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errHarga}</p>
-                  )}
+                  <p
+                    id="harga-avg-error"
+                    role="alert"
+                    className="mt-1 ml-0.5 min-h-[1rem] text-xs font-medium text-destructive"
+                  >
+                    {errHarga ?? ""}
+                  </p>
                 </div>
 
                 {/* Mode picker — these two calculations are mutually exclusive */}
