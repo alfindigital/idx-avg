@@ -107,6 +107,12 @@ export function Calculator() {
     setPickedMode(m);
     if (m === "new-avg") setTargetAvg("");
     else setLotTambah("");
+    // Focus the freshly-rendered input on the next tick so mobile users
+    // don't have to hunt for the field after switching mode.
+    requestAnimationFrame(() => {
+      const el = m === "new-avg" ? lotTambahRef.current : targetRef.current;
+      el?.focus({ preventScroll: true });
+    });
   };
 
   // Fee
