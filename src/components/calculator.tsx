@@ -910,6 +910,14 @@ export function Calculator() {
               </span>
             </div>
           )}
+          <div
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+            className="sr-only"
+          >
+            {announce}
+          </div>
           <form onSubmit={handleSubmit} noValidate className="space-y-3">
             {/* Position */}
             <section aria-labelledby="posisi-heading" className={cardCls}>
