@@ -705,14 +705,31 @@ export function Calculator() {
 
 
   const inputCls =
-    "h-11 rounded-xl border-2 border-transparent bg-card px-3.5 text-base font-bold text-foreground shadow-none transition-all focus-visible:border-primary focus-visible:ring-0 placeholder:text-muted-foreground";
+    "h-11 w-full rounded-xl border-2 border-transparent bg-card px-3.5 text-base font-bold text-foreground shadow-none transition-all scroll-mt-24 focus-visible:border-primary focus-visible:ring-0 placeholder:text-muted-foreground";
   const labelCls =
-    "mb-1 ml-0.5 flex min-h-8 items-end text-xs font-semibold leading-tight text-foreground/70";
+    "mb-1 ml-0.5 flex h-8 items-end text-xs font-semibold leading-tight text-foreground/70";
   const sectionHead =
     "mb-3 font-display text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground";
   const cardCls =
     "rounded-2xl border border-white/70 bg-secondary/60 p-4 shadow-sm dark:border-white/5 border-l-2 border-l-primary/15";
   const flashCls = "border-destructive ring-2 ring-destructive/40 animate-pulse";
+
+  // Enter → jump to next input; last input → submit form.
+  const advanceOnEnter =
+    (next?: RefObject<HTMLInputElement | null>) =>
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key !== "Enter") return;
+      if (e.nativeEvent.isComposing) return;
+      if (!next) return; // let the form's onSubmit handle it
+      e.preventDefault();
+      const el = next.current;
+      if (!el) return;
+      try {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      } catch {}
+      el.focus({ preventScroll: true });
+    };
+  const lastInputRef = pickedMode === "new-avg" ? lotTambahRef : targetRef;
 
   return (
     <TooltipProvider delayDuration={150}>
