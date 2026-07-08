@@ -985,6 +985,7 @@ export function Calculator() {
                     onChange={(e) => setTotalLot(intOnly(e.target.value))}
                     placeholder="0"
                     aria-invalid={!!errLot}
+                    aria-describedby={errLot ? "total-lot-error" : undefined}
                     className={cn(
                       inputCls,
                       "tabular",
@@ -994,9 +995,13 @@ export function Calculator() {
                     tabIndex={2}
                   />
 
-                  {errLot && (
-                    <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errLot}</p>
-                  )}
+                  <p
+                    id="total-lot-error"
+                    role="alert"
+                    className="mt-1 ml-0.5 min-h-[1rem] text-xs font-medium text-destructive"
+                  >
+                    {errLot ?? ""}
+                  </p>
                 </div>
               </div>
               <div className="mt-3 flex items-center justify-between rounded-xl border border-white/70 bg-primary/[0.04] px-4 py-2.5 dark:border-white/5">
