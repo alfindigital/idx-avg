@@ -717,7 +717,7 @@ export function Calculator() {
   // Enter → jump to next input; last input → submit form.
   const advanceOnEnter =
     (next?: RefObject<HTMLInputElement | null>) =>
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
+    (e: ReactKeyboardEvent<HTMLInputElement>) => {
       if (e.key !== "Enter") return;
       if (e.nativeEvent.isComposing) return;
       if (!next) return; // let the form's onSubmit handle it
