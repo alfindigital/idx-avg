@@ -133,6 +133,7 @@ export function Calculator() {
   const [flashField, setFlashField] = useState<string | null>(null);
   const flashTimeoutRef = useRef<number | null>(null);
   const resultInputsRef = useRef<string>("");
+  const [announce, setAnnounce] = useState("");
   
   const hydratedRef = useRef(false);
   const [showRecovered, setShowRecovered] = useState(false);
@@ -405,18 +406,24 @@ export function Calculator() {
   runCalcRef.current = runCalc;
 
   const focusFirstInvalid = (): boolean => {
-    type FieldCheck = { key: string; bad: boolean; ref: RefObject<HTMLInputElement | null> };
+    type FieldCheck = {
+      key: string;
+      bad: boolean;
+      ref: RefObject<HTMLInputElement | null>;
+      label: string;
+      err: string | null;
+    };
     const checks: FieldCheck[] = [
-      { key: "avg", bad: !avgPrice || !!errAvg, ref: firstInputRef },
-      { key: "lot", bad: !totalLot || !!errLot, ref: lotRef },
-      { key: "harga", bad: !hargaAvg || !!errHarga, ref: hargaRef },
+      { key: "avg", bad: !avgPrice || !!errAvg, ref: firstInputRef, label: t.avgNow, err: errAvg },
+      { key: "lot", bad: !totalLot || !!errLot, ref: lotRef, label: t.totalLot, err: errLot },
+      { key: "harga", bad: !hargaAvg || !!errHarga, ref: hargaRef, label: t.hargaAvg, err: errHarga },
     ];
     if (mode === "new-avg") {
-      checks.push({ key: "lotTambah", bad: !lotTambah || !!errLotTambah, ref: lotTambahRef });
+      checks.push({ key: "lotTambah", bad: !lotTambah || !!errLotTambah, ref: lotTambahRef, label: t.lotTambah, err: errLotTambah });
     } else if (mode === "lots-needed") {
-      checks.push({ key: "target", bad: !targetAvg || !!errTarget, ref: targetRef });
+      checks.push({ key: "target", bad: !targetAvg || !!errTarget, ref: targetRef, label: t.targetAvg, err: errTarget });
     } else {
-      checks.push({ key: "lotTambah", bad: true, ref: lotTambahRef });
+      checks.push({ key: "lotTambah", bad: true, ref: lotTambahRef, label: t.lotTambah, err: null });
     }
     const first = checks.find((c) => c.bad);
     if (!first) return false;
@@ -428,6 +435,7 @@ export function Calculator() {
       window.setTimeout(() => el.focus({ preventScroll: true }), 150);
     }
     setFlashField(first.key);
+    setAnnounce(`${first.label}: ${first.err ?? t.positive}`);
     if (flashTimeoutRef.current) window.clearTimeout(flashTimeoutRef.current);
     flashTimeoutRef.current = window.setTimeout(() => setFlashField(null), 1400);
     return true;
@@ -902,6 +910,14 @@ export function Calculator() {
               </span>
             </div>
           )}
+          <div
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+            className="sr-only"
+          >
+            {announce}
+          </div>
           <form onSubmit={handleSubmit} noValidate className="space-y-3">
             {/* Position */}
             <section aria-labelledby="posisi-heading" className={cardCls}>
@@ -936,6 +952,7 @@ export function Calculator() {
                     onBlur={(e) => handlePriceBlur(e.target.value, setAvgPrice)}
                     placeholder="0"
                     aria-invalid={!!errAvg}
+                    aria-describedby={errAvg ? "avg-now-error" : undefined}
                     className={cn(
                       inputCls,
                       "tabular",
@@ -945,9 +962,13 @@ export function Calculator() {
                     tabIndex={1}
                     autoFocus
                   />
-                  {errAvg && (
-                    <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errAvg}</p>
-                  )}
+                  <p
+                    id="avg-now-error"
+                    role="alert"
+                    className="mt-1 ml-0.5 min-h-[1rem] text-xs font-medium text-destructive"
+                  >
+                    {errAvg ?? ""}
+                  </p>
                 </div>
                 <div>
                   <Label htmlFor="total-lot-input" className={labelCls}>
@@ -964,6 +985,7 @@ export function Calculator() {
                     onChange={(e) => setTotalLot(intOnly(e.target.value))}
                     placeholder="0"
                     aria-invalid={!!errLot}
+                    aria-describedby={errLot ? "total-lot-error" : undefined}
                     className={cn(
                       inputCls,
                       "tabular",
@@ -973,9 +995,13 @@ export function Calculator() {
                     tabIndex={2}
                   />
 
-                  {errLot && (
-                    <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errLot}</p>
-                  )}
+                  <p
+                    id="total-lot-error"
+                    role="alert"
+                    className="mt-1 ml-0.5 min-h-[1rem] text-xs font-medium text-destructive"
+                  >
+                    {errLot ?? ""}
+                  </p>
                 </div>
               </div>
               <div className="mt-3 flex items-center justify-between rounded-xl border border-white/70 bg-primary/[0.04] px-4 py-2.5 dark:border-white/5">
@@ -1022,6 +1048,7 @@ export function Calculator() {
                     onBlur={(e) => handlePriceBlur(e.target.value, setHargaAvg)}
                     placeholder="0"
                     aria-invalid={!!errHarga}
+                    aria-describedby={errHarga ? "harga-avg-error" : undefined}
                     className={cn(
                       inputCls,
                       "tabular",
@@ -1031,9 +1058,13 @@ export function Calculator() {
                     tabIndex={3}
                   />
 
-                  {errHarga && (
-                    <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">{errHarga}</p>
-                  )}
+                  <p
+                    id="harga-avg-error"
+                    role="alert"
+                    className="mt-1 ml-0.5 min-h-[1rem] text-xs font-medium text-destructive"
+                  >
+                    {errHarga ?? ""}
+                  </p>
                 </div>
 
                 {/* Mode picker — these two calculations are mutually exclusive */}
@@ -1088,6 +1119,7 @@ export function Calculator() {
                       onChange={(e) => setLotTambah(intOnly(e.target.value))}
                       placeholder="0"
                       aria-invalid={!!errLotTambah}
+                      aria-describedby={errLotTambah ? "lot-tambah-error" : undefined}
                       className={cn(
                         inputCls,
                         "tabular",
@@ -1096,11 +1128,13 @@ export function Calculator() {
                       )}
                       tabIndex={4}
                     />
-                    {errLotTambah && (
-                      <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">
-                        {errLotTambah}
-                      </p>
-                    )}
+                    <p
+                      id="lot-tambah-error"
+                      role="alert"
+                      className="mt-1 ml-0.5 min-h-[1rem] text-xs font-medium text-destructive"
+                    >
+                      {errLotTambah ?? ""}
+                    </p>
                   </div>
                 ) : (
                   <div>
@@ -1118,6 +1152,7 @@ export function Calculator() {
                       onBlur={(e) => handlePriceBlur(e.target.value, setTargetAvg)}
                       placeholder="0"
                       aria-invalid={!!errTarget}
+                      aria-describedby={errTarget ? "target-avg-error" : undefined}
                       className={cn(
                         inputCls,
                         "tabular",
@@ -1126,11 +1161,13 @@ export function Calculator() {
                       )}
                       tabIndex={4}
                     />
-                    {errTarget && (
-                      <p className="mt-1 ml-0.5 text-xs font-medium text-destructive">
-                        {errTarget}
-                      </p>
-                    )}
+                    <p
+                      id="target-avg-error"
+                      role="alert"
+                      className="mt-1 ml-0.5 min-h-[1rem] text-xs font-medium text-destructive"
+                    >
+                      {errTarget ?? ""}
+                    </p>
                   </div>
                 )}
               </div>
