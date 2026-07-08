@@ -406,18 +406,24 @@ export function Calculator() {
   runCalcRef.current = runCalc;
 
   const focusFirstInvalid = (): boolean => {
-    type FieldCheck = { key: string; bad: boolean; ref: RefObject<HTMLInputElement | null> };
+    type FieldCheck = {
+      key: string;
+      bad: boolean;
+      ref: RefObject<HTMLInputElement | null>;
+      label: string;
+      err: string | null;
+    };
     const checks: FieldCheck[] = [
-      { key: "avg", bad: !avgPrice || !!errAvg, ref: firstInputRef },
-      { key: "lot", bad: !totalLot || !!errLot, ref: lotRef },
-      { key: "harga", bad: !hargaAvg || !!errHarga, ref: hargaRef },
+      { key: "avg", bad: !avgPrice || !!errAvg, ref: firstInputRef, label: t.avgNow, err: errAvg },
+      { key: "lot", bad: !totalLot || !!errLot, ref: lotRef, label: t.totalLot, err: errLot },
+      { key: "harga", bad: !hargaAvg || !!errHarga, ref: hargaRef, label: t.hargaAvg, err: errHarga },
     ];
     if (mode === "new-avg") {
-      checks.push({ key: "lotTambah", bad: !lotTambah || !!errLotTambah, ref: lotTambahRef });
+      checks.push({ key: "lotTambah", bad: !lotTambah || !!errLotTambah, ref: lotTambahRef, label: t.lotTambah, err: errLotTambah });
     } else if (mode === "lots-needed") {
-      checks.push({ key: "target", bad: !targetAvg || !!errTarget, ref: targetRef });
+      checks.push({ key: "target", bad: !targetAvg || !!errTarget, ref: targetRef, label: t.targetAvg, err: errTarget });
     } else {
-      checks.push({ key: "lotTambah", bad: true, ref: lotTambahRef });
+      checks.push({ key: "lotTambah", bad: true, ref: lotTambahRef, label: t.lotTambah, err: null });
     }
     const first = checks.find((c) => c.bad);
     if (!first) return false;
@@ -429,6 +435,7 @@ export function Calculator() {
       window.setTimeout(() => el.focus({ preventScroll: true }), 150);
     }
     setFlashField(first.key);
+    setAnnounce(`${first.label}: ${first.err ?? t.positive}`);
     if (flashTimeoutRef.current) window.clearTimeout(flashTimeoutRef.current);
     flashTimeoutRef.current = window.setTimeout(() => setFlashField(null), 1400);
     return true;
