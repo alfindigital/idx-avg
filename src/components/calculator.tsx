@@ -1076,6 +1076,8 @@ export function Calculator() {
                       id="lot-tambah-input"
                       ref={lotTambahRef}
                       inputMode="numeric"
+                      enterKeyHint="done"
+                      autoComplete="off"
                       value={lotTambah}
                       onChange={(e) => setLotTambah(intOnly(e.target.value))}
                       placeholder="0"
