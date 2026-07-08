@@ -1105,6 +1105,8 @@ export function Calculator() {
                       id="target-avg-input"
                       ref={targetRef}
                       inputMode="decimal"
+                      enterKeyHint="done"
+                      autoComplete="off"
                       value={targetAvg}
                       onChange={(e) => setTargetAvg(numOnly(e.target.value))}
                       onBlur={(e) => handlePriceBlur(e.target.value, setTargetAvg)}
