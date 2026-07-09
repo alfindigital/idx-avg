@@ -1005,7 +1005,7 @@ export function Calculator() {
                 </div>
               </div>
               <div className="mt-3 flex items-center justify-between rounded-xl border border-white/70 bg-primary/[0.04] px-4 py-2.5 dark:border-white/5">
-                <span className="text-sm font-semibold text-primary/70">
+                <span className="text-sm font-semibold text-primary">
                   {t.modalAwal}
                 </span>
                 <span className="font-display text-base font-extrabold tabular">
