@@ -1277,9 +1277,9 @@ export function Calculator() {
                         className={cn(
                           "shrink-0 whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-bold ring-1 ring-inset",
                           result.status === "down" &&
-                            "bg-destructive/15 text-destructive ring-destructive/25",
+                            "bg-destructive/15 text-destructive ring-destructive/25 hover:bg-destructive/15",
                           result.status === "up" &&
-                            "bg-success/15 text-success ring-success/25",
+                            "bg-success/15 text-success ring-success/25 hover:bg-success/15",
                         )}
                       >
                         {result.status === "down" ? (
