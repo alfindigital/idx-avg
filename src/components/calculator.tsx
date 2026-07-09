@@ -1258,7 +1258,7 @@ export function Calculator() {
                   className="overflow-hidden rounded-3xl border border-white/70 bg-card shadow-sm dark:border-white/5"
                 >
                   <div className="bg-primary/10 px-4 pt-4 pb-3">
-                    <div className="flex items-start justify-between gap-3">
+                    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
                       <div className="min-w-0">
                         <h2 className="font-display text-[11px] font-extrabold uppercase tracking-[0.22em] text-primary">
                           {headLabel}
@@ -1275,17 +1275,17 @@ export function Calculator() {
                       <Badge
                         variant="secondary"
                         className={cn(
-                          "shrink-0 gap-1 rounded-full px-3 py-1.5 text-xs font-bold",
+                          "shrink-0 whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-bold ring-1 ring-inset",
                           result.status === "down" &&
-                            "bg-destructive/15 text-destructive hover:bg-destructive/15",
+                            "bg-destructive/15 text-destructive ring-destructive/25",
                           result.status === "up" &&
-                            "bg-success/15 text-success hover:bg-success/15",
+                            "bg-success/15 text-success ring-success/25",
                         )}
                       >
                         {result.status === "down" ? (
-                          <TrendingDown className="h-3.5 w-3.5" />
+                          <TrendingDown className="h-3.5 w-3.5 shrink-0" />
                         ) : (
-                          <TrendingUp className="h-3.5 w-3.5" />
+                          <TrendingUp className="h-3.5 w-3.5 shrink-0" />
                         )}
                         {result.percentage.toFixed(2)}%
                       </Badge>
