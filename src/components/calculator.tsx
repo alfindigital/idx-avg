@@ -1258,7 +1258,7 @@ export function Calculator() {
                   className="overflow-hidden rounded-3xl border border-white/70 bg-card shadow-sm dark:border-white/5"
                 >
                   <div className="bg-primary/10 px-4 pt-4 pb-3">
-                    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+                    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
                       <div className="min-w-0">
                         <h2 className="font-display text-[11px] font-extrabold uppercase tracking-[0.22em] text-primary">
                           {headLabel}
