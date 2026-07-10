@@ -19,6 +19,7 @@ import {
   Globe,
   Facebook,
   Youtube,
+  Copy,
 } from "lucide-react";
 
 import {
