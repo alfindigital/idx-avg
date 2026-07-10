@@ -906,9 +906,9 @@ export function Calculator() {
                           </span>
                           <span
                             className={cn(
-                              "font-bold",
-                              h.status === "down" && "text-destructive",
-                              h.status === "up" && "text-success",
+                              "font-bold tabular",
+                              h.status === "down" && "text-destructive-strong",
+                              h.status === "up" && "text-success-strong",
                             )}
                           >
                             {h.status === "down" ? "↓" : h.status === "up" ? "↑" : "→"}{" "}
@@ -998,7 +998,7 @@ export function Calculator() {
                   <p
                     id="avg-now-error"
                     role="alert"
-                    className="mt-1 ml-0.5 min-h-[1rem] text-xs font-medium text-destructive"
+                    className="mt-1 ml-0.5 min-h-[1rem] text-xs font-semibold text-destructive-strong dark:text-destructive-strong"
                   >
                     {errAvg ?? ""}
                   </p>
@@ -1031,7 +1031,7 @@ export function Calculator() {
                   <p
                     id="total-lot-error"
                     role="alert"
-                    className="mt-1 ml-0.5 min-h-[1rem] text-xs font-medium text-destructive"
+                    className="mt-1 ml-0.5 min-h-[1rem] text-xs font-semibold text-destructive-strong dark:text-destructive-strong"
                   >
                     {errLot ?? ""}
                   </p>
@@ -1102,7 +1102,7 @@ export function Calculator() {
                   <p
                     id="harga-avg-error"
                     role="alert"
-                    className="mt-1 ml-0.5 min-h-[1rem] text-xs font-medium text-destructive"
+                    className="mt-1 ml-0.5 min-h-[1rem] text-xs font-semibold text-destructive-strong dark:text-destructive-strong"
                   >
                     {errHarga ?? ""}
                   </p>
@@ -1172,7 +1172,7 @@ export function Calculator() {
                     <p
                       id="lot-tambah-error"
                       role="alert"
-                      className="mt-1 ml-0.5 min-h-[1rem] text-xs font-medium text-destructive"
+                      className="mt-1 ml-0.5 min-h-[1rem] text-xs font-semibold text-destructive-strong dark:text-destructive-strong"
                     >
                       {errLotTambah ?? ""}
                     </p>
@@ -1205,7 +1205,7 @@ export function Calculator() {
                     <p
                       id="target-avg-error"
                       role="alert"
-                      className="mt-1 ml-0.5 min-h-[1rem] text-xs font-medium text-destructive"
+                      className="mt-1 ml-0.5 min-h-[1rem] text-xs font-semibold text-destructive-strong dark:text-destructive-strong"
                     >
                       {errTarget ?? ""}
                     </p>
@@ -1324,19 +1324,19 @@ export function Calculator() {
                       <Badge
                         variant="secondary"
                         className={cn(
-                          "shrink-0 whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-bold ring-1 ring-inset",
+                          "inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-bold leading-none ring-1 ring-inset transition-colors",
                           result.status === "down" &&
-                            "bg-destructive/15 text-destructive ring-destructive/25 hover:bg-destructive/15",
+                            "bg-destructive/15 text-destructive-strong ring-destructive/30 hover:bg-destructive/20 dark:bg-destructive/20 dark:text-destructive-strong dark:ring-destructive/40 dark:hover:bg-destructive/25",
                           result.status === "up" &&
-                            "bg-success/15 text-success ring-success/25 hover:bg-success/15",
+                            "bg-success/15 text-success-strong ring-success/30 hover:bg-success/20 dark:bg-success/20 dark:text-success-strong dark:ring-success/40 dark:hover:bg-success/25",
                         )}
                       >
                         {result.status === "down" ? (
-                          <TrendingDown className="h-3.5 w-3.5 shrink-0" />
+                          <TrendingDown className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                         ) : (
-                          <TrendingUp className="h-3.5 w-3.5 shrink-0" />
+                          <TrendingUp className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                         )}
-                        {result.percentage.toFixed(2)}%
+                        <span className="tabular">{result.percentage.toFixed(2)}%</span>
                       </Badge>
                     </div>
                   </div>

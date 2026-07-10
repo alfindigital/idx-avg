@@ -51,6 +51,8 @@
   --color-sidebar-ring: var(--sidebar-ring);
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
+  --color-success-strong: var(--success-strong);
+  --color-destructive-strong: var(--destructive-strong);
   --color-surface: var(--surface);
 }
 
@@ -67,14 +69,16 @@
   --primary-foreground: oklch(0.99 0.003 250);
   --success: oklch(0.7 0.16 160);
   --success-foreground: oklch(0.99 0.003 250);
+  --success-strong: oklch(0.44 0.14 160);   /* AA on success/15 tint */
   --secondary: oklch(0.94 0.012 255);        /* #e8ecf1 */
   --secondary-foreground: oklch(0.21 0.034 264);
   --muted: oklch(0.94 0.012 255);            /* #e8ecf1 */
-  --muted-foreground: oklch(0.66 0.027 256); /* #94a3b8 */
+  --muted-foreground: oklch(0.5 0.03 256);   /* darker for AA on light bg */
   --accent: oklch(0.94 0.012 255);
   --accent-foreground: oklch(0.21 0.034 264);
-  --destructive: oklch(0.6 0.22 25);
+  --destructive: oklch(0.58 0.22 25);
   --destructive-foreground: oklch(0.99 0 0);
+  --destructive-strong: oklch(0.46 0.2 25);  /* AA on destructive/15 tint */
   --border: oklch(0.92 0.012 255);
   --input: oklch(0.92 0.012 255);
   --ring: oklch(0.62 0.19 258);
@@ -103,16 +107,18 @@
   --popover-foreground: oklch(0.98 0.003 250);
   --primary: oklch(0.7 0.18 258);
   --primary-foreground: oklch(0.17 0.04 258);
-  --success: oklch(0.75 0.17 160);
+  --success: oklch(0.78 0.16 160);
   --success-foreground: oklch(0.17 0.04 160);
+  --success-strong: oklch(0.86 0.16 160);   /* AA on success/15 tint in dark */
   --secondary: oklch(0.27 0.03 260);
   --secondary-foreground: oklch(0.98 0.003 250);
   --muted: oklch(0.27 0.03 260);
-  --muted-foreground: oklch(0.7 0.03 256);
+  --muted-foreground: oklch(0.78 0.03 256);  /* brighter for AA on dark bg */
   --accent: oklch(0.27 0.03 260);
   --accent-foreground: oklch(0.98 0.003 250);
-  --destructive: oklch(0.7 0.19 22);
+  --destructive: oklch(0.72 0.19 22);
   --destructive-foreground: oklch(0.98 0.003 250);
+  --destructive-strong: oklch(0.82 0.17 22); /* AA on destructive/15 tint in dark */
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.7 0.18 258);
