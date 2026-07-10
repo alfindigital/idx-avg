@@ -906,9 +906,9 @@ export function Calculator() {
                           </span>
                           <span
                             className={cn(
-                              "font-bold",
-                              h.status === "down" && "text-destructive",
-                              h.status === "up" && "text-success",
+                              "font-bold tabular",
+                              h.status === "down" && "text-destructive-strong",
+                              h.status === "up" && "text-success-strong",
                             )}
                           >
                             {h.status === "down" ? "↓" : h.status === "up" ? "↑" : "→"}{" "}
