@@ -1304,9 +1304,17 @@ export function Calculator() {
                         <h2 className="font-display text-[11px] font-extrabold uppercase tracking-[0.22em] text-primary">
                           {headLabel}
                         </h2>
-                        <p className="mt-2 font-display text-3xl font-extrabold leading-none tabular text-foreground break-words">
-                          {headValue}
-                        </p>
+                        <button
+                          type="button"
+                          onClick={() => copyValue(headLabel, headValue)}
+                          className="group mt-2 flex items-center gap-2 rounded-xl p-1 -ml-1 text-left transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
+                          aria-label={`${headLabel}: ${t.copy}`}
+                        >
+                          <span className="font-display text-3xl font-extrabold leading-none tabular text-foreground break-words">
+                            {headValue}
+                          </span>
+                          <Copy className="h-4 w-4 shrink-0 text-primary/80 opacity-0 transition-opacity group-hover:opacity-100" />
+                        </button>
                         {result.mode === "lots-needed" && (
                           <p className="mt-2 font-sans text-sm font-semibold text-muted-foreground tabular">
                             {t.avgJadi} {formatRupiah(result.newAvgPrice)}
@@ -1334,88 +1342,75 @@ export function Calculator() {
                   </div>
 
                   <div className="space-y-2.5 px-4 py-4 text-sm font-medium">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t.avgSekarangRow}</span>
-                      <span className="font-bold tabular text-foreground">
-                        {formatRupiah(result.avgSekarang)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t.totalLot}</span>
-                      <span className="font-bold tabular text-foreground">
-                        {result.lotSekarang.toLocaleString("id-ID")}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t.hargaAveragingRow}</span>
-                      <span className="font-bold tabular text-foreground">
-                        {formatRupiah(result.hargaAveraging)}
-                      </span>
-                    </div>
-                    <div className="flex justify-between border-t border-border/70 pt-2.5">
-                      <span className="text-muted-foreground">{t.lotBaru}</span>
-                      <span className="font-bold tabular text-foreground">
-                        {result.totalLotBaru.toLocaleString("id-ID")}{" "}
-                        <span className="text-muted-foreground">
-                          (+{result.lotDelta.toLocaleString("id-ID")})
-                        </span>
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">{t.modalTambahan}</span>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          copyValue(t.modalTambahan, formatRupiah(result.modalTambahan))
-                        }
-                        className="flex items-center gap-1 rounded-lg px-1.5 py-0.5 text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
-                      >
-                        <span className="font-bold tabular text-foreground">
-                          {formatRupiah(result.modalTambahan)}
-                        </span>
-                      </button>
-                    </div>
+                    <CopyRow
+                      label={t.avgSekarangRow}
+                      value={formatRupiah(result.avgSekarang)}
+                      valueToCopy={formatRupiah(result.avgSekarang)}
+                      onCopy={copyValue}
+                    />
+                    <CopyRow
+                      label={t.totalLot}
+                      value={result.lotSekarang.toLocaleString("id-ID")}
+                      valueToCopy={result.lotSekarang.toLocaleString("id-ID")}
+                      onCopy={copyValue}
+                    />
+                    <CopyRow
+                      label={t.hargaAveragingRow}
+                      value={formatRupiah(result.hargaAveraging)}
+                      valueToCopy={formatRupiah(result.hargaAveraging)}
+                      onCopy={copyValue}
+                    />
+                    <CopyRow
+                      label={t.lotBaru}
+                      value={
+                        <>
+                          {result.totalLotBaru.toLocaleString("id-ID")}{" "}
+                          <span className="text-muted-foreground">
+                            (+{result.lotDelta.toLocaleString("id-ID")})
+                          </span>
+                        </>
+                      }
+                      valueToCopy={`${result.totalLotBaru.toLocaleString("id-ID")} (+${result.lotDelta.toLocaleString("id-ID")})`}
+                      onCopy={copyValue}
+                      border
+                    />
+                    <CopyRow
+                      label={t.modalTambahan}
+                      value={formatRupiah(result.modalTambahan)}
+                      valueToCopy={formatRupiah(result.modalTambahan)}
+                      onCopy={copyValue}
+                    />
                     {result.feeEnabled && (
                       <>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">
-                            {t.feeBeliLabel} ({result.buyPct}%)
-                          </span>
-                          <span className="font-bold tabular text-foreground">
-                            {formatRupiah(result.feeBeli ?? 0)}
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">
-                            {t.feeJualLabel} ({result.sellPct}%)
-                          </span>
-                          <span className="font-bold tabular text-foreground">
-                            {formatRupiah(result.feeJualEst ?? 0)}
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">{t.breakEven}</span>
-                          <span className="font-bold tabular text-foreground">
-                            {formatRupiah(result.breakEvenPrice ?? 0)}
-                          </span>
-                        </div>
+                        <CopyRow
+                          label={`${t.feeBeliLabel} (${result.buyPct}%)`}
+                          value={formatRupiah(result.feeBeli ?? 0)}
+                          valueToCopy={formatRupiah(result.feeBeli ?? 0)}
+                          onCopy={copyValue}
+                        />
+                        <CopyRow
+                          label={`${t.feeJualLabel} (${result.sellPct}%)`}
+                          value={formatRupiah(result.feeJualEst ?? 0)}
+                          valueToCopy={formatRupiah(result.feeJualEst ?? 0)}
+                          onCopy={copyValue}
+                        />
+                        <CopyRow
+                          label={t.breakEven}
+                          value={formatRupiah(result.breakEvenPrice ?? 0)}
+                          valueToCopy={formatRupiah(result.breakEvenPrice ?? 0)}
+                          onCopy={copyValue}
+                        />
                       </>
                     )}
-                    <div className="flex items-center justify-between border-t border-border/70 pt-2.5">
-                      <span className="text-muted-foreground">{t.totalModal}</span>
-                      <button
-                        type="button"
-                        onClick={() => copyValue(t.totalModal, formatRupiah(result.totalModal))}
-                        className="flex items-center gap-1 rounded-lg px-1.5 py-0.5 text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
-                      >
-                        <span className="font-display text-base font-extrabold tabular text-foreground">
-                          {formatRupiah(result.totalModal)}
-                        </span>
-                      </button>
-                    </div>
+                    <CopyRow
+                      label={t.totalModal}
+                      value={formatRupiah(result.totalModal)}
+                      valueToCopy={formatRupiah(result.totalModal)}
+                      valueClassName="font-display text-base font-extrabold"
+                      onCopy={copyValue}
+                      border
+                    />
                   </div>
-
                 </div>
               );
 
