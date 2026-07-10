@@ -90,6 +90,38 @@ function validateLot(v: string, t: Dict): string | null {
 const intOnly = (v: string) => v.replace(/[^\d]/g, "");
 const numOnly = (v: string) => v.replace(/[^\d.]/g, "");
 
+function CopyRow({
+  label,
+  value,
+  valueToCopy,
+  valueClassName,
+  border = false,
+  onCopy,
+}: {
+  label: string;
+  value: ReactNode;
+  valueToCopy: string;
+  valueClassName?: string;
+  border?: boolean;
+  onCopy: (label: string, value: string) => void;
+}) {
+  return (
+    <div className={cn("flex items-center justify-between", border && "border-t border-border/70 pt-2.5")}>
+      <span className="text-sm font-medium text-muted-foreground">{label}</span>
+      <button
+        type="button"
+        onClick={() => onCopy(label, valueToCopy)}
+        className="group flex items-center gap-1 rounded-lg px-1.5 py-0.5 text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
+        aria-label={`${label}: ${valueToCopy}`}
+      >
+        <span className={cn("font-bold tabular text-foreground", valueClassName)}>{value}</span>
+        <Copy className="h-3.5 w-3.5 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+      </button>
+    </div>
+  );
+}
+
+
 export function Calculator() {
   const { lang, toggle: toggleLang, t } = useLang();
 
