@@ -51,6 +51,8 @@
   --color-sidebar-ring: var(--sidebar-ring);
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
+  --color-success-strong: var(--success-strong);
+  --color-destructive-strong: var(--destructive-strong);
   --color-surface: var(--surface);
 }
 
