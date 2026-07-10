@@ -1041,9 +1041,17 @@ export function Calculator() {
                 <span className="text-sm font-semibold text-primary">
                   {t.modalAwal}
                 </span>
-                <span className="font-display text-base font-extrabold tabular">
-                  {formatRupiah(modalAwal)}
-                </span>
+                <button
+                  type="button"
+                  onClick={() => copyValue(t.modalAwal, formatRupiah(modalAwal))}
+                  className="group flex items-center gap-1 rounded-lg px-1.5 py-0.5 text-foreground transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
+                  aria-label={`${t.modalAwal}: ${t.copy}`}
+                >
+                  <span className="font-display text-base font-extrabold tabular text-foreground">
+                    {formatRupiah(modalAwal)}
+                  </span>
+                  <Copy className="h-3.5 w-3.5 shrink-0 text-primary/80 opacity-0 transition-opacity group-hover:opacity-100" />
+                </button>
               </div>
             </section>
 
