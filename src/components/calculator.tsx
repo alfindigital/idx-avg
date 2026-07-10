@@ -998,7 +998,7 @@ export function Calculator() {
                   <p
                     id="avg-now-error"
                     role="alert"
-                    className="mt-1 ml-0.5 min-h-[1rem] text-xs font-medium text-destructive"
+                    className="mt-1 ml-0.5 min-h-[1rem] text-xs font-semibold text-destructive-strong dark:text-destructive-strong"
                   >
                     {errAvg ?? ""}
                   </p>
@@ -1031,7 +1031,7 @@ export function Calculator() {
                   <p
                     id="total-lot-error"
                     role="alert"
-                    className="mt-1 ml-0.5 min-h-[1rem] text-xs font-medium text-destructive"
+                    className="mt-1 ml-0.5 min-h-[1rem] text-xs font-semibold text-destructive-strong dark:text-destructive-strong"
                   >
                     {errLot ?? ""}
                   </p>
@@ -1102,7 +1102,7 @@ export function Calculator() {
                   <p
                     id="harga-avg-error"
                     role="alert"
-                    className="mt-1 ml-0.5 min-h-[1rem] text-xs font-medium text-destructive"
+                    className="mt-1 ml-0.5 min-h-[1rem] text-xs font-semibold text-destructive-strong dark:text-destructive-strong"
                   >
                     {errHarga ?? ""}
                   </p>
@@ -1172,7 +1172,7 @@ export function Calculator() {
                     <p
                       id="lot-tambah-error"
                       role="alert"
-                      className="mt-1 ml-0.5 min-h-[1rem] text-xs font-medium text-destructive"
+                      className="mt-1 ml-0.5 min-h-[1rem] text-xs font-semibold text-destructive-strong dark:text-destructive-strong"
                     >
                       {errLotTambah ?? ""}
                     </p>
@@ -1205,7 +1205,7 @@ export function Calculator() {
                     <p
                       id="target-avg-error"
                       role="alert"
-                      className="mt-1 ml-0.5 min-h-[1rem] text-xs font-medium text-destructive"
+                      className="mt-1 ml-0.5 min-h-[1rem] text-xs font-semibold text-destructive-strong dark:text-destructive-strong"
                     >
                       {errTarget ?? ""}
                     </p>
