@@ -27,9 +27,9 @@ function extractBlock(selector: string): Record<string, string> {
   if (!m) throw new Error(`Missing CSS block: ${selector}`);
   const out: Record<string, string> = {};
   for (const line of m[1].split("\n")) {
-    const decl = line.trim().replace(/\/\*.*?\*\//g, "");
-    const kv = decl.match(/^(--[\w-]+)\s*:\s*(.+?);?$/);
-    if (kv) out[kv[1]] = kv[2].trim();
+    const decl = line.trim().replace(/\/\*.*?\*\//g, "").trim();
+    const kv = decl.match(/^(--[\w-]+)\s*:\s*(.+)$/);
+    if (kv) out[kv[1]] = kv[2].replace(/;+\s*$/, "").trim();
   }
   return out;
 }
