@@ -1163,7 +1163,6 @@ export function Calculator() {
                         errLotTambah && "border-destructive focus-visible:border-destructive",
                         flashField === "lotTambah" && flashCls,
                       )}
-                      tabIndex={4}
                     />
                     <p
                       id="lot-tambah-error"
