@@ -1458,7 +1458,12 @@ export function Calculator() {
 
               return (
                 <>
-                  <section className="mt-4">
+                  <section
+                    className="mt-4"
+                    aria-live="polite"
+                    aria-atomic="false"
+                    aria-labelledby="result-heading"
+                  >
                     {resultCard(resultRef)}
                     {actions}
                   </section>
