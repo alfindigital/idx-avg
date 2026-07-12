@@ -101,7 +101,7 @@ describe("Calculator keyboard flow", () => {
     await user.keyboard("{Control>}{Enter}{/Control}");
 
     // Result panel renders the "Rata-rata Baru" label after a successful calc.
-    expect(await screen.findByText(/Rata-rata Baru/i)).toBeTruthy();
+    expect(await screen.findByRole("heading", { name: /Rata-rata Baru/i })).toBeTruthy();
   });
 
   it("Alt+R resets all inputs", async () => {
