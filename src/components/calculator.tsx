@@ -1195,7 +1195,6 @@ export function Calculator() {
                         errTarget && "border-destructive focus-visible:border-destructive",
                         flashField === "target" && flashCls,
                       )}
-                      tabIndex={4}
                     />
                     <p
                       id="target-avg-error"
