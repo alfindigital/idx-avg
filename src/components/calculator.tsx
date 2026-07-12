@@ -180,6 +180,21 @@ export function Calculator() {
     }
   }, [currentInputsKey, result]);
 
+  // Announce result summary to screen readers when it appears/changes.
+  useEffect(() => {
+    if (!result) return;
+    const dirWord =
+      result.status === "down" ? t.turun : result.status === "up" ? t.naik : t.flat;
+    const head = result.mode === "new-avg" ? t.avgBaru : t.lotDiperlukan;
+    const headValue =
+      result.mode === "new-avg"
+        ? formatRupiah(result.newAvgPrice)
+        : `${result.lotDelta} ${t.lotBaru.toLowerCase()}`;
+    setAnnounce(
+      `${head}: ${headValue}. ${dirWord} ${result.percentage.toFixed(2)}%. ${t.totalModal}: ${formatRupiah(result.totalModal)}.`,
+    );
+  }, [result, t]);
+
   // Init
   useEffect(() => {
     const th = localStorage.getItem(THEME_KEY);
@@ -1295,7 +1310,7 @@ export function Calculator() {
                   <div className="bg-primary/10 px-4 pt-4 pb-3">
                     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
                       <div className="min-w-0">
-                        <h2 className="font-display text-[11px] font-extrabold uppercase tracking-[0.22em] text-primary">
+                        <h2 id="result-heading" className="font-display text-[11px] font-extrabold uppercase tracking-[0.22em] text-primary">
                           {headLabel}
                         </h2>
                         <button
@@ -1443,7 +1458,12 @@ export function Calculator() {
 
               return (
                 <>
-                  <section className="mt-4">
+                  <section
+                    className="mt-4"
+                    aria-live="polite"
+                    aria-atomic="false"
+                    aria-labelledby="result-heading"
+                  >
                     {resultCard(resultRef)}
                     {actions}
                   </section>
