@@ -1310,7 +1310,7 @@ export function Calculator() {
                   <div className="bg-primary/10 px-4 pt-4 pb-3">
                     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
                       <div className="min-w-0">
-                        <h2 className="font-display text-[11px] font-extrabold uppercase tracking-[0.22em] text-primary">
+                        <h2 id="result-heading" className="font-display text-[11px] font-extrabold uppercase tracking-[0.22em] text-primary">
                           {headLabel}
                         </h2>
                         <button
