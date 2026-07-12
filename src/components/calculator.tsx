@@ -180,6 +180,21 @@ export function Calculator() {
     }
   }, [currentInputsKey, result]);
 
+  // Announce result summary to screen readers when it appears/changes.
+  useEffect(() => {
+    if (!result) return;
+    const dirWord =
+      result.status === "down" ? t.turun : result.status === "up" ? t.naik : t.flat;
+    const head = result.mode === "new-avg" ? t.avgBaru : t.lotDiperlukan;
+    const headValue =
+      result.mode === "new-avg"
+        ? formatRupiah(result.newAvgPrice)
+        : `${result.lotDelta} ${t.lotBaru.toLowerCase()}`;
+    setAnnounce(
+      `${head}: ${headValue}. ${dirWord} ${result.percentage.toFixed(2)}%. ${t.totalModal}: ${formatRupiah(result.totalModal)}.`,
+    );
+  }, [result, t]);
+
   // Init
   useEffect(() => {
     const th = localStorage.getItem(THEME_KEY);
