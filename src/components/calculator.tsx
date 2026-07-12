@@ -1093,7 +1093,6 @@ export function Calculator() {
                       errHarga && "border-destructive focus-visible:border-destructive",
                       flashField === "harga" && flashCls,
                     )}
-                    tabIndex={3}
                   />
 
                   <p
