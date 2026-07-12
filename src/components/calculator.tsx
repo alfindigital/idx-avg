@@ -992,8 +992,6 @@ export function Calculator() {
                       errAvg && "border-destructive focus-visible:border-destructive",
                       flashField === "avg" && flashCls,
                     )}
-                    tabIndex={1}
-                    autoFocus
                   />
                   <p
                     id="avg-now-error"
