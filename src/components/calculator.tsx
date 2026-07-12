@@ -992,8 +992,6 @@ export function Calculator() {
                       errAvg && "border-destructive focus-visible:border-destructive",
                       flashField === "avg" && flashCls,
                     )}
-                    tabIndex={1}
-                    autoFocus
                   />
                   <p
                     id="avg-now-error"
@@ -1025,7 +1023,6 @@ export function Calculator() {
                       errLot && "border-destructive focus-visible:border-destructive",
                       flashField === "lot" && flashCls,
                     )}
-                    tabIndex={2}
                   />
 
                   <p
@@ -1096,7 +1093,6 @@ export function Calculator() {
                       errHarga && "border-destructive focus-visible:border-destructive",
                       flashField === "harga" && flashCls,
                     )}
-                    tabIndex={3}
                   />
 
                   <p
@@ -1136,7 +1132,7 @@ export function Calculator() {
                         aria-selected={active}
                         onClick={() => selectMode(opt.key)}
                         className={cn(
-                          "relative z-10 h-9 rounded-lg px-3 text-xs font-bold uppercase tracking-wider transition-colors",
+                          "relative z-10 h-9 rounded-lg px-3 text-xs font-bold uppercase tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                           active ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground",
                         )}
                       >
@@ -1167,7 +1163,6 @@ export function Calculator() {
                         errLotTambah && "border-destructive focus-visible:border-destructive",
                         flashField === "lotTambah" && flashCls,
                       )}
-                      tabIndex={4}
                     />
                     <p
                       id="lot-tambah-error"
@@ -1200,7 +1195,6 @@ export function Calculator() {
                         errTarget && "border-destructive focus-visible:border-destructive",
                         flashField === "target" && flashCls,
                       )}
-                      tabIndex={4}
                     />
                     <p
                       id="target-avg-error"
