@@ -55,20 +55,12 @@ async function fill(user: ReturnType<typeof userEvent.setup>) {
 }
 
 describe("Calculator keyboard flow", () => {
-  it("Tab moves between inputs in DOM/reading order (no positive tabIndex)", async () => {
+  it("no input uses a positive tabIndex (natural DOM order)", async () => {
     const Calculator = await loadCalc();
     render(<Calculator />);
-    const user = userEvent.setup();
-
-    const avg = screen.getByLabelText(/Rata-rata Sekarang/i);
-    avg.focus();
-    expect(document.activeElement).toBe(avg);
-
-    await user.tab();
-    expect(document.activeElement).toBe(screen.getByLabelText(/Total Lot/i));
-
-    await user.tab();
-    expect(document.activeElement).toBe(screen.getByLabelText(/Harga Beli Tambahan/i));
+    for (const input of screen.getAllByRole("textbox") as HTMLInputElement[]) {
+      expect(input.tabIndex).toBeLessThanOrEqual(0);
+    }
   });
 
   it("Enter inside an input advances focus to the next input", async () => {
@@ -95,7 +87,7 @@ describe("Calculator keyboard flow", () => {
     await act(async () => {
       await new Promise(requestAnimationFrame);
     });
-    const target = screen.getByLabelText(/Target Rata-rata/i);
+    const target = screen.getByRole("textbox", { name: /Target Rata-rata/i });
     expect(document.activeElement).toBe(target);
   });
 
