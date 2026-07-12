@@ -1132,7 +1132,7 @@ export function Calculator() {
                         aria-selected={active}
                         onClick={() => selectMode(opt.key)}
                         className={cn(
-                          "relative z-10 h-9 rounded-lg px-3 text-xs font-bold uppercase tracking-wider transition-colors",
+                          "relative z-10 h-9 rounded-lg px-3 text-xs font-bold uppercase tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                           active ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground",
                         )}
                       >
