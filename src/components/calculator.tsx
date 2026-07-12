@@ -1023,7 +1023,6 @@ export function Calculator() {
                       errLot && "border-destructive focus-visible:border-destructive",
                       flashField === "lot" && flashCls,
                     )}
-                    tabIndex={2}
                   />
 
                   <p
