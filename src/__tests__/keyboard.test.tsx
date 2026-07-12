@@ -23,6 +23,9 @@ beforeEach(() => {
   // scrollIntoView isn't implemented in jsdom.
   Element.prototype.scrollIntoView = vi.fn();
   window.localStorage.clear();
+  // Force Indonesian labels so tests are deterministic regardless of jsdom's
+  // navigator.language (which defaults to en-US).
+  window.localStorage.setItem("idxavg-lang", "id");
 });
 
 afterEach(() => {
