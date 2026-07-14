@@ -37,8 +37,9 @@ EXPECTED_INPUT_CHAIN = [
     "avg-now-input",
     "total-lot-input",
     "harga-avg-input",
-    "lot-tambah-input",
-    "target-avg-input",
+    # Either lot-tambah-input OR target-avg-input is rendered depending on the
+    # active mode (they are mutually exclusive). We accept whichever is present.
+    ("lot-tambah-input", "target-avg-input"),
 ]
 
 
@@ -79,16 +80,31 @@ async def walk_tab_chain(page: Page, start_id: str, max_steps: int = 40) -> list
     return seen
 
 
+async def resolve_chain(page: Page) -> list[str]:
+    resolved: list[str] = []
+    for step in EXPECTED_INPUT_CHAIN:
+        candidates = step if isinstance(step, tuple) else (step,)
+        picked: str | None = None
+        for c in candidates:
+            if await page.locator(f"#{c}").count():
+                picked = c
+                break
+        if picked is None:
+            raise RuntimeError(f"No candidate present for step {step}")
+        resolved.append(picked)
+    return resolved
+
+
 async def scenario_tab_order(page: Page, report: EngineReport) -> None:
-    chain = await walk_tab_chain(page, "avg-now-input", max_steps=20)
-    # Every expected input id must appear in the recorded order.
+    expected = await resolve_chain(page)
+    chain = await walk_tab_chain(page, expected[0], max_steps=25)
     positions: list[int] = []
-    for expected in EXPECTED_INPUT_CHAIN:
+    for eid in expected:
         try:
-            positions.append(chain.index(expected))
+            positions.append(chain.index(eid))
         except ValueError:
             report.failures.append(
-                f"[tab] {report.engine}: expected id '{expected}' never focused. chain={chain}"
+                f"[tab] {report.engine}: expected id '{eid}' never focused. chain={chain}"
             )
             return
     if positions != sorted(positions):
@@ -96,7 +112,6 @@ async def scenario_tab_order(page: Page, report: EngineReport) -> None:
             f"[tab] {report.engine}: input order not monotonic. positions={positions} chain={chain}"
         )
         return
-    # Ensure the submit button ("Hitung" / "Calculate") is reachable after the last input.
     submit_selector = 'button[type="submit"]'
     submit_reachable = await page.evaluate(
         """(sel) => {
@@ -109,34 +124,41 @@ async def scenario_tab_order(page: Page, report: EngineReport) -> None:
     )
     if not submit_reachable:
         report.failures.append(f"[tab] {report.engine}: submit button not focusable")
-    report.notes.append(f"[tab] {report.engine}: input chain OK ({len(EXPECTED_INPUT_CHAIN)} inputs)")
+    report.notes.append(f"[tab] {report.engine}: input chain OK ({expected})")
 
 
 async def scenario_shift_tab(page: Page, report: EngineReport) -> None:
-    last = EXPECTED_INPUT_CHAIN[-1]
+    expected = await resolve_chain(page)
+    last = expected[-1]
+    first = expected[0]
     await page.locator(f"#{last}").focus()
     reversed_seen = [last]
-    for _ in range(len(EXPECTED_INPUT_CHAIN) * 3):
+    for _ in range(len(expected) * 4):
         await page.keyboard.press("Shift+Tab")
         fid = await focused_id(page)
         if fid:
             reversed_seen.append(fid)
-        if fid == EXPECTED_INPUT_CHAIN[0]:
+        if fid == first:
             break
-    # Preceding inputs must appear in reverse order relative to their forward positions.
-    seen_expected = [x for x in reversed_seen if x in EXPECTED_INPUT_CHAIN]
-    if seen_expected[0] != last or seen_expected[-1] != EXPECTED_INPUT_CHAIN[0]:
+    seen_expected = [x for x in reversed_seen if x in expected]
+    if not seen_expected or seen_expected[0] != last or seen_expected[-1] != first:
         report.failures.append(
             f"[shift-tab] {report.engine}: did not reverse to first input. seen={seen_expected}"
         )
         return
-    forward_positions = [EXPECTED_INPUT_CHAIN.index(x) for x in seen_expected]
+    forward_positions = [expected.index(x) for x in seen_expected]
     if forward_positions != sorted(forward_positions, reverse=True):
         report.failures.append(
             f"[shift-tab] {report.engine}: reverse order broken. positions={forward_positions}"
         )
         return
     report.notes.append(f"[shift-tab] {report.engine}: reverse order OK")
+
+
+async def _clear_and_fill(page: Page, id_: str, value: str) -> None:
+    loc = page.locator(f"#{id_}")
+    if await loc.count():
+        await loc.fill(value)
 
 
 async def fill_valid(page: Page) -> None:
@@ -148,7 +170,8 @@ async def fill_valid(page: Page) -> None:
 
 
 async def clear_form(page: Page) -> None:
-    for id_ in EXPECTED_INPUT_CHAIN:
+    for id_ in ("avg-now-input", "total-lot-input", "harga-avg-input",
+                "lot-tambah-input", "target-avg-input"):
         loc = page.locator(f"#{id_}")
         if await loc.count():
             await loc.fill("")
