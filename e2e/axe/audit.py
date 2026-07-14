@@ -1,6 +1,5 @@
 """
 Automated axe-core accessibility audit driven by Playwright.
-import re
 
 Runs WCAG 2.1 A/AA rules against three critical surfaces of the calculator:
   1. Form (empty + validation error states)
@@ -27,6 +26,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any
