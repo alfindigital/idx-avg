@@ -11,6 +11,7 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:contrast": "vitest run src/__tests__/contrast.test.ts",
+    "test:a11y": "python3 e2e/axe/audit.py",
     "format": "prettier --write ."
   },
   "dependencies": {
