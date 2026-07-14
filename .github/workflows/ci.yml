@@ -19,3 +19,39 @@ jobs:
         run: bun run test:contrast
       - name: Full test suite (keyboard flow + contrast)
         run: bun run test
+
+  a11y-axe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      - name: Install Playwright (Chromium)
+        run: |
+          python -m pip install --no-cache-dir playwright
+          python -m playwright install --with-deps chromium
+      - name: Build app
+        run: bun run build
+      - name: Start preview server
+        run: |
+          bun run preview --port 8080 --host 127.0.0.1 &
+          echo $! > .preview.pid
+          for i in $(seq 1 60); do
+            if curl -sf http://127.0.0.1:8080 > /dev/null; then
+              echo "Preview ready"; exit 0
+            fi
+            sleep 1
+          done
+          echo "Preview failed to start"; exit 1
+      - name: Run axe-core audit (form, result card, modal @ 320–414px)
+        run: python3 e2e/axe/audit.py --base-url http://127.0.0.1:8080
+      - name: Stop preview server
+        if: always()
+        run: |
+          if [ -f .preview.pid ]; then kill "$(cat .preview.pid)" || true; fi
