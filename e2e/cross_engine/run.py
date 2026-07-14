@@ -112,15 +112,15 @@ async def scenario_tab_order(page: Page, report: EngineReport) -> None:
             f"[tab] {report.engine}: input order not monotonic. positions={positions} chain={chain}"
         )
         return
-    submit_selector = 'button[type="submit"]'
+    # The submit button toggles between type="submit" and type="button" based on
+    # canCalculate; either shape must remain keyboard-focusable.
     submit_reachable = await page.evaluate(
-        """(sel) => {
-            const btn = document.querySelector(sel);
+        """() => {
+            const btn = document.querySelector('button[title="Ctrl/Cmd+Enter"]');
             if (!btn) return false;
             btn.focus();
             return document.activeElement === btn;
-        }""",
-        submit_selector,
+        }"""
     )
     if not submit_reachable:
         report.failures.append(f"[tab] {report.engine}: submit button not focusable")
