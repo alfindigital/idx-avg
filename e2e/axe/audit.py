@@ -1,5 +1,6 @@
 """
 Automated axe-core accessibility audit driven by Playwright.
+import re
 
 Runs WCAG 2.1 A/AA rules against three critical surfaces of the calculator:
   1. Form (empty + validation error states)
@@ -104,15 +105,13 @@ async def audit_surface(
     elif surface == "result-card":
         await page.locator("#avg-now-input").fill("1000")
         await page.locator("#total-lot-input").fill("10")
-        await page.locator("#avg-tambah-input").fill("900")
+        await page.locator("#harga-avg-input").fill("900")
         await page.locator("#lot-tambah-input").fill("5")
         await page.keyboard.press("Control+Enter")
         await settle(page)
-        target = '[data-testid="result-card"], [role="region"][aria-live]'
+        target = '[aria-labelledby="result-heading"]'
     elif surface == "history-modal":
-        trigger = page.get_by_role("button", name=lambda n: bool(n) and "riwayat" in n.lower())
-        if await trigger.count() == 0:
-            trigger = page.get_by_role("button", name=lambda n: bool(n) and "history" in n.lower())
+        trigger = page.get_by_role("button", name=re.compile(r"riwayat|history", re.I))
         await trigger.first.click()
         await settle(page)
         target = '[role="dialog"]'
