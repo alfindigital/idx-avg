@@ -49,9 +49,20 @@ jobs:
             sleep 1
           done
           echo "Preview failed to start"; exit 1
+      - name: Install Pillow (for visual regression)
+        run: python -m pip install --no-cache-dir Pillow
       - name: Run axe-core audit (form, result card, modal @ 320–414px)
         run: python3 e2e/axe/audit.py --base-url http://127.0.0.1:8080
+      - name: Visual regression (result card + history modal @ 320–414px)
+        run: python3 e2e/visual/regression.py --base-url http://127.0.0.1:8080
+      - name: Upload visual diffs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-regression-artifacts
+          path: e2e/visual/artifacts/
       - name: Stop preview server
         if: always()
         run: |
           if [ -f .preview.pid ]; then kill "$(cat .preview.pid)" || true; fi
+
