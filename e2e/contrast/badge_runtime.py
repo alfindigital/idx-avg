@@ -41,33 +41,40 @@ BADGE_JS = r"""
   const cards = document.querySelectorAll('[aria-labelledby="result-heading"]');
   const card = cards[cards.length - 1];
   if (!card) return { error: 'no result card' };
-  // The status badge is the only element inside the header containing '%'.
   const badge = Array.from(card.querySelectorAll('span,div'))
     .find(el => /%$/.test((el.textContent || '').trim()) && el.closest('.inline-flex,[class*="rounded-full"]'));
   const el = badge ? badge.closest('[class*="rounded-full"]') || badge : null;
   if (!el) return { error: 'no badge' };
 
-  const parseRgba = (s) => {
-    const m = s.match(/rgba?\(([^)]+)\)/);
-    if (!m) return null;
-    const parts = m[1].split(',').map(x => parseFloat(x.trim()));
-    return { r: parts[0]/255, g: parts[1]/255, b: parts[2]/255, a: parts[3] ?? 1 };
+  // Convert any CSS color (rgb, rgba, oklch, hsl…) to normalized rgba by
+  // painting a pixel and reading it back — this is the exact color the user sees.
+  const cvs = document.createElement('canvas');
+  cvs.width = cvs.height = 1;
+  const ctx = cvs.getContext('2d', { willReadFrequently: true });
+  const toRgba = (css) => {
+    if (!css || css === 'transparent') return { r: 0, g: 0, b: 0, a: 0 };
+    ctx.clearRect(0, 0, 1, 1);
+    ctx.fillStyle = '#000';
+    ctx.fillStyle = css;                          // browser parses arbitrary color syntax
+    ctx.fillRect(0, 0, 1, 1);
+    const [r, g, b, a] = ctx.getImageData(0, 0, 1, 1).data;
+    return { r: r/255, g: g/255, b: b/255, a: a/255 };
   };
 
-  // Walk ancestors, collecting background layers from element up to <html>.
   const layers = [];
   let node = el;
   while (node && node !== document.documentElement.parentNode) {
-    const cs = getComputedStyle(node);
-    const c = parseRgba(cs.backgroundColor);
-    if (c && c.a > 0) layers.push(c);
+    const c = toRgba(getComputedStyle(node).backgroundColor);
+    if (c.a > 0) layers.push(c);
     node = node.parentElement;
   }
-  // Root background fallback (in case <html>/<body> is transparent).
-  const rootBg = parseRgba(getComputedStyle(document.documentElement).backgroundColor)
-    || parseRgba(getComputedStyle(document.body).backgroundColor)
-    || { r: 1, g: 1, b: 1, a: 1 };
-  // Composite from the deepest opaque ancestor forward to the badge.
+  const rootBg = (() => {
+    const r = toRgba(getComputedStyle(document.documentElement).backgroundColor);
+    if (r.a > 0) return r;
+    const b = toRgba(getComputedStyle(document.body).backgroundColor);
+    return b.a > 0 ? b : { r: 1, g: 1, b: 1, a: 1 };
+  })();
+
   let bg = rootBg;
   for (let i = layers.length - 1; i >= 0; i--) {
     const top = layers[i];
@@ -78,10 +85,13 @@ BADGE_JS = r"""
       a: 1,
     };
   }
-  const fg = parseRgba(getComputedStyle(el).color);
-  const fontSize = parseFloat(getComputedStyle(el).fontSize);
-  const fontWeight = getComputedStyle(el).fontWeight;
-  return { fg, bg, text: (el.textContent || '').trim(), fontSize, fontWeight };
+  const fg = toRgba(getComputedStyle(el).color);
+  return {
+    fg, bg,
+    text: (el.textContent || '').trim(),
+    fontSize: parseFloat(getComputedStyle(el).fontSize),
+    fontWeight: getComputedStyle(el).fontWeight,
+  };
 }
 """
 
