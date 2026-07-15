@@ -163,7 +163,7 @@ async def main() -> int:
                 notes.append(f"[modal-open] {len(opened)} samples, focus entered={entered}")
 
             # -------- 3. Modal close transition --------
-            trigger_id = await trigger.evaluate("el => el.id || el.getAttribute('aria-label')")
+            trigger_id = trigger_label
             await page.keyboard.press("Escape")
             close_samples = await sample(page, ms_total=600, step=25)
 
