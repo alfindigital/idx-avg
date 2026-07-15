@@ -133,6 +133,7 @@ async def main() -> int:
             failures.append("[modal] history trigger not found")
         else:
             pre_open_result = (await snap(page))["resultText"]
+            trigger_label = await trigger.get_attribute("aria-label")
             await trigger.click()
             open_samples = await sample(page, ms_total=600, step=25)
 
