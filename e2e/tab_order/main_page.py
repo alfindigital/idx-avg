@@ -294,9 +294,11 @@ async def main() -> int:
         if missing_rev:
             failures.append(f"[reach-rev-input] {missing_rev} never focused via Shift+Tab")
         else:
-            # Steps must be ASCENDING (harga first, then total-lot, then avg-now).
-            steps_desc_expectation = [s for _, s in rev_steps]
-            if steps_desc_expectation != sorted(steps_desc_expectation):
+            # rev_steps is ordered by DOM order (avg-now, total-lot, harga-avg).
+            # In a correct reverse walk, the LATER-DOM input appears FIRST in
+            # the Shift+Tab sequence, so its step index is smallest.
+            steps = [s for _, s in rev_steps]
+            if steps != sorted(steps, reverse=True):
                 failures.append(
                     f"[order-rev-input] Shift+Tab did not visit inputs in reverse DOM order: {rev_steps}"
                 )
