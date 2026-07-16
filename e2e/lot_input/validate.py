@@ -172,15 +172,15 @@ async def scenario_over_max(page: Page, sel: str, err_id: str, failures: list[st
             f"[{sel}] aria-describedby='{described}' (expected '{err_id}') when in error state"
         )
 
-    # Now delete one digit → value = MAX_LOT (valid) → error must clear.
+    # Now delete one digit → value becomes 200000 (valid) → error must clear.
     await page.keyboard.press("Backspace")
     await page.wait_for_timeout(50)
     final_val = await loc.input_value()
     has_err2, txt2 = await check_error_visibility(page, err_id)
     aria2 = await loc.get_attribute("aria-invalid")
     active_after = await focused_id(page)
-    if final_val != str(MAX_LOT):
-        failures.append(f"[{sel}] after Backspace value='{final_val}' (expected '{MAX_LOT}')")
+    if final_val != "200000":
+        failures.append(f"[{sel}] after Backspace value='{final_val}' (expected '200000')")
     if has_err2:
         failures.append(f"[{sel}] inline error did not clear after Backspace: '{txt2}'")
     if aria2 not in (None, "false"):
