@@ -611,6 +611,7 @@ export function Calculator() {
   toggleLangRef.current = toggleLang;
   toggleThemeRef.current = toggleTheme;
   toggleFeeRef.current = () => setFeeOpen((o) => !o);
+  toggleHistoryRef.current = () => setHistoryOpen((o) => !o);
 
   const shareLink = async () => {
     if (!result) return;
