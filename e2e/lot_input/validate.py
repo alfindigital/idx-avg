@@ -25,8 +25,8 @@ from playwright.async_api import Page, async_playwright
 
 
 MAX_LOT = 1_000_000
-GARBAGE = "12a3b!c4@d 5#e6$f%7^g&8*(h)9_+i0-=j"        # digits scattered inside junk
-EXPECTED_STRIPPED = "1234567890"                       # digits only, order preserved
+GARBAGE = "1a2b!3@ 4#$%^&5*()_6+-=7"                # digits scattered inside junk
+EXPECTED_STRIPPED = "1234567"                          # digits only, order preserved, valid (< MAX_LOT)
 
 
 async def settle(page: Page) -> None:
