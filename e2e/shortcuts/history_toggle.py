@@ -75,10 +75,9 @@ async def main() -> int:
     async with async_playwright() as pw:
         browser = await pw.chromium.launch(headless=True)
         ctx = await browser.new_context(viewport={"width": 1280, "height": 900})
+        await ctx.add_init_script("try { localStorage.removeItem('idxavg-history-v1'); } catch(e) {}")
         page = await ctx.new_page()
         await page.goto(args.base_url, wait_until="domcontentloaded")
-        await page.evaluate("() => localStorage.removeItem('idxavg-history-v1')")
-        await page.reload(wait_until="domcontentloaded")
         await settle(page)
 
         # 1. Render a result card.
