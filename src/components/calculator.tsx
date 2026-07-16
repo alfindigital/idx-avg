@@ -574,7 +574,7 @@ export function Calculator() {
       if (e.key === "Escape") {
         // Don't hijack Escape when a modal dialog is open — let Radix close it
         // without also resetting the form/result card underneath.
-        if (document.querySelector('[role="dialog"][data-state="open"]')) return;
+        if (document.querySelector('[role="dialog"]')) return;
         e.preventDefault();
         resetAllRef.current();
       }
