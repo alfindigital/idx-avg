@@ -140,7 +140,7 @@ async def scenario_over_max(page: Page, sel: str, err_id: str, failures: list[st
     loc = page.locator(sel)
     await loc.focus()
     await loc.fill("")
-    over = str(MAX_LOT + 1)  # 1000001
+    over = "2000000"  # 2,000,000 → over MAX_LOT; Backspace → "200000" (valid)
     input_id = await loc.get_attribute("id")
 
     for ch in over:
