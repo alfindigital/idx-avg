@@ -572,6 +572,9 @@ export function Calculator() {
         return;
       }
       if (e.key === "Escape") {
+        // Don't hijack Escape when a modal dialog is open — let Radix close it
+        // without also resetting the form/result card underneath.
+        if (document.querySelector('[role="dialog"][data-state="open"]')) return;
         e.preventDefault();
         resetAllRef.current();
       }
