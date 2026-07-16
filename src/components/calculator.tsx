@@ -509,6 +509,7 @@ export function Calculator() {
   const toggleLangRef = useRef<() => void>(() => {});
   const toggleThemeRef = useRef<() => void>(() => {});
   const toggleFeeRef = useRef<() => void>(() => {});
+  const toggleHistoryRef = useRef<() => void>(() => {});
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName?.toLowerCase();
@@ -550,6 +551,11 @@ export function Calculator() {
           toggleFeeRef.current();
           return;
         }
+        if (code === "KeyH") {
+          e.preventDefault();
+          toggleHistoryRef.current();
+          return;
+        }
       }
 
       if (inInput) return;
@@ -566,6 +572,9 @@ export function Calculator() {
         return;
       }
       if (e.key === "Escape") {
+        // Don't hijack Escape when a modal dialog is open — let Radix close it
+        // without also resetting the form/result card underneath.
+        if (document.querySelector('[role="dialog"]')) return;
         e.preventDefault();
         resetAllRef.current();
       }
@@ -605,6 +614,7 @@ export function Calculator() {
   toggleLangRef.current = toggleLang;
   toggleThemeRef.current = toggleTheme;
   toggleFeeRef.current = () => setFeeOpen((o) => !o);
+  toggleHistoryRef.current = () => setHistoryOpen((o) => !o);
 
   const shareLink = async () => {
     if (!result) return;
@@ -836,6 +846,7 @@ export function Calculator() {
                   size="icon"
                   className="h-10 w-10 rounded-xl hover:bg-secondary hover:text-primary"
                   aria-label={t.history}
+                  title="Alt+H"
                 >
                   <History className="h-5 w-5" />
                 </Button>
