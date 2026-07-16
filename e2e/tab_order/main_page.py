@@ -171,9 +171,11 @@ async def main() -> int:
         await fill_and_calc(page)
         text_before = await result_text(page)
 
-        # Anchor the walk at the first form input so ordering assertions are
-        # stable regardless of where Ctrl+Enter left the activeElement.
+        # Anchor the walk just BEFORE the first form input so the very first
+        # forward Tab lands on #avg-now-input — gives stable ordering
+        # assertions regardless of where Ctrl+Enter left the activeElement.
         await page.locator("#avg-now-input").focus()
+        await page.keyboard.press("Shift+Tab")
 
         # -------- Forward Tab walk --------
         forward_seq = await walk(page, "forward", MAX_TAB_STEPS)
