@@ -509,6 +509,7 @@ export function Calculator() {
   const toggleLangRef = useRef<() => void>(() => {});
   const toggleThemeRef = useRef<() => void>(() => {});
   const toggleFeeRef = useRef<() => void>(() => {});
+  const toggleHistoryRef = useRef<() => void>(() => {});
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName?.toLowerCase();
