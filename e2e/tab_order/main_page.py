@@ -43,7 +43,7 @@ REQUIRED_INPUT_IDS = [
 ONE_OF_INPUTS = ("lot-tambah-input", "target-avg-input")
 
 # Result-card action buttons (aria-label substrings, case-insensitive).
-REQUIRED_ACTION_LABELS = ["share", "png", "reset"]
+REQUIRED_ACTION_LABELS = ["salin link", "png", "reset"]
 
 EXPECTED_MIN_STOPS = 10
 MAX_TAB_STEPS = 60
