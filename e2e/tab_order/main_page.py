@@ -261,9 +261,17 @@ async def main() -> int:
             notes.append(f"[cycle-fwd] focus wraps: revisit at step {revisit_at}")
 
         # -------- Shift+Tab reverse walk --------
-        # Land on the last-known focused element, then reverse.
+        # Anchor AFTER the input chain (on the last input) then Shift+Tab so we
+        # actually traverse inputs in reverse order.
+        last_input_id: str | None = None
+        for id_ in list(ONE_OF_INPUTS) + list(reversed(REQUIRED_INPUT_IDS)):
+            if await page.locator(f"#{id_}").count():
+                last_input_id = id_
+                break
+        assert last_input_id, "no anchor input found"
+        await page.locator(f"#{last_input_id}").focus()
+
         reverse_seq = await walk(page, "backward", MAX_TAB_STEPS)
-        reverse_order = unique_order(reverse_seq)
 
         stalls_r = [i for i, f in enumerate(reverse_seq) if f.get("_stall")]
         if stalls_r:
@@ -274,20 +282,26 @@ async def main() -> int:
         if escaped_r:
             failures.append(f"[escape-rev] focus escaped document at step {escaped_r[0]}")
 
-        # Reverse-walk sanity: at least the required input IDs must appear.
-        rev_inputs = [
-            (id_, index_of_id(reverse_order, id_)) for id_ in REQUIRED_INPUT_IDS
-        ]
-        missing_rev = [id_ for id_, p in rev_inputs if p < 0]
+        # Find the first Shift+Tab step where each required input appears.
+        def first_step_with(seq: list[dict], id_: str) -> int:
+            for i, f in enumerate(seq):
+                if f.get("id") == id_:
+                    return i
+            return -1
+
+        rev_steps = [(id_, first_step_with(reverse_seq, id_)) for id_ in REQUIRED_INPUT_IDS]
+        missing_rev = [id_ for id_, s in rev_steps if s < 0]
         if missing_rev:
             failures.append(f"[reach-rev-input] {missing_rev} never focused via Shift+Tab")
         else:
-            # Reverse order must be descending w.r.t. forward positions.
-            fwd_of_rev = [index_of_id(forward_order, id_) for id_, _ in rev_inputs]
-            if fwd_of_rev != sorted(fwd_of_rev, reverse=True):
+            # Steps must be ASCENDING (harga first, then total-lot, then avg-now).
+            steps_desc_expectation = [s for _, s in rev_steps]
+            if steps_desc_expectation != sorted(steps_desc_expectation):
                 failures.append(
-                    f"[order-rev-input] Shift+Tab order does not mirror Tab order: forward-positions={fwd_of_rev}"
+                    f"[order-rev-input] Shift+Tab did not visit inputs in reverse DOM order: {rev_steps}"
                 )
+            else:
+                notes.append(f"[reverse] inputs re-focused in reverse: {rev_steps}")
             else:
                 notes.append(f"[reverse] inputs re-focused in reverse order: {fwd_of_rev}")
 
