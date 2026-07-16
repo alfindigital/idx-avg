@@ -171,9 +171,9 @@ async def main() -> int:
         await fill_and_calc(page)
         text_before = await result_text(page)
 
-        # Reset focus to the top of the document.
-        await page.evaluate("() => { document.activeElement && document.activeElement.blur(); }")
-        await page.evaluate("() => document.body.focus()")
+        # Anchor the walk at the first form input so ordering assertions are
+        # stable regardless of where Ctrl+Enter left the activeElement.
+        await page.locator("#avg-now-input").focus()
 
         # -------- Forward Tab walk --------
         forward_seq = await walk(page, "forward", MAX_TAB_STEPS)
