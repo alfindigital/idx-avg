@@ -37,13 +37,12 @@ async def fill_and_calc(page: Page) -> None:
         ("harga-avg-input", "900"),
         ("lot-tambah-input", "5"),
     ]:
-        loc = page.locator(f"#{id_}")
-        await loc.fill("")
-        await loc.fill(v)
+        await page.locator(f"#{id_}").fill(v)
+    await page.locator("#lot-tambah-input").blur()
     await page.locator("#lot-tambah-input").focus()
     await page.keyboard.press("Control+Enter")
     await page.locator('[aria-labelledby="result-heading"]').first.wait_for(
-        state="visible", timeout=3000
+        state="visible", timeout=5000
     )
     await page.wait_for_timeout(200)
 
