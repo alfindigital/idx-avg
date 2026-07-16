@@ -55,6 +55,9 @@ async def type_burst_and_watch(page: Page, sel: str) -> dict:
     loc = page.locator(sel)
     await loc.focus()
     await loc.fill("")
+    await page.wait_for_timeout(100)
+    # Re-assert focus in case a re-render moved it.
+    await loc.focus()
     input_id = await loc.get_attribute("id")
 
     # Press each character with delay=0 to simulate fast typing / autofill.
