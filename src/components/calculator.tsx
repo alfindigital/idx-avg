@@ -551,6 +551,11 @@ export function Calculator() {
           toggleFeeRef.current();
           return;
         }
+        if (code === "KeyH") {
+          e.preventDefault();
+          toggleHistoryRef.current();
+          return;
+        }
       }
 
       if (inInput) return;
