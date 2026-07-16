@@ -302,8 +302,6 @@ async def main() -> int:
                 )
             else:
                 notes.append(f"[reverse] inputs re-focused in reverse: {rev_steps}")
-            else:
-                notes.append(f"[reverse] inputs re-focused in reverse order: {fwd_of_rev}")
 
         # -------- Post-walk content check --------
         text_after = await result_text(page)
