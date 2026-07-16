@@ -843,6 +843,7 @@ export function Calculator() {
                   size="icon"
                   className="h-10 w-10 rounded-xl hover:bg-secondary hover:text-primary"
                   aria-label={t.history}
+                  title="Alt+H"
                 >
                   <History className="h-5 w-5" />
                 </Button>
