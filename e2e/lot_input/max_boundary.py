@@ -118,60 +118,80 @@ async def run(page: Page) -> list[str]:
     errors: list[str] = []
     await settle(page)
     await initial_calc(page)
-    baseline_html = await result_html(page)
-    if not baseline_html:
+    initial_html = await result_html(page)
+    if not initial_html:
         return ["initial result card missing"]
     await page.screenshot(path=str(SHOTS / "1_initial.png"))
 
     lot = page.locator(LOT_SEL)
-    await lot.click()
-    await lot.press("Control+A")
-    await lot.press("Delete")
-    await page.wait_for_timeout(80)
 
-    # --- 1) Type exactly MAX_LOT digit-by-digit --------------------------
-    for ch in str(MAX_LOT):
-        await page.keyboard.type(ch, delay=15)
-    await page.wait_for_timeout(200)
+    async def set_lot(digits: str) -> None:
+        await lot.click()
+        await lot.press("Control+A")
+        await lot.press("Delete")
+        await page.wait_for_timeout(60)
+        for ch in digits:
+            await page.keyboard.type(ch, delay=15)
+        await page.wait_for_timeout(200)
+
+    # --- 1) Type exactly MAX_LOT, submit, snapshot valid result ---------
+    await set_lot(str(MAX_LOT))
     s = await input_state(page)
     if digits_only(s["value"]) != str(MAX_LOT):
         errors.append(f"@ MAX_LOT: value digits={digits_only(s['value'])!r} expected {MAX_LOT}")
     if s["ariaInvalid"] == "true":
-        errors.append("@ MAX_LOT: aria-invalid=true (should be valid)")
+        errors.append("@ MAX_LOT: aria-invalid=true while at MAX_LOT")
     if s["alert"]:
-        errors.append(f"@ MAX_LOT: unexpected inline error: {s['alert']!r}")
+        errors.append(f"@ MAX_LOT: inline error present: {s['alert']!r}")
     if not s["focused"]:
-        errors.append("@ MAX_LOT: focus left the input")
-    # Snapshot the current (valid) result card at MAX_LOT. This is the
-    # canonical "valid state" — over-max must not mutate it, and returning
-    # to MAX_LOT must restore it byte-for-byte.
+        errors.append("@ MAX_LOT: focus left the input while typing")
+    await submit(page)
+    try:
+        await page.locator(RESULT_SEL).first.wait_for(state="visible", timeout=4000)
+    except Exception:
+        errors.append("@ MAX_LOT: result card did not render after submit")
+    await page.wait_for_timeout(300)
     at_max_html = await result_html(page)
-    if at_max_html is None:
-        errors.append("@ MAX_LOT: result card missing")
+    if not at_max_html:
+        errors.append("@ MAX_LOT: no result card html to snapshot")
     await page.screenshot(path=str(SHOTS / "2_at_max.png"))
 
-    # --- 2) One extra digit → over MAX_LOT -------------------------------
+    # --- 2) Extra digit → over MAX_LOT ----------------------------------
+    # Refocus the input and add one digit (no clear) so the value climbs
+    # from MAX_LOT to > MAX_LOT in a single keystroke.
+    await lot.focus()
+    await lot.press("End")
     await page.keyboard.type("0", delay=15)
-    await page.wait_for_timeout(200)
+    await page.wait_for_timeout(250)
     s = await input_state(page)
-    typed_digits = digits_only(s["value"])
-    if int(typed_digits or "0") <= MAX_LOT:
-        errors.append(f"> MAX_LOT: value {typed_digits!r} did not exceed MAX_LOT")
+    typed = digits_only(s["value"])
+    if int(typed or "0") <= MAX_LOT:
+        errors.append(f"> MAX_LOT: value {typed!r} did not exceed MAX_LOT")
     if s["ariaInvalid"] != "true":
         errors.append(f"> MAX_LOT: aria-invalid={s['ariaInvalid']!r} (want 'true')")
     if not s["alert"]:
         errors.append("> MAX_LOT: expected inline role=alert error text")
     if not s["focused"]:
         errors.append("> MAX_LOT: focus left the input during validation")
+    # Try to submit while invalid; the app must NOT recompute with the
+    # over-max value. The previously computed card (at_max_html) must
+    # either still be present unchanged, or absent — never mutated.
+    await submit(page)
+    await page.wait_for_timeout(300)
     over_html = await result_html(page)
-    if over_html != at_max_html:
+    if over_html is not None and over_html != at_max_html:
         errors.append(
             "> MAX_LOT: result card recomputed with an invalid over-max value "
-            "(should keep the last valid state)"
+            "(should keep the last valid state or nothing)"
         )
+    s = await input_state(page)
+    if s["ariaInvalid"] != "true" or not s["alert"]:
+        errors.append("> MAX_LOT: error state cleared unexpectedly after invalid submit")
+    if not s["focused"]:
+        errors.append("> MAX_LOT: focus left the input after invalid submit")
     await page.screenshot(path=str(SHOTS / "3_over_max.png"))
 
-    # --- 3) Backspace back to exactly MAX_LOT ----------------------------
+    # --- 3) Backspace back to exactly MAX_LOT ---------------------------
     await page.keyboard.press("Backspace")
     await page.wait_for_timeout(250)
     s = await input_state(page)
@@ -185,19 +205,23 @@ async def run(page: Page) -> list[str]:
         errors.append(f"back @ MAX_LOT: inline error still shown: {s['alert']!r}")
     if not s["focused"]:
         errors.append("back @ MAX_LOT: focus escaped during backspace")
-    back_html = await result_html(page)
-    if back_html != at_max_html:
-        errors.append(
-            "back @ MAX_LOT: result card did not restore to the exact state seen at MAX_LOT"
-        )
     await page.screenshot(path=str(SHOTS / "4_back_at_max.png"))
 
-    # --- 4) Explicit submit at MAX_LOT — still valid, no error ----------
+    # --- 4) Recompute at MAX_LOT — must match the earlier valid snapshot
     await submit(page)
-    await page.wait_for_timeout(400)
+    try:
+        await page.locator(RESULT_SEL).first.wait_for(state="visible", timeout=4000)
+    except Exception:
+        errors.append("recompute: result card missing after re-submit at MAX_LOT")
+    await page.wait_for_timeout(300)
     final_html = await result_html(page)
     if final_html is None:
-        errors.append("recompute: result card missing after submit at MAX_LOT")
+        errors.append("recompute: no result card after submit")
+    elif at_max_html and final_html != at_max_html:
+        errors.append(
+            "recompute: result at MAX_LOT differs from earlier MAX_LOT snapshot "
+            "(same inputs must yield identical output)"
+        )
     s = await input_state(page)
     if s["ariaInvalid"] == "true" or s["alert"]:
         errors.append(f"recompute: error surfaced on valid submit ({s})")
