@@ -80,7 +80,8 @@ async def state(page: Page, sel: str) -> dict:
 
 
 def digits_only(s: str | None) -> str:
-    return re.sub(r"\D", "", s or "")
+    # ASCII digits only — the app strips unicode digits (e.g. Arabic-Indic).
+    return re.sub(r"[^0-9]", "", s or "")
 
 
 async def clear(page: Page, sel: str) -> None:
