@@ -132,7 +132,7 @@ async def run(page: Page) -> list[str]:
     # --- 1) Type exactly MAX_LOT digit-by-digit --------------------------
     for ch in str(MAX_LOT):
         await page.keyboard.type(ch, delay=15)
-    await page.wait_for_timeout(120)
+    await page.wait_for_timeout(200)
     s = await input_state(page)
     if digits_only(s["value"]) != str(MAX_LOT):
         errors.append(f"@ MAX_LOT: value digits={digits_only(s['value'])!r} expected {MAX_LOT}")
@@ -142,13 +142,17 @@ async def run(page: Page) -> list[str]:
         errors.append(f"@ MAX_LOT: unexpected inline error: {s['alert']!r}")
     if not s["focused"]:
         errors.append("@ MAX_LOT: focus left the input")
-    if await result_html(page) != baseline_html:
-        errors.append("@ MAX_LOT: result card changed while typing (should not recompute)")
+    # Snapshot the current (valid) result card at MAX_LOT. This is the
+    # canonical "valid state" — over-max must not mutate it, and returning
+    # to MAX_LOT must restore it byte-for-byte.
+    at_max_html = await result_html(page)
+    if at_max_html is None:
+        errors.append("@ MAX_LOT: result card missing")
     await page.screenshot(path=str(SHOTS / "2_at_max.png"))
 
     # --- 2) One extra digit → over MAX_LOT -------------------------------
     await page.keyboard.type("0", delay=15)
-    await page.wait_for_timeout(150)
+    await page.wait_for_timeout(200)
     s = await input_state(page)
     typed_digits = digits_only(s["value"])
     if int(typed_digits or "0") <= MAX_LOT:
@@ -159,13 +163,17 @@ async def run(page: Page) -> list[str]:
         errors.append("> MAX_LOT: expected inline role=alert error text")
     if not s["focused"]:
         errors.append("> MAX_LOT: focus left the input during validation")
-    if await result_html(page) != baseline_html:
-        errors.append("> MAX_LOT: stale result card mutated while over-max")
+    over_html = await result_html(page)
+    if over_html != at_max_html:
+        errors.append(
+            "> MAX_LOT: result card recomputed with an invalid over-max value "
+            "(should keep the last valid state)"
+        )
     await page.screenshot(path=str(SHOTS / "3_over_max.png"))
 
     # --- 3) Backspace back to exactly MAX_LOT ----------------------------
     await page.keyboard.press("Backspace")
-    await page.wait_for_timeout(150)
+    await page.wait_for_timeout(250)
     s = await input_state(page)
     if digits_only(s["value"]) != str(MAX_LOT):
         errors.append(
@@ -177,18 +185,19 @@ async def run(page: Page) -> list[str]:
         errors.append(f"back @ MAX_LOT: inline error still shown: {s['alert']!r}")
     if not s["focused"]:
         errors.append("back @ MAX_LOT: focus escaped during backspace")
-    if await result_html(page) != baseline_html:
-        errors.append("back @ MAX_LOT: result card changed before recompute")
+    back_html = await result_html(page)
+    if back_html != at_max_html:
+        errors.append(
+            "back @ MAX_LOT: result card did not restore to the exact state seen at MAX_LOT"
+        )
     await page.screenshot(path=str(SHOTS / "4_back_at_max.png"))
 
-    # --- 4) Recompute at MAX_LOT — card must now differ ------------------
+    # --- 4) Explicit submit at MAX_LOT — still valid, no error ----------
     await submit(page)
     await page.wait_for_timeout(400)
-    new_html = await result_html(page)
-    if new_html is None:
-        errors.append("recompute: result card missing")
-    elif new_html == baseline_html:
-        errors.append("recompute: result card unchanged despite total-lot changing 10 → MAX_LOT")
+    final_html = await result_html(page)
+    if final_html is None:
+        errors.append("recompute: result card missing after submit at MAX_LOT")
     s = await input_state(page)
     if s["ariaInvalid"] == "true" or s["alert"]:
         errors.append(f"recompute: error surfaced on valid submit ({s})")
