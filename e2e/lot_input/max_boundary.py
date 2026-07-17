@@ -59,7 +59,13 @@ async def initial_calc(page: Page) -> None:
     await page.locator("#lot-tambah-input").fill("5")
     await page.locator("#lot-tambah-input").blur()
     await submit(page)
-    await page.locator(RESULT_SEL).first.wait_for(state="visible", timeout=5000)
+    try:
+        await page.locator(RESULT_SEL).first.wait_for(state="visible", timeout=5000)
+    except Exception:
+        await page.screenshot(path=str(SHOTS / "0_initial_fail.png"))
+        await page.wait_for_timeout(500)
+        await submit(page)
+        await page.locator(RESULT_SEL).first.wait_for(state="visible", timeout=5000)
     await page.wait_for_timeout(300)
 
 
