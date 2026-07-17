@@ -47,11 +47,17 @@ async def settle(page: Page) -> None:
 
 
 async def submit(page: Page) -> None:
+    await page.wait_for_timeout(200)
     btn = page.locator('form button[type="submit"]').first
-    if await btn.count() > 0 and await btn.is_enabled():
-        await btn.click()
-    else:
-        await page.keyboard.press("Control+Enter")
+    try:
+        if await btn.count() > 0:
+            await btn.click(timeout=1500)
+            return
+    except Exception:
+        pass
+    # Fallback: keyboard shortcut (works when input has focus).
+    await page.locator("#lot-tambah-input").focus()
+    await page.keyboard.press("Control+Enter")
 
 
 async def initial_calc(page: Page) -> None:
