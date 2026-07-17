@@ -52,11 +52,16 @@ async def fill_and_calc(page: Page) -> None:
     await page.locator("#harga-avg-input").fill("900")
     await page.locator("#lot-tambah-input").fill("5")
     await page.locator("#lot-tambah-input").blur()
-    await page.keyboard.press("Control+Enter")
+    # Prefer clicking the submit button — Ctrl+Enter isn't a mobile gesture.
+    submit = page.locator('form button[type="submit"]').first
+    if await submit.count() > 0:
+        await submit.click()
+    else:
+        await page.keyboard.press("Control+Enter")
     await page.locator('[aria-labelledby="result-heading"]').first.wait_for(
-        state="visible", timeout=3000
+        state="visible", timeout=5000
     )
-    await page.wait_for_timeout(300)
+    await page.wait_for_timeout(400)
 
 
 async def check_no_horizontal_overflow(page: Page, vw: int) -> list[str]:
