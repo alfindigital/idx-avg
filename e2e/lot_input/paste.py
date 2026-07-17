@@ -163,7 +163,7 @@ async def run_case(page: Page, sel: str, label: str, payload: str,
         # after stripping non-digits we get pure digits.
         errors.append(f"{tag}: value has non-numeric chars: {s['value']!r}")
     typed_digits = digits_only(s["value"])
-    expected_digits = re.sub(r"\D", "", payload)
+    expected_digits = re.sub(r"[^0-9]", "", payload)
     if not expect_over_max and expected_digits and typed_digits != expected_digits:
         errors.append(
             f"{tag}: sanitized digits {typed_digits!r} != expected {expected_digits!r}"
