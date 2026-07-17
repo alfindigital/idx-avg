@@ -43,7 +43,9 @@ RESULT_SEL = '[aria-labelledby="result-heading"]'
 
 async def settle(page: Page) -> None:
     await page.wait_for_load_state("domcontentloaded")
-    await page.wait_for_timeout(500)
+    # Wait for hydration — inputs must be interactive before .fill() sticks.
+    await page.locator("#avg-now-input").wait_for(state="visible", timeout=5000)
+    await page.wait_for_timeout(1000)
 
 
 async def submit(page: Page) -> None:
