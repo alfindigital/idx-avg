@@ -302,12 +302,13 @@ async def main() -> int:
         else:
             notes.append("[back-to-new-avg] no stale inline error after mode switch")
 
-        # Result card from lots-needed compute must still be present, byte-identical.
-        html_after_back = await result_card_html(page)
-        if html_after_back != html_lots_needed:
-            failures.append("[back-to-new-avg] result card mutated on switch back to new-avg")
+        # Result card from lots-needed compute must still be present with the
+        # same rendered TEXT (see rationale in [preserve-result] above).
+        text_after_back = await result_card_text(page)
+        if text_after_back != text_lots_needed:
+            failures.append("[back-to-new-avg] result card text mutated on switch back to new-avg")
         else:
-            notes.append("[back-to-new-avg] result card content preserved across return mode flip")
+            notes.append("[back-to-new-avg] result card text preserved across return mode flip")
 
         await browser.close()
 
