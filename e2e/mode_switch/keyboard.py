@@ -305,13 +305,16 @@ async def main() -> int:
         else:
             notes.append("[back-to-new-avg] no stale inline error after mode switch")
 
-        # Result card from lots-needed compute must still be present with the
-        # same rendered TEXT (see rationale in [preserve-result] above).
+        # Same clear-on-mode-flip invariant: switching back to new-avg wipes
+        # the target-avg input, which changes currentInputsKey and clears
+        # `result`. The card must be gone.
         text_after_back = await result_card_text(page)
-        if text_after_back != text_lots_needed:
-            failures.append("[back-to-new-avg] result card text mutated on switch back to new-avg")
+        if text_after_back is not None:
+            failures.append(
+                f"[back-to-new-avg] result card still rendered after mode change (should clear; got {len(text_after_back)} chars)"
+            )
         else:
-            notes.append("[back-to-new-avg] result card text preserved across return mode flip")
+            notes.append("[back-to-new-avg] result card cleared as expected after return mode flip")
 
         await browser.close()
 
