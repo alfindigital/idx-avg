@@ -103,6 +103,8 @@ async def run_interleaved(
             # Switch focus without a mouse click so caret position is
             # deterministic (append to end) regardless of existing text length.
             await page.locator(sel).focus()
+            # Wait a frame so React can settle the focus event before typing.
+            await page.wait_for_timeout(16)
             await page.keyboard.press("End")
             current_focus = target_id
         await page.keyboard.type(ch, delay=0)
