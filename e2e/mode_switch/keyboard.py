@@ -64,8 +64,7 @@ async def focused_role_selected(page: Page) -> dict:
 async def result_card_html(page: Page) -> str | None:
     return await page.evaluate(
         """() => {
-            const el = document.querySelector('[data-testid="result-card"], #result-card')
-                   || document.querySelector('section[aria-label*="Result"], section[aria-label*="Hasil"]');
+            const el = document.querySelector('[data-result-card]');
             return el ? el.outerHTML : null;
         }"""
     )
