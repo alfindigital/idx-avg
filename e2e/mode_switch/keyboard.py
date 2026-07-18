@@ -202,22 +202,23 @@ async def main() -> int:
         if target_avg_count != 1:
             failures.append(f"[activate-lots-needed] #target-avg-input count={target_avg_count}")
 
-        # Result card must NOT have been erased or mutated by the mode flip.
-        # Compare TEXT (not raw HTML) — some interactive elements (share URL,
-        # button titles) legitimately re-render with the current mode/state
-        # even when the underlying `result` object hasn't changed.
+        # Switching modes clears the OTHER field (setTargetAvg("") /
+        # setLotTambah("")). The app treats any input change as invalidating
+        # the prior calculation and clears the result card — this is the
+        # intended safety behavior so users never see a stale summary next to
+        # inputs that no longer match it.
         text_after_flip = await result_card_text(page)
-        if text_after_flip != baseline_text:
+        if text_after_flip is not None:
             failures.append(
-                f"[preserve-result] result card text changed on mode flip (baseline={len(baseline_text or '')} chars, after={len(text_after_flip or '')} chars)"
+                f"[clear-on-mode-flip] result card still rendered after mode change (should clear; got {len(text_after_flip)} chars)"
             )
         else:
-            notes.append("[preserve-result] result card text preserved across mode flip")
+            notes.append("[clear-on-mode-flip] result card cleared as expected after mode change")
 
-        # ── Validation invariant: invalid target-avg + Ctrl+Enter → no new card, focus routed ──
+        # ── Validation invariant: invalid target-avg + Ctrl+Enter ──
         # Seed target with '0' (parses to 0, fails positive check) so `mode`
         # resolves to 'lots-needed' and focusFirstInvalid can route to the
-        # actual invalid field.
+        # actual invalid field. No result card must appear.
         await fill(page, "#target-avg-input", "0")
         # Move focus away so we can detect the routing after the shortcut fires.
         await page.locator("#avg-now-input").focus()
@@ -233,9 +234,12 @@ async def main() -> int:
         else:
             notes.append("[lots-needed-invalid] focus routed to invalid target-avg-input")
         text_after_invalid = await result_card_text(page)
-        if text_after_invalid != baseline_text:
-            failures.append("[lots-needed-invalid] result card text mutated despite invalid submit")
+        if text_after_invalid is not None:
+            failures.append(
+                f"[lots-needed-invalid] result card unexpectedly rendered after invalid submit ({len(text_after_invalid)} chars)"
+            )
         else:
+            notes.append("[lots-needed-invalid] result card stayed absent for invalid submit")
             notes.append("[lots-needed-invalid] previous result card preserved after invalid submit")
 
         # ── Successful compute in the new mode ──
