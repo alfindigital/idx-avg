@@ -238,6 +238,8 @@ async def main() -> int:
         # --- Scenario C: recovery — delete one digit from left, right untouched. ---
         await page.locator(LEFT_SEL).focus()
         await page.keyboard.press("End")
+        # Delete two digits so 12,345,678 → 123,456 (valid, < MAX_LOT).
+        await page.keyboard.press("Backspace")
         await page.keyboard.press("Backspace")
         await page.wait_for_timeout(60)
         after = await read(page, LEFT_SEL)
