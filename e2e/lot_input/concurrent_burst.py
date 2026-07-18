@@ -244,9 +244,10 @@ async def main() -> int:
         await page.wait_for_timeout(60)
         after = await read(page, LEFT_SEL)
         right_after = await read(page, RIGHT_SEL)
-        if after["value"] != left_digits_b[:-1]:
+        expected_left_after = left_digits_b[:-2]
+        if after["value"] != expected_left_after:
             failures.append(
-                f"[recovery] left value='{after['value']}' after Backspace (expected '{left_digits_b[:-1]}')"
+                f"[recovery] left value='{after['value']}' after 2×Backspace (expected '{expected_left_after}')"
             )
         if after["aria"] not in (None, "false"):
             failures.append(f"[recovery] left aria-invalid='{after['aria']}' after returning to valid")
