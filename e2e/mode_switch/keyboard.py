@@ -72,6 +72,18 @@ async def result_card_html(page: Page) -> str | None:
     )
 
 
+async def result_card_text(page: Page) -> str | None:
+    """Text content ignoring interactive attributes that legitimately re-render
+    (e.g. share URL query string or button titles that reflect current mode)."""
+    return await page.evaluate(
+        """() => {
+            const el = document.querySelector('[data-result-card]');
+            if (!el) return null;
+            return (el.textContent || '').replace(/\\s+/g, ' ').trim();
+        }"""
+    )
+
+
 async def live_region_text(page: Page) -> str:
     return await page.evaluate(
         """() => {
