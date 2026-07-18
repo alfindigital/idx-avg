@@ -240,7 +240,6 @@ async def main() -> int:
             )
         else:
             notes.append("[lots-needed-invalid] result card stayed absent for invalid submit")
-            notes.append("[lots-needed-invalid] previous result card preserved after invalid submit")
 
         # ── Successful compute in the new mode ──
         await fill(page, "#target-avg-input", "950")
