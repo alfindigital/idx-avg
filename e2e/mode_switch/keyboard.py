@@ -242,13 +242,13 @@ async def main() -> int:
         await fill(page, "#target-avg-input", "950")
         await calc_via_shortcut(page)
         html_lots_needed = await result_card_html(page)
+        text_lots_needed = await result_card_text(page)
         live_lots_needed = await live_region_text(page)
         if not html_lots_needed:
             failures.append("[lots-needed-calc] result card missing after valid submit")
-        elif html_lots_needed == baseline_html:
+        elif text_lots_needed == baseline_text:
             failures.append("[lots-needed-calc] result card unchanged after recompute in lots-needed mode")
         else:
-            # Header should reflect the lots-needed mode ("Lot" or "Lots" appears in header text).
             header_ok = bool(re.search(r"lot", html_lots_needed, re.IGNORECASE))
             if not header_ok:
                 failures.append("[lots-needed-calc] result card header does not reference lots")
