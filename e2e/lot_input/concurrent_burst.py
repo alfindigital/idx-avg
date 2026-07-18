@@ -92,9 +92,13 @@ async def run_interleaved(
     """Type per (sel, ch) plan. After every keystroke, snapshot focus."""
     await clear(page, LEFT_SEL)
     await clear(page, RIGHT_SEL)
+    # Warm the browser + React so the first real keystroke isn't dropped
+    # while a focus/blur re-render is still flushing.
+    await page.locator(plan[0][0]).focus()
+    await page.wait_for_timeout(80)
 
     per_key: list[dict] = []
-    current_focus: str | None = None
+    current_focus: str | None = plan[0][0].lstrip("#")
     t0 = time.perf_counter()
 
     for sel, ch in plan:
