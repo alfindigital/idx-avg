@@ -142,6 +142,7 @@ async def main() -> int:
         await calc_via_shortcut(page)
 
         baseline_html = await result_card_html(page)
+        baseline_text = await result_card_text(page)
         baseline_live = await live_region_text(page)
         if not baseline_html:
             failures.append("[baseline] result card did not render after Ctrl+Enter in new-avg mode")
