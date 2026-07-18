@@ -38,14 +38,17 @@ class FieldSpec:
                           # values: "always" | "new-avg" | "lots-needed"
 
 
-# Prices default to IDX tick=5 in the 500–2000 range, so "1001" is off-tick.
-# Lots max out at 1,000,000, so "1000001" overflows.
+# Price fields: onBlur auto-rounds off-tick values (e.g. 1001 → 1000), so we
+# need an invalid value that SURVIVES blur. "0" satisfies numOnly() but fails
+# the `n > 0` check in validatePrice, and handlePriceBlur short-circuits on
+# n <= 0 so it doesn't overwrite. Lot fields don't have a blur reformatter;
+# 1,000,001 overflows MAX_LOT and stays put.
 FIELDS: List[FieldSpec] = [
-    FieldSpec("avg-now",      "avg-now-input",     "avg-now-error",     "1001",    "1000",  "always"),
+    FieldSpec("avg-now",      "avg-now-input",     "avg-now-error",     "0",       "1000",  "always"),
     FieldSpec("total-lot",    "total-lot-input",   "total-lot-error",   "1000001", "10",    "always"),
-    FieldSpec("harga-avg",    "harga-avg-input",   "harga-avg-error",   "1001",    "900",   "always"),
+    FieldSpec("harga-avg",    "harga-avg-input",   "harga-avg-error",   "0",       "900",   "always"),
     FieldSpec("lot-tambah",   "lot-tambah-input",  "lot-tambah-error",  "1000001", "5",     "new-avg"),
-    FieldSpec("target-avg",   "target-avg-input",  "target-avg-error",  "1001",    "950",   "lots-needed"),
+    FieldSpec("target-avg",   "target-avg-input",  "target-avg-error",  "0",       "950",   "lots-needed"),
 ]
 
 
