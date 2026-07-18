@@ -124,7 +124,7 @@ async def main() -> int:
         # ── Baseline: fill inputs in default mode (new-avg) and compute ──
         await fill(page, "#avg-now-input", "1000")
         await fill(page, "#total-lot-input", "10")
-        await fill(page, "#harga-averaging-input", "900")
+        await fill(page, "#harga-avg-input", "900")
         await fill(page, "#lot-tambah-input", "10")
         await calc_via_shortcut(page)
 
