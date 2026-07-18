@@ -100,8 +100,10 @@ async def run_interleaved(
     for sel, ch in plan:
         target_id = sel.lstrip("#")
         if current_focus != target_id:
-            # Click to switch focus quickly (mimics tap between fields).
-            await page.locator(sel).click()
+            # Switch focus without a mouse click so caret position is
+            # deterministic (append to end) regardless of existing text length.
+            await page.locator(sel).focus()
+            await page.keyboard.press("End")
             current_focus = target_id
         await page.keyboard.type(ch, delay=0)
         active = await focused_id(page)
