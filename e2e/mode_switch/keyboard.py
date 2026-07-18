@@ -37,7 +37,9 @@ from playwright.async_api import Page, async_playwright
 
 async def settle(page: Page) -> None:
     await page.wait_for_load_state("domcontentloaded")
-    await page.wait_for_timeout(500)
+    # Hydration + URL-param reader effect need ~1s before controlled inputs
+    # commit values reliably; anything shorter drops the first fill().
+    await page.wait_for_timeout(1500)
 
 
 async def focused_id(page: Page) -> str | None:
