@@ -254,7 +254,7 @@ async def check_error_aria(page: Page, failures: list[str], notes: list[str]) ->
             f"""() => {{
                 const el = document.getElementById({input_id!r});
                 const describedById = el.getAttribute('aria-describedby');
-                const alert = document.getElementById({input_id!r} + '-error');
+                const alert = document.getElementById({input_id!r}.replace('-input','-error'));
                 return {{
                     ariaInvalid: el.getAttribute('aria-invalid'),
                     describedBy: describedById,
