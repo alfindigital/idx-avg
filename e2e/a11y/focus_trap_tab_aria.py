@@ -225,11 +225,12 @@ async def check_error_aria(page: Page, failures: list[str], notes: list[str]) ->
             failures.append(
                 f"[aria/{input_id}] invalid value did not set aria-invalid=true (got {state_bad['ariaInvalid']})"
             )
+        expected_err_id = input_id.replace("-input", "-error")
         if not state_bad["describedBy"]:
             failures.append(f"[aria/{input_id}] no aria-describedby on invalid state")
-        elif state_bad["describedBy"] != f"{input_id}-error":
+        elif state_bad["describedBy"] != expected_err_id:
             failures.append(
-                f"[aria/{input_id}] aria-describedby not '{input_id}-error' (got {state_bad['describedBy']})"
+                f"[aria/{input_id}] aria-describedby not '{expected_err_id}' (got {state_bad['describedBy']})"
             )
         if state_bad["alertRole"] != "alert":
             failures.append(
