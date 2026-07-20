@@ -114,12 +114,8 @@ async def check_scenario(
         if rest and rest[0] in ",.":
             errs.append(f"[{label}] Rp token has decimals: {token!r}")
 
-    # 2) Expected values (integer rounding matches formatRupiah's Math.round).
-    total_lot_baru = lot + tambah
-    new_avg = round((avg * lot + harga * tambah) / total_lot_baru)
-    modal_awal = avg * lot * 100
-    modal_tambah = harga * tambah * 100
-    total_modal = modal_awal + modal_tambah
+    # 2) Expected values below.
+
 
     # 2) Expected values (integer rounding matches formatRupiah's Math.round).
     # NOTE: total_modal is intentionally excluded — the app enables buy-fee
