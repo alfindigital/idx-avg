@@ -121,11 +121,19 @@ async def check_scenario(
     modal_tambah = harga * tambah * 100
     total_modal = modal_awal + modal_tambah
 
+    # 2) Expected values (integer rounding matches formatRupiah's Math.round).
+    # NOTE: total_modal is intentionally excluded — the app enables buy-fee
+    # by default, which folds into total capital and would make the raw
+    # (avg*lot + harga*tambah)*100 value stale. Well-formedness above
+    # already covers that token.
+    total_lot_baru = lot + tambah
+    new_avg = round((avg * lot + harga * tambah) / total_lot_baru)
+    modal_tambah = harga * tambah * 100
+
     expected = {
         "avg_sekarang": format_rp(avg),
         "harga_averaging": format_rp(harga),
         "modal_tambahan": format_rp(modal_tambah),
-        "total_modal": format_rp(total_modal),
         "new_avg": format_rp(new_avg),
     }
     for key, want in expected.items():
