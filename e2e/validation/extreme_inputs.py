@@ -186,10 +186,10 @@ async def scenario_over_max_rejected(page: Page) -> list[str]:
     # ONLY reason for rejection is the max cap.
     await fill(page, "#avg-now-input", str(MAX_PRICE + 25))
     st = await field_state(page, "#avg-now-input")
-    if st["ariaInvalid"] != "true" or not st["alert"] or "1.000.000" not in st["alert"]:
+    if st["ariaInvalid"] != "true" or not st["alert"] or ("1.000.000" not in st["alert"] and "1,000,000" not in st["alert"]):
         errs.append(
             f"over-max price: aria-invalid={st['ariaInvalid']!r}, "
-            f"alert={st['alert']!r} (expected max-price message with '1.000.000')"
+            f"alert={st['alert']!r} (expected max-price message with 1,000,000)"
         )
     # Ctrl+Enter must route focus back to the invalid field and not recompute.
     await submit(page, "#lot-tambah-input")
@@ -204,10 +204,10 @@ async def scenario_over_max_rejected(page: Page) -> list[str]:
     await fill(page, "#avg-now-input", str(MAX_PRICE))
     await fill(page, "#total-lot-input", str(MAX_LOT + 1))
     st = await field_state(page, "#total-lot-input")
-    if st["ariaInvalid"] != "true" or not st["alert"] or "1.000.000" not in st["alert"]:
+    if st["ariaInvalid"] != "true" or not st["alert"] or ("1.000.000" not in st["alert"] and "1,000,000" not in st["alert"]):
         errs.append(
             f"over-max lot: aria-invalid={st['ariaInvalid']!r}, "
-            f"alert={st['alert']!r} (expected max-lot message with '1.000.000')"
+            f"alert={st['alert']!r} (expected max-lot message with 1,000,000)"
         )
     await submit(page, "#lot-tambah-input")
     st = await field_state(page, "#total-lot-input")
