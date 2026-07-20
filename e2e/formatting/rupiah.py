@@ -53,9 +53,16 @@ async def settle(page: Page) -> None:
 
 
 async def submit(page: Page) -> None:
+    await page.wait_for_timeout(150)
     await page.locator("#lot-tambah-input").focus()
     await page.keyboard.press("Control+Enter")
-    await page.locator(RESULT_SEL).first.wait_for(state="visible", timeout=5000)
+    try:
+        await page.locator(RESULT_SEL).first.wait_for(state="visible", timeout=4000)
+    except Exception:
+        await page.wait_for_timeout(400)
+        await page.locator("#lot-tambah-input").focus()
+        await page.keyboard.press("Control+Enter")
+        await page.locator(RESULT_SEL).first.wait_for(state="visible", timeout=4000)
     await page.wait_for_timeout(250)
 
 
