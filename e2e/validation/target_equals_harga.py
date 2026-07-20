@@ -163,9 +163,9 @@ async def run(page: Page) -> list[str]:
         )
 
     # --- 4) Fix by moving target off the collision, re-submit ----------
-    # 900 is band-5 (500 <= p < 2000, tick 5). Use 895 as a valid tick-aligned
+    # 900 is band-5 (500 <= p < 2000, tick 5). Use 950 as a valid tick-aligned
     # target strictly less than harga so the calc succeeds.
-    await page.locator("#target-avg-input").fill("895")
+    await page.locator("#target-avg-input").fill("950")
     await page.locator("#target-avg-input").blur()
     await page.wait_for_timeout(200)
     await submit(page, "#target-avg-input")
