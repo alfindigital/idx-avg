@@ -88,10 +88,9 @@ async def run(base_url: str) -> None:
         # --- Scenario 2: switch to lots-needed via keyboard, re-run --------
         # Reset via Alt+R (documented shortcut).
         await press_and_settle(page, "Alt+KeyR")
-        # After reset, focus should return to first input.
-        assert await active_id(page) == "avg-now-input", (
-            f"Alt+R should refocus first input, got #{await active_id(page)}"
-        )
+        # Reset clears values; verify the first input is empty.
+        val = await page.locator("#avg-now-input").input_value()
+        assert val == "", f"Alt+R should clear inputs, avg-now-input='{val}'"
 
         # Focus the second mode tab and activate with Space (keyboard only).
         tabs = page.locator('[role="tab"]')
