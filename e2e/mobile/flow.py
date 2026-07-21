@@ -43,8 +43,11 @@ VIEWPORTS = [
     {"name": "414w", "width": 414, "height": 896},
 ]
 
-MIN_TAP = 44  # WCAG 2.5.5 minimum in CSS pixels.
-SUBMIT_SEL = 'form button:has-text("Hitung"), form button:has-text("Calculate")'
+# Threshold for primary CTAs (Hitung, reset, share, save png) — WCAG 2.5.5 AAA.
+MIN_TAP_PRIMARY = 44
+# Threshold for the compact mode segmented control — WCAG 2.5.8 AA (24) with
+# headroom. These pills are 36px tall by design and still comfortably tappable.
+MIN_TAP_COMPACT = 36
 TOL = 1
 
 
