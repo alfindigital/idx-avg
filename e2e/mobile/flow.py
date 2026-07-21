@@ -114,9 +114,10 @@ async def measure_tap_targets(page: Page) -> list[str]:
                 if (style.display === 'none' || style.visibility === 'hidden') continue;
                 const r = el.getBoundingClientRect();
                 if (r.width === 0 || r.height === 0) continue;
+                const min = role === 'mode-tab' ? minCompact : minPrimary;
                 if (r.width < min - 0.5 || r.height < min - 0.5) {
                     bad.push({
-                        role,
+                        role, min,
                         label: (el.getAttribute('aria-label')
                                 || el.textContent || '').trim().slice(0, 40),
                         w: Math.round(r.width),
@@ -126,13 +127,14 @@ async def measure_tap_targets(page: Page) -> list[str]:
             }
             return bad;
         }""",
-        MIN_TAP,
+        { "minPrimary": MIN_TAP_PRIMARY, "minCompact": MIN_TAP_COMPACT },
     )
     return [
         f"tap target too small ({d['role']}): {d['label']!r} "
-        f"= {d['w']}×{d['h']} (min {MIN_TAP})"
+        f"= {d['w']}×{d['h']} (min {d['min']})"
         for d in data
     ]
+
 
 
 
