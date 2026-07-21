@@ -101,6 +101,8 @@ async def run_one(page: Page, name: str, w: int, h: int, base_url: str) -> None:
     # sized, visible, on-screen, and NOT covered by another element.)
     btn = page.get_by_role("button", name=re.compile(r"^(Hitung|Calculate)$", re.I)).first
     await btn.wait_for(state="visible")
+    await btn.scroll_into_view_if_needed()
+    await page.wait_for_timeout(100)
     btn_box = await btn.bounding_box()
     assert btn_box, f"{label}: calculate button missing"
     assert btn_box["height"] >= 44 and btn_box["width"] >= 44, (
