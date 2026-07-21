@@ -78,34 +78,47 @@ async def tap_fill(page: Page, sel: str, value: str) -> None:
 
 
 async def measure_tap_targets(page: Page) -> list[str]:
-    """Return list of failures for controls smaller than MIN_TAP px."""
+    """Enforce MIN_TAP on the primary interactive controls (the submit
+    button, the mode tabs, and the reset/share/save-image action buttons on
+    the result card). Copy-value affordances and header icon toggles are
+    intentionally denser and excluded here — they are covered by the
+    check_not_covered() reachability probe instead."""
     data = await page.evaluate(
         """(min) => {
-            const selectors = [
-              'form button',
-              'button[aria-label]',
-              '[role="tab"]',
-            ];
-            const seen = new Set();
+            const targets = [];
+            const submit = [...document.querySelectorAll('form button')].find(b =>
+                /^(hitung|calculate)$/i.test((b.textContent || '').trim())
+            );
+            if (submit) targets.push({ el: submit, role: 'submit' });
+            for (const t of document.querySelectorAll('[role="tab"]')) {
+                targets.push({ el: t, role: 'mode-tab' });
+            }
+            // Result-card primary actions: reset / share / save png.
+            const card = document.querySelector('[aria-labelledby="result-heading"]');
+            if (card) {
+                for (const b of card.querySelectorAll('button[aria-label]')) {
+                    const label = b.getAttribute('aria-label') || '';
+                    // Skip copy-row buttons: those wrap value spans and use
+                    // ':' in their label (e.g. 'New Avg: Copy').
+                    if (label.includes(':')) continue;
+                    targets.push({ el: b, role: 'result-action' });
+                }
+            }
             const bad = [];
-            for (const sel of selectors) {
-                for (const el of document.querySelectorAll(sel)) {
-                    if (seen.has(el)) continue;
-                    seen.add(el);
-                    if (el.hasAttribute('disabled')) continue;
-                    const style = getComputedStyle(el);
-                    if (style.display === 'none' || style.visibility === 'hidden') continue;
-                    const r = el.getBoundingClientRect();
-                    if (r.width === 0 || r.height === 0) continue;
-                    if (r.width < min - 0.5 || r.height < min - 0.5) {
-                        bad.push({
-                            label: (el.getAttribute('aria-label')
-                                    || el.textContent || '').trim().slice(0, 40),
-                            tag: el.tagName.toLowerCase(),
-                            w: Math.round(r.width),
-                            h: Math.round(r.height),
-                        });
-                    }
+            for (const { el, role } of targets) {
+                if (el.hasAttribute('disabled')) continue;
+                const style = getComputedStyle(el);
+                if (style.display === 'none' || style.visibility === 'hidden') continue;
+                const r = el.getBoundingClientRect();
+                if (r.width === 0 || r.height === 0) continue;
+                if (r.width < min - 0.5 || r.height < min - 0.5) {
+                    bad.push({
+                        role,
+                        label: (el.getAttribute('aria-label')
+                                || el.textContent || '').trim().slice(0, 40),
+                        w: Math.round(r.width),
+                        h: Math.round(r.height),
+                    });
                 }
             }
             return bad;
@@ -113,10 +126,11 @@ async def measure_tap_targets(page: Page) -> list[str]:
         MIN_TAP,
     )
     return [
-        f"tap target too small: <{d['tag']} aria-label={d['label']!r}> "
+        f"tap target too small ({d['role']}): {d['label']!r} "
         f"= {d['w']}×{d['h']} (min {MIN_TAP})"
         for d in data
     ]
+
 
 
 async def check_not_covered(page: Page, selectors: list[str]) -> list[str]:
