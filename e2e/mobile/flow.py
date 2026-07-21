@@ -82,7 +82,7 @@ async def measure_tap_targets(page: Page) -> list[str]:
     data = await page.evaluate(
         """(min) => {
             const selectors = [
-              'form button[type="submit"]',
+              'form button:has-text("Hitung"), form button:has-text("Calculate")',
               'button[aria-label]',
               '[role="tab"]',
             ];
@@ -219,7 +219,7 @@ async def run_one(page: Page, viewport: dict) -> list[str]:
 
     # Key interactive controls must not be visually covered.
     covered_selectors = [
-        'form button[type="submit"]',
+        'form button:has-text("Hitung"), form button:has-text("Calculate")',
         '[role="tab"][aria-selected="true"]',
     ]
     # Include the History trigger if present.
@@ -239,7 +239,7 @@ async def run_one(page: Page, viewport: dict) -> list[str]:
                for e in await check_not_covered(page, covered_selectors)]
 
     # Tap Hitung.
-    submit = page.locator('form button[type="submit"]').first
+    submit = page.locator('form button:has-text("Hitung"), form button:has-text("Calculate")').first
     await submit.scroll_into_view_if_needed()
     await submit.tap()
 
