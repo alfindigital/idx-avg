@@ -44,6 +44,7 @@ VIEWPORTS = [
 ]
 
 MIN_TAP = 44  # WCAG 2.5.5 minimum in CSS pixels.
+SUBMIT_SEL = 'form button:has-text("Hitung"), form button:has-text("Calculate")'
 TOL = 1
 
 
