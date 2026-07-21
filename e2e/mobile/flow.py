@@ -82,7 +82,7 @@ async def measure_tap_targets(page: Page) -> list[str]:
     data = await page.evaluate(
         """(min) => {
             const selectors = [
-              'form button:has-text("Hitung"), form button:has-text("Calculate")',
+              'form button',
               'button[aria-label]',
               '[role="tab"]',
             ];
