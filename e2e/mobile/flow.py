@@ -217,11 +217,20 @@ async def run_one(page: Page, viewport: dict) -> list[str]:
     # Tap targets must meet the 44px minimum before we submit.
     errors += [f"[{name} tap-target] {e}" for e in await measure_tap_targets(page)]
 
-    # Key interactive controls must not be visually covered.
-    covered_selectors = [
-        'form button:has-text("Hitung"), form button:has-text("Calculate")',
-        '[role="tab"][aria-selected="true"]',
-    ]
+    # Tag the submit button with an id so we can use plain querySelector below.
+    submit_id = await page.evaluate(
+        """() => {
+            const btn = [...document.querySelectorAll('form button')].find(b =>
+                /^(hitung|calculate)$/i.test((b.textContent || '').trim())
+            );
+            if (!btn) return null;
+            if (!btn.id) btn.id = '__test_submit_btn__';
+            return '#' + btn.id;
+        }"""
+    )
+    covered_selectors = ['[role="tab"][aria-selected="true"]']
+    if submit_id:
+        covered_selectors.append(submit_id)
     # Include the History trigger if present.
     hist_id = await page.evaluate(
         """() => {
