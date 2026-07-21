@@ -87,7 +87,7 @@ async def measure_tap_targets(page: Page) -> list[str]:
     intentionally denser and excluded here — they are covered by the
     check_not_covered() reachability probe instead."""
     data = await page.evaluate(
-        """(min) => {
+        """({minPrimary, minCompact}) => {
             const targets = [];
             const submit = [...document.querySelectorAll('form button')].find(b =>
                 /^(hitung|calculate)$/i.test((b.textContent || '').trim())
