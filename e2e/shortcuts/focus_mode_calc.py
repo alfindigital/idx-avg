@@ -100,8 +100,9 @@ async def run(base_url: str) -> None:
         selected = await tabs.nth(1).get_attribute("aria-selected")
         assert selected == "true", f"tab activation via Space failed (aria-selected={selected})"
 
-        # Refocus first input via `/` again, then Enter-chain.
-        await page.evaluate("() => document.body.focus()")
+        # selectMode() auto-focuses the mode-specific input; blur it so the
+        # global `/` shortcut (which ignores in-input keys) fires.
+        await page.evaluate("() => document.activeElement?.blur?.()")
         await press_and_settle(page, "Slash")
         await type_into(page, "avg-now-input", "1000")
         await press_and_settle(page, "Enter")
