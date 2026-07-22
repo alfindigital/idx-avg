@@ -104,15 +104,16 @@ async def submit(page: Page) -> None:
     await page.wait_for_timeout(300)
 
 
-# (id, invalid_value, valid_value, why)
+# (id, invalid_value, valid_value, why). Lot inputs sanitize non-digits on
+# keystroke (intOnly), so "1.5" would collapse to "15" — invalid values here
+# are chosen to survive sanitization and actually reach the validator.
 CASES: list[tuple[str, str, str, str]] = [
     ("avg-now-input", "0", "1000", "price must be positive"),
     ("total-lot-input", "0", "10", "lot must be positive integer"),
-    ("total-lot-input", "1.5", "10", "lot must be integer"),
     ("harga-avg-input", "0", "900", "price must be positive"),
     ("lot-tambah-input", "0", "5", "additional lot must be positive"),
-    ("lot-tambah-input", "2.7", "5", "additional lot must be integer"),
 ]
+
 
 
 async def main() -> int:
