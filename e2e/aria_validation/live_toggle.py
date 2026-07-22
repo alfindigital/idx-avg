@@ -45,6 +45,10 @@ LIVE_SEL = '[role="status"][aria-live="polite"]'
 
 
 async def field_aria(page: Page, id_: str) -> dict:
+    # The alert <p> nodes for each field are always rendered (persistent
+    # role="alert" containers whose text is populated only when the field
+    # is invalid). We treat "invalid" as: aria-invalid=true AND the linked
+    # alert node has non-empty text AND aria-describedby is set.
     return await page.evaluate(
         f"""() => {{
             const el = document.getElementById({id_!r});
@@ -60,6 +64,14 @@ async def field_aria(page: Page, id_: str) -> dict:
             }};
         }}"""
     )
+
+
+async def nonempty_alert_count(page: Page) -> int:
+    return await page.evaluate(
+        """() => Array.from(document.querySelectorAll('[role="alert"]'))
+            .filter(n => (n.textContent || '').trim().length > 0).length"""
+    )
+
 
 
 async def live_text(page: Page) -> str:
