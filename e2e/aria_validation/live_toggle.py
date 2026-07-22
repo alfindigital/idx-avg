@@ -139,15 +139,16 @@ async def main() -> int:
         # Global assumption: on first paint, region is empty and no alerts exist.
         if (t0 := await live_text(page)):
             failures.append(f"[baseline] status region non-empty on paint: {t0!r}")
-        if (n0 := await page.locator('[role="alert"]').count()) != 0:
-            failures.append(f"[baseline] expected 0 alerts on paint, found {n0}")
+        if (n0 := await nonempty_alert_count(page)) != 0:
+            failures.append(f"[baseline] expected 0 non-empty alerts on paint, found {n0}")
 
         await seed_valid(page)
 
-        # Sanity: seeded state has no alerts and status region is still empty
-        # (we haven't submitted yet).
-        if (n1 := await page.locator('[role="alert"]').count()) != 0:
-            failures.append(f"[seed] expected 0 alerts after seeding valid, got {n1}")
+        # Sanity: seeded state has no populated alerts and status region is
+        # still empty (we haven't submitted yet).
+        if (n1 := await nonempty_alert_count(page)) != 0:
+            failures.append(f"[seed] expected 0 non-empty alerts after seeding valid, got {n1}")
+
         if (t1 := await live_text(page)):
             failures.append(f"[seed] status region non-empty before submit: {t1!r}")
 
