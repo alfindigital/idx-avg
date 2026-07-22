@@ -96,7 +96,7 @@ async def scenario_zero(page: Page, errors: list[str]) -> None:
     result_visible = await page.locator("[data-testid='result-card'], #result-card").count()
     if result_visible == 0:
         # Fallback: check for known result-only text
-        body = await page.locator("main, body").inner_text()
+        body = await page.locator("main").first.inner_text()
         result_visible = 1 if re.search(r"Total\s+Modal|New\s+Avg", body) and "Rp" in body and "0" != body else 0
     check(result_visible == 0, "no result card while any field invalid", errors)
 
@@ -178,7 +178,7 @@ async def scenario_valid_flow_formatting(page: Page, errors: list[str]) -> None:
     await page.keyboard.press("Control+Enter")
     await page.wait_for_timeout(600)
 
-    text = await page.locator("main, body").inner_text()
+    text = await page.locator("main").first.inner_text()
     # Extract every "Rp <number>" token.
     tokens = re.findall(r"Rp\s?([0-9\.\,]+)", text)
     check(len(tokens) > 0, "at least one Rp token present in result", errors)
