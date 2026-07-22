@@ -209,10 +209,13 @@ async def main() -> int:
                 failures.append(
                     f"[{id_}/{good}] recovered but aria-describedby still set: {state2['describedBy']!r}"
                 )
-            if state2["alertPresent"]:
+            # The alert <p> element persists in the DOM as a stable region;
+            # on recovery its text content must be empty.
+            if state2["alertText"]:
                 failures.append(
-                    f"[{id_}/{good}] recovered but alert node still in DOM: {state2['alertText']!r}"
+                    f"[{id_}/{good}] recovered but alert text not cleared: {state2['alertText']!r}"
                 )
+
 
             after_recover_text = await live_text(page)
             if after_recover_text != pre_toggle_text:
