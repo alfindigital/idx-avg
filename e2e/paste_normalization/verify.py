@@ -63,32 +63,13 @@ async def clear(page: Page, sel: str) -> None:
 
 
 async def paste(page: Page, sel: str, text: str) -> None:
-    """Fire a real `paste` ClipboardEvent with a DataTransfer payload,
-    then fall back to a native value-setter + input event if the app
-    didn't handle the paste itself (matches what a real Cmd/Ctrl+V does)."""
+    """Real paste: write to the OS clipboard, focus the input, press Ctrl+V.
+    This exercises the browser's native paste path so React's onChange
+    handler runs with the real pasted string (not a synthetic replay)."""
+    await page.evaluate("(t) => navigator.clipboard.writeText(t)", text)
     await page.locator(sel).focus()
-    await page.evaluate(
-        """({sel, text}) => {
-            const el = document.querySelector(sel);
-            if (!el) throw new Error('input not found: ' + sel);
-            el.focus();
-            const dt = new DataTransfer();
-            dt.setData('text/plain', text);
-            const ev = new ClipboardEvent('paste', {
-                clipboardData: dt, bubbles: true, cancelable: true,
-            });
-            const dispatched = el.dispatchEvent(ev);
-            if (dispatched && !ev.defaultPrevented) {
-                const setter = Object.getOwnPropertyDescriptor(
-                    window.HTMLInputElement.prototype, 'value'
-                ).set;
-                setter.call(el, (el.value || '') + text);
-                el.dispatchEvent(new Event('input', { bubbles: true }));
-            }
-        }""",
-        {"sel": sel, "text": text},
-    )
-    await page.wait_for_timeout(120)
+    await page.keyboard.press("Control+V")
+    await page.wait_for_timeout(150)
 
 
 async def read(page: Page, sel: str) -> dict:
