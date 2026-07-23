@@ -84,21 +84,22 @@ async def settle(page: Page) -> None:
 
 
 async def set_value(page: Page, sel: str, value: str) -> None:
-    """Clear the input, type the value, and blur so tick-rounding runs."""
+    """Clear the input, type the value, and Tab out so any onBlur
+    normalization (tick rounding) runs."""
     loc = page.locator(sel)
     await loc.click()
     await loc.press("Control+A")
     await loc.press("Delete")
     if value:
-        await loc.type(value, delay=5)
-    # Blur into the body so any onBlur normalization kicks in.
-    await page.evaluate("() => document.activeElement && document.activeElement.blur()")
-    await page.wait_for_timeout(80)
+        await loc.type(value, delay=10)
+    await page.keyboard.press("Tab")
+    await page.wait_for_timeout(120)
 
 
 async def load_baseline(page: Page) -> None:
     for sel, v in BASELINE.items():
         await set_value(page, sel, v)
+    await page.wait_for_timeout(150)
 
 
 async def read_card(page: Page) -> str | None:
