@@ -442,7 +442,7 @@ export function Calculator() {
         fee,
       });
       if ("error" in out) {
-        toast.error(out.error);
+        toast.error(t[out.error]);
         return;
       }
       resultInputsRef.current = snapshot;
