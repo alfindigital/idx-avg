@@ -101,13 +101,13 @@ export function calcLotsNeeded(args: {
 }): { result: CalcResult } | { error: string } {
   const { avgSekarang, lotSekarang, hargaAveraging, targetAvg, fee } = args;
   if (hargaAveraging === targetAvg)
-    return { error: "Target tidak boleh sama dengan harga averaging" };
+    return { error: "targetEqualsHarga" as const };
   const lotDibutuhkan = Math.round(
     (targetAvg * lotSekarang - avgSekarang * lotSekarang) /
       (hargaAveraging - targetAvg)
   );
   if (lotDibutuhkan < 0)
-    return { error: "Tidak bisa mencapai target dengan harga ini" };
+    return { error: "targetUnreachable" as const };
   const totalLotBaru = lotSekarang + lotDibutuhkan;
   const newAvg =
     totalLotBaru === 0
