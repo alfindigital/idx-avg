@@ -1,27 +1,39 @@
 """
-Invalid-field lockout: verifies that when any single field becomes invalid,
-neither the Calculate button (click) nor the Ctrl+Enter shortcut mutates
-the result card. The card must keep the values from the previous valid
-calculation until every input is valid again.
+Invalid-field lockout: verifies that when any single field becomes
+invalid, neither the Calculate button (click) nor the Ctrl+Enter
+shortcut can produce a new / mutated result card. The result card must
+stay absent until every input is valid again AND the user re-triggers
+the calculation.
+
+The app auto-clears the previous result whenever any input changes
+(inputs no longer match the snapshot that produced the card), so
+"lockout" here means:
+
+  - After making a field invalid, Calculate + Ctrl+Enter must NOT
+    render any new result card.
+  - `aria-disabled="true"` stays on the Calculate button so keyboard /
+    assistive tech signal the locked state.
+  - After restoring every field to valid values (but before
+    re-calculating), the card must still be absent — the app must not
+    silently re-materialize the old result.
+  - Only an explicit Calculate action on a fully-valid form brings a
+    fresh, correct card back.
 
 Flow (per candidate field):
-  1. Start from a fully-valid form and run one calculation → snapshot the
-     result card's inner text as the "baseline".
-  2. Corrupt exactly one field (empty / zero / over-max / off-tick where
-     applicable) so it becomes invalid.
-  3. Attempt to calculate two ways:
-       a. click the Calculate button
-       b. press Ctrl+Enter
-     After each attempt, re-read the result card and compare against the
-     baseline — they MUST be identical.
-  4. Restore the field to a valid value AND change one other valid field
-     so a real recalc would produce a different result. Press Ctrl+Enter
-     → the card must now update (i.e. differ from baseline).
-  5. Restore the form to the original baseline inputs for the next round.
-
-The result card is located by `[data-result-card]`. If no card is
-present at all after step 1 the test fails — we can't observe lockout
-without a prior render.
+  1. Establish a "baseline" by loading valid inputs and calculating.
+  2. Snapshot the baseline result card text.
+  3. Corrupt one field → assert:
+       - card disappears,
+       - button is aria-disabled,
+       - clicking Calculate (force, because of aria-disabled) does not
+         create a new card,
+       - Ctrl+Enter does not create a new card.
+  4. Restore the field to its baseline value → card still absent (no
+     phantom recalculation), button re-enabled.
+  5. Bump one OTHER valid field so a real recalc would produce a
+     different result, press Ctrl+Enter → card renders and differs
+     from the baseline.
+  6. Reset to baseline for the next case.
 
 Run:
   python3 e2e/invalid_lockout/verify.py [--base-url http://localhost:8080]
