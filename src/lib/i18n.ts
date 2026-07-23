@@ -74,6 +74,8 @@ export const dict = {
     integerPositive: "Bilangan bulat > 0",
     maxLot: (n: number) => `Maks ${n.toLocaleString("id-ID")} lot`,
     maxPrice: (rp: string) => `Maks ${rp}`,
+    targetEqualsHarga: "Target tidak boleh sama dengan harga averaging",
+    targetUnreachable: "Tidak bisa mencapai target dengan harga ini",
     footerBy: "by",
   },
   en: {
