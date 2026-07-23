@@ -183,24 +183,41 @@ async def main() -> int:
                 if bad and aria != "true":
                     errors.append(f"{tag}: expected aria-invalid='true', got {aria!r}")
 
-                # Attempt to calculate — the card must not change.
+                # Attempt to calculate — the button is aria-disabled and
+                # Ctrl+Enter's guard should short-circuit. The result
+                # card must NOT (re)appear.
                 await try_calculate(page)
                 after = await read_card(page)
                 await page.screenshot(path=str(SHOTS / f"{idx:02d}_locked.png"))
 
-                if after is None:
-                    errors.append(f"{tag}: result card disappeared after invalid attempt")
-                elif after != baseline:
-                    diff_preview = (
-                        f"BEFORE:\n{baseline[:300]}\n---\nAFTER:\n{after[:300]}"
+                if after is not None:
+                    errors.append(
+                        f"{tag}: result card rendered while a field was "
+                        f"invalid — content:\n{after[:300]}"
                     )
-                    errors.append(f"{tag}: result card MUTATED while invalid:\n{diff_preview}")
 
                 btn_state = await calc_button_state(page)
                 if btn_state and btn_state.get("ariaDisabled") != "true":
                     errors.append(
                         f"{tag}: Calculate button aria-disabled={btn_state.get('ariaDisabled')!r} "
                         f"(should be 'true' while a field is invalid)"
+                    )
+
+                # Restore this field to its baseline value. The card
+                # must still be absent — no phantom recalculation.
+                await set_value(page, sel, BASELINE[sel])
+                await page.wait_for_timeout(120)
+                dormant = await read_card(page)
+                if dormant is not None:
+                    errors.append(
+                        f"{tag}: card re-appeared after restore without an explicit "
+                        f"Calculate action — content:\n{dormant[:300]}"
+                    )
+                btn_state = await calc_button_state(page)
+                if btn_state and btn_state.get("ariaDisabled") == "true":
+                    errors.append(
+                        f"{tag}: Calculate button remained aria-disabled after "
+                        f"all fields were restored to valid values"
                     )
 
                 # Restore to valid — and nudge one other field so the
