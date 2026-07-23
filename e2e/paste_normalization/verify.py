@@ -188,6 +188,7 @@ async def main() -> int:
         context = await browser.new_context(
             viewport={"width": 1280, "height": 1800},
             reduced_motion="reduce",
+            permissions=["clipboard-read", "clipboard-write"],
         )
         page = await context.new_page()
         await page.goto(args.base_url, wait_until="domcontentloaded")
