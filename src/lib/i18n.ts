@@ -145,6 +145,8 @@ export const dict = {
     integerPositive: "Positive integer",
     maxLot: (n: number) => `Max ${n.toLocaleString("en-US")} lots`,
     maxPrice: (rp: string) => `Max ${rp}`,
+    targetEqualsHarga: "Target cannot equal averaging price",
+    targetUnreachable: "Cannot reach target at this price",
     footerBy: "by",
   },
 };
