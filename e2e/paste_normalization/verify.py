@@ -213,13 +213,25 @@ async def main() -> int:
         await settle(page)
 
         try:
+            tabs = page.get_by_role("tab")
             for sel in PRICE_INPUTS + LOT_INPUTS:
+                # #target-avg-input only renders in "lots-needed" mode;
+                # #lot-tambah-input only renders in "new-avg" mode.
+                if sel == "#target-avg-input":
+                    await tabs.nth(1).click()
+                    await page.wait_for_timeout(150)
+                elif sel == "#lot-tambah-input":
+                    await tabs.nth(0).click()
+                    await page.wait_for_timeout(150)
                 for label, payload, expected in CASES:
                     errs = await run_input_case(page, sel, label, payload, expected)
                     all_errors.extend(errs)
                     stamp = f"{sel.strip('#')}_{label.replace('-', '_')}"
                     await page.screenshot(path=str(SHOTS / f"{stamp}.png"))
 
+            # End-to-end must run in new-avg mode.
+            await tabs.nth(0).click()
+            await page.wait_for_timeout(150)
             e2e_errors = await run_endtoend(page)
             all_errors.extend(e2e_errors)
             await page.screenshot(path=str(SHOTS / "e2e_result_card.png"))
