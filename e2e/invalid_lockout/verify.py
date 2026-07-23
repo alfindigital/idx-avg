@@ -118,7 +118,10 @@ async def try_calculate(page: Page) -> None:
     #    should call focusFirstInvalid instead of computing).
     btn = page.get_by_role("button", name=re.compile(r"^(Hitung|Calculate)$", re.I))
     if await btn.count() > 0:
-        await btn.first.click()
+        # aria-disabled='true' makes Playwright treat the button as disabled;
+        # force the click so we exercise the app's own guard (which routes
+        # to focusFirstInvalid instead of running the calc).
+        await btn.first.click(force=True)
         await page.wait_for_timeout(200)
     # 2) Keyboard shortcut.
     await page.locator("#avg-now-input").focus()
