@@ -151,6 +151,10 @@ export function Calculator() {
       el?.focus({ preventScroll: true });
     });
   };
+  const pickedModeRef = useRef<CalcMode>("new-avg");
+  useEffect(() => {
+    pickedModeRef.current = pickedMode;
+  }, [pickedMode]);
 
   // Fee
   const [fee, setFee] = useState<FeeOptions>(DEFAULT_FEE);
@@ -514,6 +518,7 @@ export function Calculator() {
   const toggleThemeRef = useRef<() => void>(() => {});
   const toggleFeeRef = useRef<() => void>(() => {});
   const toggleHistoryRef = useRef<() => void>(() => {});
+  const setModeRef = useRef<(m: "new-avg" | "lots-needed") => void>(() => {});
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement)?.tagName?.toLowerCase();
@@ -558,6 +563,22 @@ export function Calculator() {
         if (code === "KeyH") {
           e.preventDefault();
           toggleHistoryRef.current();
+          return;
+        }
+        if (code === "KeyM") {
+          e.preventDefault();
+          // Toggle between the two modes
+          setModeRef.current(pickedModeRef.current === "new-avg" ? "lots-needed" : "new-avg");
+          return;
+        }
+        if (code === "Digit1") {
+          e.preventDefault();
+          setModeRef.current("new-avg");
+          return;
+        }
+        if (code === "Digit2") {
+          e.preventDefault();
+          setModeRef.current("lots-needed");
           return;
         }
       }
@@ -619,6 +640,7 @@ export function Calculator() {
   toggleThemeRef.current = toggleTheme;
   toggleFeeRef.current = () => setFeeOpen((o) => !o);
   toggleHistoryRef.current = () => setHistoryOpen((o) => !o);
+  setModeRef.current = (m) => selectMode(m);
 
   const shareLink = async () => {
     if (!result) return;
@@ -1161,6 +1183,7 @@ export function Calculator() {
                         role="tab"
                         aria-selected={active}
                         onClick={() => selectMode(opt.key)}
+                        title={opt.key === "new-avg" ? "Alt+1" : "Alt+2"}
                         className={cn(
                           "relative z-10 h-9 whitespace-nowrap rounded-lg px-3 text-[11px] font-bold uppercase tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                           active ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground",
