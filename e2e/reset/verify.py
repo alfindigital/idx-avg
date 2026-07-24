@@ -52,10 +52,11 @@ async def read_state(page: Page) -> dict:
             return el ? {{ id, value: el.value, ariaInvalid: el.getAttribute('aria-invalid') }} : null;
           }});
           const alerts = Array.from(document.querySelectorAll('[role="alert"]'))
-            .filter(a => a.offsetParent !== null)
-            .map(a => a.textContent);
+            .filter(a => a.offsetParent !== null && (a.textContent || '').trim().length > 0)
+            .map(a => a.textContent.trim());
           const card = document.querySelector('[aria-labelledby="result-heading"]');
-          const calcBtn = document.querySelector('button[type="submit"], button[aria-label*="Hitung" i], button[aria-label*="Calculate" i]');
+          const btns = Array.from(document.querySelectorAll('button'));
+          const calcBtn = btns.find(b => /hitung|calculate/i.test(b.textContent || '') || /hitung|calculate/i.test(b.getAttribute('aria-label') || ''));
           return {{
             inputs,
             alerts,
