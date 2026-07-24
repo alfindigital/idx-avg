@@ -1183,6 +1183,7 @@ export function Calculator() {
                         role="tab"
                         aria-selected={active}
                         onClick={() => selectMode(opt.key)}
+                        title={opt.key === "new-avg" ? "Alt+1" : "Alt+2"}
                         className={cn(
                           "relative z-10 h-9 whitespace-nowrap rounded-lg px-3 text-[11px] font-bold uppercase tracking-wider transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                           active ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground",
