@@ -151,6 +151,10 @@ export function Calculator() {
       el?.focus({ preventScroll: true });
     });
   };
+  const pickedModeRef = useRef<CalcMode>("new-avg");
+  useEffect(() => {
+    pickedModeRef.current = pickedMode;
+  }, [pickedMode]);
 
   // Fee
   const [fee, setFee] = useState<FeeOptions>(DEFAULT_FEE);
