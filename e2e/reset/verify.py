@@ -122,7 +122,8 @@ async def run() -> int:
         # --- Scenario 2: invalid state → Reset button click -----------
         await fill_valid(page, ["1000", "10", "900", "5"])
         # Corrupt total-lot to a non-integer to trigger aria-invalid + role=alert.
-        await set_value(page, "#total-lot-input", "10.5")
+        # Exceed MAX_LOT (1,000,000) to force aria-invalid=true + role=alert.
+        await set_value(page, "#total-lot-input", "9999999")
         await page.wait_for_timeout(200)
         s = await read_state(page)
         lot_state = next(i for i in s["inputs"] if i["id"] == "total-lot-input")
