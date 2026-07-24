@@ -561,15 +561,20 @@ export function Calculator() {
           toggleHistoryRef.current();
           return;
         }
-        if (code === "KeyM" || code === "Digit2") {
+        if (code === "KeyM") {
           e.preventDefault();
-          toggleModeRef.current();
+          // Toggle between the two modes
+          setModeRef.current(pickedModeRef.current === "new-avg" ? "lots-needed" : "new-avg");
           return;
         }
         if (code === "Digit1") {
           e.preventDefault();
-          // Switch to "new-avg" mode explicitly
-          toggleModeRef.current();
+          setModeRef.current("new-avg");
+          return;
+        }
+        if (code === "Digit2") {
+          e.preventDefault();
+          setModeRef.current("lots-needed");
           return;
         }
       }
