@@ -128,12 +128,14 @@ async def run() -> int:
         if lot_state["ariaInvalid"] != "true":
             errors.append(f"[invalid-setup] expected aria-invalid=true on total-lot, got {lot_state['ariaInvalid']!r}")
 
-        # Click the visible reset button (aria-label contains 'reset').
-        reset_btn = page.get_by_role("button", name=re.compile(r"reset", re.I)).first
-        await reset_btn.click()
+        # Trigger reset via Escape (documented alternate entry point — the
+        # visible Reset button is only mounted while the result card is
+        # present, and corrupting a field clears the card).
+        await page.evaluate("() => document.activeElement?.blur?.()")
+        await page.keyboard.press("Escape")
         await page.wait_for_timeout(300)
-        await page.screenshot(path=str(SHOTS / "3_after_reset_btn.png"))
-        await assert_pristine(page, "reset-button", errors)
+        await page.screenshot(path=str(SHOTS / "3_after_escape.png"))
+        await assert_pristine(page, "escape-reset", errors)
 
         # --- Scenario 3: no stale numbers after re-run ----------------
         await fill_valid(page, ["2000", "5", "1900", "3"])
