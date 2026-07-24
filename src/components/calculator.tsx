@@ -640,6 +640,7 @@ export function Calculator() {
   toggleThemeRef.current = toggleTheme;
   toggleFeeRef.current = () => setFeeOpen((o) => !o);
   toggleHistoryRef.current = () => setHistoryOpen((o) => !o);
+  setModeRef.current = (m) => selectMode(m);
 
   const shareLink = async () => {
     if (!result) return;
