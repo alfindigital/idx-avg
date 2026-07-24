@@ -561,6 +561,17 @@ export function Calculator() {
           toggleHistoryRef.current();
           return;
         }
+        if (code === "KeyM" || code === "Digit2") {
+          e.preventDefault();
+          toggleModeRef.current();
+          return;
+        }
+        if (code === "Digit1") {
+          e.preventDefault();
+          // Switch to "new-avg" mode explicitly
+          toggleModeRef.current();
+          return;
+        }
       }
 
       if (inInput) return;
