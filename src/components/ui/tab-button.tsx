@@ -1,26 +1,44 @@
 /**
- * Centralized tab-button styles used across the calculator.
+ * Centralized, accessible tab primitive used across the calculator.
  *
- * Rationale: font-size, line-height, tracking, height, and horizontal padding
- * for tab labels used to be inlined at every call-site. That made it easy to
- * drift between screens (e.g. one tab picker used `h-9`, another `h-10`, and
- * label wrapping bugs appeared only on 320px). Consolidating here guarantees:
- *   - one source of truth for tab typography + geometry
- *   - identical focus-visible ring across the app
- *   - single place to tune responsive breakpoints (xs → sm)
+ * WAI-ARIA "Tabs" pattern:
+ *   - Container is role="tablist"
+ *   - Each trigger is role="tab" with aria-selected and aria-controls
+ *   - Roving tabindex: only the selected tab is in the tab sequence (tabIndex=0),
+ *     inactive tabs get tabIndex=-1. Users Tab into the tablist once, then use
+ *     Arrow keys inside.
+ *   - Arrow Left/Right (Up/Down too) move focus between tabs and activate them
+ *     immediately (automatic-activation flavor — matches the existing Alt+1/Alt+2
+ *     shortcut behavior).
+ *   - Home / End jump to the first / last tab.
+ *   - Each panel is role="tabpanel", labelled by its tab, and focusable via
+ *     tabIndex=0 so its content is reachable with a single Tab press after the
+ *     tablist.
+ *
+ * Also owns the shared typography + geometry so tabs stay visually consistent.
  */
 
-import { forwardRef, type ButtonHTMLAttributes, type HTMLAttributes, type ReactNode } from "react";
+import {
+  createContext,
+  forwardRef,
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  type ButtonHTMLAttributes,
+  type HTMLAttributes,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type ReactNode,
+} from "react";
 import { cn } from "@/lib/utils";
 
-/** Container geometry — grid, gap, padding, ring. */
+// ------------------------------ style tokens ------------------------------
+
 export const tabListCls =
   "relative grid auto-cols-fr grid-flow-col gap-1 rounded-xl bg-card/70 p-1 ring-1 ring-border/60";
 
-/**
- * Sliding-indicator geometry. The parent must set --tab-count on the tablist
- * (default 2). `translate-x` is driven by `data-index` on the indicator.
- */
 export const tabIndicatorCls =
   "pointer-events-none absolute inset-y-1 left-1 rounded-lg bg-primary shadow-sm transition-transform duration-300 ease-out " +
   "w-[calc((100%-0.5rem)/var(--tab-count,2))] " +
@@ -28,17 +46,6 @@ export const tabIndicatorCls =
   "data-[index='1']:translate-x-[calc(100%+0.25rem)] " +
   "data-[index='2']:translate-x-[calc(200%+0.5rem)]";
 
-/**
- * Per-tab typography + geometry. Kept intentionally identical to the previous
- * inline string so this refactor is a pure move — no visual regressions.
- *
- * Responsive scale:
- *   - default (<=360px):  h-10, text-[10px], px-1.5, tracking-[0.04em]
- *   - xs (>=400px):       text-[11px], px-2, tracking-[0.06em]
- *   - sm (>=640px):       h-9,  text-xs,   px-3, tracking-wider
- *
- * `leading-none` + `whitespace-nowrap` keeps every label on a single line.
- */
 export const tabButtonCls =
   "relative z-10 inline-flex min-w-0 items-center justify-center whitespace-nowrap rounded-lg font-bold uppercase transition-colors " +
   "h-10 px-1.5 text-[10px] leading-none tracking-[0.04em] " +
@@ -49,8 +56,83 @@ export const tabButtonCls =
 export const tabButtonActiveCls = "text-primary-foreground";
 export const tabButtonInactiveCls = "text-muted-foreground hover:text-foreground";
 
+// ------------------------------ context ------------------------------
+
+type TabsCtx = {
+  /** Stable id prefix so tabs and panels can be paired without collisions. */
+  idBase: string;
+  /** Currently-selected value. */
+  value: string;
+  /** Move selection to `next`, focusing the newly-active tab. */
+  setValue: (next: string) => void;
+  /** Registry of tab values in DOM order — used for arrow / Home / End nav. */
+  register: (value: string, el: HTMLButtonElement | null) => void;
+};
+
+const TabsContext = createContext<TabsCtx | null>(null);
+
+function useTabs(component: string): TabsCtx {
+  const ctx = useContext(TabsContext);
+  if (!ctx) throw new Error(`${component} must be used inside <Tabs>`);
+  return ctx;
+}
+
+export function tabId(idBase: string, value: string) {
+  return `${idBase}-tab-${value}`;
+}
+export function panelId(idBase: string, value: string) {
+  return `${idBase}-panel-${value}`;
+}
+
+// ------------------------------ root ------------------------------
+
+export interface TabsProps {
+  value: string;
+  onValueChange: (next: string) => void;
+  /** Optional id base for stable tab/panel ids. Falls back to a generated id. */
+  id?: string;
+  children: ReactNode;
+}
+
+export function Tabs({ value, onValueChange, id, children }: TabsProps) {
+  const auto = useId();
+  const idBase = id ?? `tabs-${auto.replace(/[:]/g, "")}`;
+  // Ordered list of registered tab values, keyed by element for stable order.
+  const orderRef = useRef<{ value: string; el: HTMLButtonElement }[]>([]);
+
+  const register = useCallback((v: string, el: HTMLButtonElement | null) => {
+    const arr = orderRef.current;
+    const existing = arr.findIndex((x) => x.value === v);
+    if (!el) {
+      if (existing >= 0) arr.splice(existing, 1);
+      return;
+    }
+    if (existing >= 0) arr[existing] = { value: v, el };
+    else arr.push({ value: v, el });
+    // Keep DOM order stable — sort by document position.
+    arr.sort((a, b) =>
+      a.el.compareDocumentPosition(b.el) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1,
+    );
+  }, []);
+
+  const setValue = useCallback(
+    (next: string) => {
+      onValueChange(next);
+    },
+    [onValueChange],
+  );
+
+  const ctx = useMemo<TabsCtx>(
+    () => ({ idBase, value, setValue, register }),
+    [idBase, value, setValue, register],
+  );
+
+  return <TabsContext.Provider value={ctx}>{children}</TabsContext.Provider>;
+}
+
+// ------------------------------ list + indicator ------------------------------
+
 export interface TabListProps extends HTMLAttributes<HTMLDivElement> {
-  /** Number of tabs — sets the CSS var used by the sliding indicator width. */
   tabCount?: number;
   children: ReactNode;
 }
@@ -71,7 +153,6 @@ export const TabList = forwardRef<HTMLDivElement, TabListProps>(
 TabList.displayName = "TabList";
 
 export interface TabIndicatorProps extends HTMLAttributes<HTMLSpanElement> {
-  /** Zero-based index of the currently active tab. */
   activeIndex: number;
 }
 
@@ -79,22 +160,122 @@ export const TabIndicator = ({ activeIndex, className, ...rest }: TabIndicatorPr
   <span aria-hidden data-index={activeIndex} className={cn(tabIndicatorCls, className)} {...rest} />
 );
 
-export interface TabButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  active: boolean;
+// ------------------------------ trigger ------------------------------
+
+export interface TabButtonProps
+  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "value" | "role" | "aria-selected"> {
+  value: string;
 }
 
 export const TabButton = forwardRef<HTMLButtonElement, TabButtonProps>(
-  ({ active, className, type = "button", children, ...rest }, ref) => (
-    <button
-      ref={ref}
-      type={type}
-      role="tab"
-      aria-selected={active}
-      className={cn(tabButtonCls, active ? tabButtonActiveCls : tabButtonInactiveCls, className)}
-      {...rest}
-    >
-      {children}
-    </button>
-  ),
+  ({ value, className, type = "button", onClick, onKeyDown, children, ...rest }, ref) => {
+    const { idBase, value: current, setValue, register } = useTabs("TabButton");
+    const active = current === value;
+    const localRef = useRef<HTMLButtonElement | null>(null);
+
+    const setRefs = useCallback(
+      (el: HTMLButtonElement | null) => {
+        localRef.current = el;
+        register(value, el);
+        if (typeof ref === "function") ref(el);
+        else if (ref) (ref as { current: HTMLButtonElement | null }).current = el;
+      },
+      [ref, register, value],
+    );
+
+    // Deregister on unmount.
+    useEffect(() => () => register(value, null), [register, value]);
+
+    const handleKeyDown = (e: ReactKeyboardEvent<HTMLButtonElement>) => {
+      onKeyDown?.(e);
+      if (e.defaultPrevented) return;
+      const el = e.currentTarget;
+      const parent = el.closest('[role="tablist"]');
+      if (!parent) return;
+      const tabs = Array.from(
+        parent.querySelectorAll<HTMLButtonElement>('[role="tab"]:not([disabled])'),
+      );
+      if (tabs.length === 0) return;
+      const i = tabs.indexOf(el);
+      let target: HTMLButtonElement | null = null;
+      switch (e.key) {
+        case "ArrowRight":
+        case "ArrowDown":
+          target = tabs[(i + 1) % tabs.length];
+          break;
+        case "ArrowLeft":
+        case "ArrowUp":
+          target = tabs[(i - 1 + tabs.length) % tabs.length];
+          break;
+        case "Home":
+          target = tabs[0];
+          break;
+        case "End":
+          target = tabs[tabs.length - 1];
+          break;
+        default:
+          return;
+      }
+      if (!target) return;
+      e.preventDefault();
+      const nextValue = target.getAttribute("data-tab-value");
+      if (nextValue) setValue(nextValue);
+      target.focus();
+    };
+
+    return (
+      <button
+        ref={setRefs}
+        type={type}
+        role="tab"
+        id={tabId(idBase, value)}
+        data-tab-value={value}
+        aria-selected={active}
+        aria-controls={panelId(idBase, value)}
+        tabIndex={active ? 0 : -1}
+        onClick={(e) => {
+          onClick?.(e);
+          if (e.defaultPrevented) return;
+          setValue(value);
+        }}
+        onKeyDown={handleKeyDown}
+        className={cn(tabButtonCls, active ? tabButtonActiveCls : tabButtonInactiveCls, className)}
+        {...rest}
+      >
+        {children}
+      </button>
+    );
+  },
 );
 TabButton.displayName = "TabButton";
+
+// ------------------------------ panel ------------------------------
+
+export interface TabPanelProps extends HTMLAttributes<HTMLDivElement> {
+  value: string;
+  /** When false, the panel is hidden but kept mounted. Default: unmount. */
+  keepMounted?: boolean;
+}
+
+export const TabPanel = forwardRef<HTMLDivElement, TabPanelProps>(
+  ({ value, keepMounted = false, className, children, ...rest }, ref) => {
+    const { idBase, value: current } = useTabs("TabPanel");
+    const active = current === value;
+    if (!active && !keepMounted) return null;
+    return (
+      <div
+        ref={ref}
+        role="tabpanel"
+        id={panelId(idBase, value)}
+        aria-labelledby={tabId(idBase, value)}
+        hidden={!active}
+        tabIndex={0}
+        className={cn("focus-visible:outline-none", className)}
+        {...rest}
+      >
+        {children}
+      </div>
+    );
+  },
+);
+TabPanel.displayName = "TabPanel";
