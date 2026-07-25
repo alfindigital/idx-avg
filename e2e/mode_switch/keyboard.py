@@ -265,32 +265,31 @@ async def main() -> int:
         else:
             notes.append("[lots-needed-calc] aria-live updated with new announcement")
 
-        # ── Switch back to new-avg via keyboard: Tab to tablist and Space on the first tab ──
+        # ── Switch back to new-avg via keyboard ──
+        # Tab lands on the selected tab (roving tabindex). Use ArrowLeft to
+        # move focus to and activate the sibling tab.
         await page.locator("#avg-now-input").focus()
         steps2 = await tab_until_role_tab(page)
         if steps2 < 0:
             failures.append("[back-to-new-avg] could not reach role=tab again")
         info3 = await focused_role_selected(page)
-        # Currently active tab is "Target Avg" (selected). We need to move to
-        # the FIRST tab (Lot Tambah). Since focus lands on the selected tab,
-        # walk backwards with Shift+Tab until we hit the other role=tab.
-        if info3.get("selected") == "true":
-            await page.keyboard.press("Shift+Tab")
-            back_info = await focused_role_selected(page)
-            if back_info.get("role") != "tab" or back_info.get("selected") != "false":
-                failures.append(
-                    f"[back-to-new-avg] Shift+Tab did not land on inactive tab (role={back_info.get('role')}, selected={back_info.get('selected')})"
-                )
-            else:
-                await press_and_settle(page, "Space")
-        else:
-            # First reached tab is the inactive one already.
-            await press_and_settle(page, "Space")
+        if info3.get("selected") != "true":
+            failures.append(
+                f"[back-to-new-avg] first reached tab not aria-selected (got {info3.get('selected')})"
+            )
+        await page.keyboard.press("ArrowLeft")
+        await page.wait_for_timeout(50)
+        back_info = await focused_role_selected(page)
+        if back_info.get("role") != "tab" or back_info.get("selected") != "true":
+            failures.append(
+                f"[back-to-new-avg] ArrowLeft did not activate sibling tab (role={back_info.get('role')}, selected={back_info.get('selected')})"
+            )
 
+        await page.wait_for_timeout(60)
         after_focus2 = await focused_id(page)
         if after_focus2 != "lot-tambah-input":
             failures.append(
-                f"[back-to-new-avg] focus after Space = '{after_focus2}' (expected 'lot-tambah-input')"
+                f"[back-to-new-avg] focus after ArrowLeft = '{after_focus2}' (expected 'lot-tambah-input')"
             )
         else:
             notes.append("[back-to-new-avg] focus landed on #lot-tambah-input")
