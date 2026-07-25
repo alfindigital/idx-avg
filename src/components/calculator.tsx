@@ -36,6 +36,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
+import { TabList, TabIndicator, TabButton } from "@/components/ui/tab-button";
 
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -1157,18 +1158,8 @@ export function Calculator() {
                 </div>
 
                 {/* Mode picker — these two calculations are mutually exclusive */}
-                <div
-                  role="tablist"
-                  aria-label={t.averagingTip}
-                  className="relative grid grid-cols-2 gap-1 rounded-xl bg-card/70 p-1 ring-1 ring-border/60"
-                >
-                  <span
-                    aria-hidden
-                    className={cn(
-                      "pointer-events-none absolute inset-y-1 left-1 w-[calc(50%-0.25rem)] rounded-lg bg-primary shadow-sm transition-transform duration-300 ease-out",
-                      pickedMode === "lots-needed" && "translate-x-[calc(100%+0.25rem)]",
-                    )}
-                  />
+                <TabList tabCount={2} aria-label={t.averagingTip}>
+                  <TabIndicator activeIndex={pickedMode === "lots-needed" ? 1 : 0} />
                   {(
                     [
                       { key: "new-avg" as const, label: t.lotTambah },
@@ -1177,23 +1168,17 @@ export function Calculator() {
                   ).map((opt) => {
                     const active = pickedMode === opt.key;
                     return (
-                      <button
+                      <TabButton
                         key={opt.key}
-                        type="button"
-                        role="tab"
-                        aria-selected={active}
+                        active={active}
                         onClick={() => selectMode(opt.key)}
                         title={opt.key === "new-avg" ? "Alt+1" : "Alt+2"}
-                        className={cn(
-                          "relative z-10 inline-flex h-10 min-w-0 items-center justify-center whitespace-nowrap rounded-lg px-1.5 text-[10px] leading-none font-bold uppercase tracking-[0.04em] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background xs:px-2 xs:text-[11px] xs:tracking-[0.06em] sm:h-9 sm:px-3 sm:text-xs sm:tracking-wider",
-                          active ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground",
-                        )}
                       >
                         {opt.label}
-                      </button>
+                      </TabButton>
                     );
                   })}
-                </div>
+                </TabList>
                 {pickedMode === "new-avg" ? (
                   <div>
                     <Label htmlFor="lot-tambah-input" className={labelCls}>
