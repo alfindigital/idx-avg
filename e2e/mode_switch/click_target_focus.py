@@ -36,9 +36,9 @@ async def check_viewport(page: Page, width: int) -> list[str]:
     await page.wait_for_timeout(150)
 
     # Ensure we start from the new-avg mode.
-    add_tab = page.get_by_role("tab", name=re.compile(r"lot\s*tambah|add", re.I)).first
+    add_tab = page.get_by_role("tab", name=re.compile(r"lot\s*tambah|add\s*lot", re.I)).first
     await add_tab.click()
-    await page.wait_for_timeout(120)
+    await page.wait_for_timeout(200)
 
     # No target input yet.
     if await page.locator("#target-avg-input").count() != 0:
@@ -46,6 +46,7 @@ async def check_viewport(page: Page, width: int) -> list[str]:
 
     # Click "Target Rata-rata" tab.
     target_tab = page.get_by_role("tab", name=re.compile(r"target", re.I)).first
+    await target_tab.scroll_into_view_if_needed()
     await target_tab.click()
     await page.wait_for_timeout(250)
 
