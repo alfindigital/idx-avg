@@ -171,25 +171,28 @@ async def main() -> int:
         else:
             notes.append(f"[tab-nav] active tab is '{first_tab_label}' (aria-selected=true)")
 
-        # Move to the sibling (inactive) tab via Tab, verify it's the other role=tab.
-        await page.keyboard.press("Tab")
-        info2 = await focused_role_selected(page)
-        if info2.get("role") != "tab":
-            failures.append(f"[tab-nav] second Tab did not land on a tab (got role='{info2.get('role')}')")
-        elif info2.get("selected") != "false":
-            failures.append(
-                f"[tab-nav] sibling tab aria-selected='{info2.get('selected')}' (expected 'false')"
-            )
-        else:
-            notes.append(f"[tab-nav] sibling inactive tab focusable: '{info2.get('text','')}'")
+        # Activate the sibling tab via ArrowRight — per WAI-ARIA tabs pattern
+        # with roving tabindex, Tab exits the tablist while arrow keys move
+        # between tabs. Automatic activation flips aria-selected; the app's
+        # selectMode() then routes focus to the mode's input on the next frame.
+        await page.keyboard.press("ArrowRight")
+        await page.wait_for_timeout(120)
 
-        # ── Activate lots-needed via Space ──
-        await press_and_settle(page, "Space")
-        # Component moves focus to #target-avg-input via rAF.
+        # Sibling tab should now be aria-selected.
+        sel_tabs = await page.evaluate(
+            """() => Array.from(document.querySelectorAll('[role="tab"]'))
+                 .map(t => ({label:(t.textContent||'').trim(), sel:t.getAttribute('aria-selected')}))"""
+        )
+        active_after_arrow = [t for t in sel_tabs if t["sel"] == "true"]
+        if len(active_after_arrow) != 1 or not re.search(r"target|avg", active_after_arrow[0]["label"], re.I):
+            failures.append(f"[tab-nav] ArrowRight did not activate sibling tab: {sel_tabs}")
+        else:
+            notes.append(f"[tab-nav] ArrowRight activated: '{active_after_arrow[0]['label']}'")
+
         after_focus = await focused_id(page)
         if after_focus != "target-avg-input":
             failures.append(
-                f"[activate-lots-needed] focus after Space = '{after_focus}' (expected 'target-avg-input')"
+                f"[activate-lots-needed] focus after ArrowRight = '{after_focus}' (expected 'target-avg-input')"
             )
         else:
             notes.append("[activate-lots-needed] focus landed on #target-avg-input")
@@ -262,32 +265,33 @@ async def main() -> int:
         else:
             notes.append("[lots-needed-calc] aria-live updated with new announcement")
 
-        # ── Switch back to new-avg via keyboard: Tab to tablist and Space on the first tab ──
+        # ── Switch back to new-avg via keyboard ──
+        # Tab lands on the selected tab (roving tabindex). Use ArrowLeft to
+        # activate the sibling tab; focus then routes to its mode's input.
         await page.locator("#avg-now-input").focus()
         steps2 = await tab_until_role_tab(page)
         if steps2 < 0:
             failures.append("[back-to-new-avg] could not reach role=tab again")
         info3 = await focused_role_selected(page)
-        # Currently active tab is "Target Avg" (selected). We need to move to
-        # the FIRST tab (Lot Tambah). Since focus lands on the selected tab,
-        # walk backwards with Shift+Tab until we hit the other role=tab.
-        if info3.get("selected") == "true":
-            await page.keyboard.press("Shift+Tab")
-            back_info = await focused_role_selected(page)
-            if back_info.get("role") != "tab" or back_info.get("selected") != "false":
-                failures.append(
-                    f"[back-to-new-avg] Shift+Tab did not land on inactive tab (role={back_info.get('role')}, selected={back_info.get('selected')})"
-                )
-            else:
-                await press_and_settle(page, "Space")
-        else:
-            # First reached tab is the inactive one already.
-            await press_and_settle(page, "Space")
+        if info3.get("selected") != "true":
+            failures.append(
+                f"[back-to-new-avg] first reached tab not aria-selected (got {info3.get('selected')})"
+            )
+        await page.keyboard.press("ArrowLeft")
+        await page.wait_for_timeout(120)
+
+        sel_tabs2 = await page.evaluate(
+            """() => Array.from(document.querySelectorAll('[role="tab"]'))
+                 .map(t => ({label:(t.textContent||'').trim(), sel:t.getAttribute('aria-selected')}))"""
+        )
+        active_after_arrow2 = [t for t in sel_tabs2 if t["sel"] == "true"]
+        if len(active_after_arrow2) != 1 or not re.search(r"lot|add", active_after_arrow2[0]["label"], re.I):
+            failures.append(f"[back-to-new-avg] ArrowLeft did not activate sibling tab: {sel_tabs2}")
 
         after_focus2 = await focused_id(page)
         if after_focus2 != "lot-tambah-input":
             failures.append(
-                f"[back-to-new-avg] focus after Space = '{after_focus2}' (expected 'lot-tambah-input')"
+                f"[back-to-new-avg] focus after ArrowLeft = '{after_focus2}' (expected 'lot-tambah-input')"
             )
         else:
             notes.append("[back-to-new-avg] focus landed on #lot-tambah-input")

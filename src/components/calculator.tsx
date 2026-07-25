@@ -36,7 +36,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
-import { TabList, TabIndicator, TabButton } from "@/components/ui/tab-button";
+import { Tabs, TabList, TabIndicator, TabButton, TabPanel } from "@/components/ui/tab-button";
 
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -1158,29 +1158,17 @@ export function Calculator() {
                 </div>
 
                 {/* Mode picker — these two calculations are mutually exclusive */}
-                <TabList tabCount={2} aria-label={t.averagingTip}>
-                  <TabIndicator activeIndex={pickedMode === "lots-needed" ? 1 : 0} />
-                  {(
-                    [
-                      { key: "new-avg" as const, label: t.lotTambah },
-                      { key: "lots-needed" as const, label: t.targetAvg.replace(/\s*\(Rp\)\s*$/, "") },
-                    ]
-                  ).map((opt) => {
-                    const active = pickedMode === opt.key;
-                    return (
-                      <TabButton
-                        key={opt.key}
-                        active={active}
-                        onClick={() => selectMode(opt.key)}
-                        title={opt.key === "new-avg" ? "Alt+1" : "Alt+2"}
-                      >
-                        {opt.label}
-                      </TabButton>
-                    );
-                  })}
-                </TabList>
-                {pickedMode === "new-avg" ? (
-                  <div>
+                <Tabs value={pickedMode} onValueChange={(v) => selectMode(v as CalcMode)} id="calc-mode">
+                  <TabList tabCount={2} aria-label={t.averagingTip}>
+                    <TabIndicator activeIndex={pickedMode === "lots-needed" ? 1 : 0} />
+                    <TabButton value="new-avg" title="Alt+1">
+                      {t.lotTambah}
+                    </TabButton>
+                    <TabButton value="lots-needed" title="Alt+2">
+                      {t.targetAvg.replace(/\s*\(Rp\)\s*$/, "")}
+                    </TabButton>
+                  </TabList>
+                  <TabPanel value="new-avg">
                     <Label htmlFor="lot-tambah-input" className={labelCls}>
                       {t.lotTambah}
                     </Label>
@@ -1209,9 +1197,8 @@ export function Calculator() {
                     >
                       {errLotTambah ?? ""}
                     </p>
-                  </div>
-                ) : (
-                  <div>
+                  </TabPanel>
+                  <TabPanel value="lots-needed">
                     <Label htmlFor="target-avg-input" className={labelCls}>
                       {t.targetAvg}
                     </Label>
@@ -1241,8 +1228,8 @@ export function Calculator() {
                     >
                       {errTarget ?? ""}
                     </p>
-                  </div>
-                )}
+                  </TabPanel>
+                </Tabs>
               </div>
             </section>
 
