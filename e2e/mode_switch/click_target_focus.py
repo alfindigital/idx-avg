@@ -80,17 +80,20 @@ async def check_viewport(page: Page, width: int) -> list[str]:
             f"[{width}px] horizontal overflow scrollWidth={overflow['scroll']} > clientWidth={overflow['client']}"
         )
 
-    # Tab labels single-line.
+    # Tab labels single-line — measure actual text bounding rect via Range.
     tab_metrics = await page.evaluate(
         """() => {
             const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
             return tabs.map(t => {
                 const cs = getComputedStyle(t);
-                const lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.2;
+                const range = document.createRange();
+                range.selectNodeContents(t);
+                const rect = range.getBoundingClientRect();
+                const fs = parseFloat(cs.fontSize) || 12;
                 return {
                     text: (t.textContent || '').trim(),
-                    height: t.offsetHeight,
-                    lineHeight: lh,
+                    textHeight: rect.height,
+                    fontSize: fs,
                     whiteSpace: cs.whiteSpace,
                     scrollW: t.scrollWidth,
                     clientW: t.clientWidth,
@@ -99,10 +102,10 @@ async def check_viewport(page: Page, width: int) -> list[str]:
         }"""
     )
     for m in tab_metrics:
-        # Heuristic: tab wraps if content height exceeds ~1.6x line-height.
-        if m["lineHeight"] and m["height"] > m["lineHeight"] * 1.9:
+        # If text bounding rect height exceeds ~1.7x fontSize, it wrapped.
+        if m["textHeight"] > m["fontSize"] * 1.7:
             fails.append(
-                f"[{width}px] tab {m['text']!r} looks wrapped: h={m['height']} lh={m['lineHeight']}"
+                f"[{width}px] tab {m['text']!r} wrapped: textH={m['textHeight']} fs={m['fontSize']}"
             )
         if m["scrollW"] > m["clientW"] + 1:
             fails.append(
