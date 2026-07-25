@@ -171,24 +171,24 @@ async def main() -> int:
         else:
             notes.append(f"[tab-nav] active tab is '{first_tab_label}' (aria-selected=true)")
 
-        # Move to the sibling (inactive) tab via ArrowRight — per WAI-ARIA
-        # tabs pattern with roving tabindex, Tab exits the tablist while
-        # arrow keys navigate between tabs and activate them.
+        # Activate the sibling tab via ArrowRight — per WAI-ARIA tabs pattern
+        # with roving tabindex, Tab exits the tablist while arrow keys move
+        # between tabs. Automatic activation flips aria-selected; the app's
+        # selectMode() then routes focus to the mode's input on the next frame.
         await page.keyboard.press("ArrowRight")
-        await page.wait_for_timeout(50)
-        info2 = await focused_role_selected(page)
-        if info2.get("role") != "tab":
-            failures.append(f"[tab-nav] ArrowRight did not land on a tab (got role='{info2.get('role')}')")
-        elif info2.get("selected") != "true":
-            # Automatic-activation flavor: arrow both moves focus and activates.
-            failures.append(
-                f"[tab-nav] sibling tab aria-selected='{info2.get('selected')}' (expected 'true' after arrow activation)"
-            )
-        else:
-            notes.append(f"[tab-nav] ArrowRight activated sibling tab: '{info2.get('text','')}'")
+        await page.wait_for_timeout(120)
 
-        # ── Focus routed to the lots-needed input via selectMode() rAF ──
-        await page.wait_for_timeout(60)
+        # Sibling tab should now be aria-selected.
+        sel_tabs = await page.evaluate(
+            """() => Array.from(document.querySelectorAll('[role="tab"]'))
+                 .map(t => ({label:(t.textContent||'').trim(), sel:t.getAttribute('aria-selected')}))"""
+        )
+        active_after_arrow = [t for t in sel_tabs if t["sel"] == "true"]
+        if len(active_after_arrow) != 1 or not re.search(r"target|avg", active_after_arrow[0]["label"], re.I):
+            failures.append(f"[tab-nav] ArrowRight did not activate sibling tab: {sel_tabs}")
+        else:
+            notes.append(f"[tab-nav] ArrowRight activated: '{active_after_arrow[0]['label']}'")
+
         after_focus = await focused_id(page)
         if after_focus != "target-avg-input":
             failures.append(
