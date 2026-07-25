@@ -267,7 +267,7 @@ async def main() -> int:
 
         # ── Switch back to new-avg via keyboard ──
         # Tab lands on the selected tab (roving tabindex). Use ArrowLeft to
-        # move focus to and activate the sibling tab.
+        # activate the sibling tab; focus then routes to its mode's input.
         await page.locator("#avg-now-input").focus()
         steps2 = await tab_until_role_tab(page)
         if steps2 < 0:
@@ -278,14 +278,16 @@ async def main() -> int:
                 f"[back-to-new-avg] first reached tab not aria-selected (got {info3.get('selected')})"
             )
         await page.keyboard.press("ArrowLeft")
-        await page.wait_for_timeout(50)
-        back_info = await focused_role_selected(page)
-        if back_info.get("role") != "tab" or back_info.get("selected") != "true":
-            failures.append(
-                f"[back-to-new-avg] ArrowLeft did not activate sibling tab (role={back_info.get('role')}, selected={back_info.get('selected')})"
-            )
+        await page.wait_for_timeout(120)
 
-        await page.wait_for_timeout(60)
+        sel_tabs2 = await page.evaluate(
+            """() => Array.from(document.querySelectorAll('[role="tab"]'))
+                 .map(t => ({label:(t.textContent||'').trim(), sel:t.getAttribute('aria-selected')}))"""
+        )
+        active_after_arrow2 = [t for t in sel_tabs2 if t["sel"] == "true"]
+        if len(active_after_arrow2) != 1 or not re.search(r"lot|add", active_after_arrow2[0]["label"], re.I):
+            failures.append(f"[back-to-new-avg] ArrowLeft did not activate sibling tab: {sel_tabs2}")
+
         after_focus2 = await focused_id(page)
         if after_focus2 != "lot-tambah-input":
             failures.append(
