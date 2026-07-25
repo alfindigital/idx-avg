@@ -36,7 +36,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
-import { TabList, TabIndicator, TabButton } from "@/components/ui/tab-button";
+import { Tabs, TabList, TabIndicator, TabButton, TabPanel } from "@/components/ui/tab-button";
 
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
