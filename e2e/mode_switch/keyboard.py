@@ -171,25 +171,28 @@ async def main() -> int:
         else:
             notes.append(f"[tab-nav] active tab is '{first_tab_label}' (aria-selected=true)")
 
-        # Move to the sibling (inactive) tab via Tab, verify it's the other role=tab.
-        await page.keyboard.press("Tab")
+        # Move to the sibling (inactive) tab via ArrowRight — per WAI-ARIA
+        # tabs pattern with roving tabindex, Tab exits the tablist while
+        # arrow keys navigate between tabs and activate them.
+        await page.keyboard.press("ArrowRight")
+        await page.wait_for_timeout(50)
         info2 = await focused_role_selected(page)
         if info2.get("role") != "tab":
-            failures.append(f"[tab-nav] second Tab did not land on a tab (got role='{info2.get('role')}')")
-        elif info2.get("selected") != "false":
+            failures.append(f"[tab-nav] ArrowRight did not land on a tab (got role='{info2.get('role')}')")
+        elif info2.get("selected") != "true":
+            # Automatic-activation flavor: arrow both moves focus and activates.
             failures.append(
-                f"[tab-nav] sibling tab aria-selected='{info2.get('selected')}' (expected 'false')"
+                f"[tab-nav] sibling tab aria-selected='{info2.get('selected')}' (expected 'true' after arrow activation)"
             )
         else:
-            notes.append(f"[tab-nav] sibling inactive tab focusable: '{info2.get('text','')}'")
+            notes.append(f"[tab-nav] ArrowRight activated sibling tab: '{info2.get('text','')}'")
 
-        # ── Activate lots-needed via Space ──
-        await press_and_settle(page, "Space")
-        # Component moves focus to #target-avg-input via rAF.
+        # ── Focus routed to the lots-needed input via selectMode() rAF ──
+        await page.wait_for_timeout(60)
         after_focus = await focused_id(page)
         if after_focus != "target-avg-input":
             failures.append(
-                f"[activate-lots-needed] focus after Space = '{after_focus}' (expected 'target-avg-input')"
+                f"[activate-lots-needed] focus after ArrowRight = '{after_focus}' (expected 'target-avg-input')"
             )
         else:
             notes.append("[activate-lots-needed] focus landed on #target-avg-input")
