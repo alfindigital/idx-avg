@@ -1321,6 +1321,24 @@ export function Calculator() {
                   data-result-card
                   className="overflow-hidden rounded-3xl border border-white/70 bg-card shadow-sm dark:border-white/5"
                 >
+                  <p className="sr-only">
+                    {t.resultSummaryLabel}.{" "}
+                    {result.status === "down"
+                      ? t.averagingDown
+                      : result.status === "up"
+                      ? t.averagingUp
+                      : t.averagingFlat}{" "}
+                    {result.percentage.toFixed(2)}%.{" "}
+                    {result.mode === "new-avg" ? t.avgBaru : t.lotDiperlukan}:{" "}
+                    {result.mode === "new-avg"
+                      ? formatRupiah(result.newAvgPrice)
+                      : `${result.lotDelta} ${t.lotBaru.toLowerCase()}`}
+                    . {t.avgSekarangRow}: {formatRupiah(result.avgSekarang)}.{" "}
+                    {t.hargaAveragingRow}: {formatRupiah(result.hargaAveraging)}.{" "}
+                    {t.lotBaru}: {result.totalLotBaru.toLocaleString("id-ID")} (+
+                    {result.lotDelta.toLocaleString("id-ID")}). {t.totalModal}:{" "}
+                    {formatRupiah(result.totalModal)}.
+                  </p>
                   <div className="bg-primary/10 px-4 pt-4 pb-3">
                     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
                       <div className="min-w-0">
