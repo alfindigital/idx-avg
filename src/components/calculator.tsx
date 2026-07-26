@@ -89,6 +89,12 @@ function validateLot(v: string, t: Dict): string | null {
 }
 
 const intOnly = (v: string) => v.replace(/[^\d]/g, "");
+// Keeps digits + a single decimal point (normalizes "," → ".").
+const decOnly = (v: string) => {
+  const s = v.replace(/,/g, ".").replace(/[^\d.]/g, "");
+  const i = s.indexOf(".");
+  return i === -1 ? s : s.slice(0, i + 1) + s.slice(i + 1).replace(/\./g, "");
+};
 // IDX prices are always whole Rupiah (no fractional ticks), so we strip
 // everything except ASCII digits. This normalizes pasted strings like
 // "Rp 1.500", "12,500", "12 500", or "1500.5" into plain integers instead
