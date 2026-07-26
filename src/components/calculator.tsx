@@ -1073,7 +1073,7 @@ export function Calculator() {
                     onBlur={(e) => handlePriceBlur(e.target.value, setAvgPrice)}
                     placeholder="0"
                     aria-invalid={!!errAvg}
-                    aria-describedby={errAvg ? "avg-now-error" : undefined}
+                    aria-describedby={"avg-now-error"}
                     className={cn(
                       inputCls,
                       "tabular",
@@ -1104,7 +1104,7 @@ export function Calculator() {
                     onChange={(e) => setTotalLot(intOnly(e.target.value))}
                     placeholder="0"
                     aria-invalid={!!errLot}
-                    aria-describedby={errLot ? "total-lot-error" : undefined}
+                    aria-describedby={"total-lot-error"}
                     className={cn(
                       inputCls,
                       "tabular",
@@ -1174,7 +1174,7 @@ export function Calculator() {
                     onBlur={(e) => handlePriceBlur(e.target.value, setHargaAvg)}
                     placeholder="0"
                     aria-invalid={!!errHarga}
-                    aria-describedby={errHarga ? "harga-avg-error" : undefined}
+                    aria-describedby={"harga-avg-error"}
                     className={cn(
                       inputCls,
                       "tabular",
@@ -1217,7 +1217,7 @@ export function Calculator() {
                       onChange={(e) => setLotTambah(intOnly(e.target.value))}
                       placeholder="0"
                       aria-invalid={!!errLotTambah}
-                      aria-describedby={errLotTambah ? "lot-tambah-error" : undefined}
+                      aria-describedby={"lot-tambah-error"}
                       className={cn(
                         inputCls,
                         "tabular",
@@ -1248,7 +1248,7 @@ export function Calculator() {
                       onBlur={(e) => handlePriceBlur(e.target.value, setTargetAvg)}
                       placeholder="0"
                       aria-invalid={!!errTarget}
-                      aria-describedby={errTarget ? "target-avg-error" : undefined}
+                      aria-describedby={"target-avg-error"}
                       className={cn(
                         inputCls,
                         "tabular",
@@ -1298,7 +1298,7 @@ export function Calculator() {
                           inputMode="decimal"
                           value={String(fee.buyPct)}
                           onChange={(e) => {
-                            const v = numOnly(e.target.value);
+                            const v = decOnly(e.target.value);
                             const n = v === "" ? 0 : parseFloat(v) || 0;
                             setFee((f) => ({ ...f, buyPct: Math.min(5, Math.max(0, n)) }));
                           }}
@@ -1314,7 +1314,7 @@ export function Calculator() {
                           inputMode="decimal"
                           value={String(fee.sellPct)}
                           onChange={(e) => {
-                            const v = numOnly(e.target.value);
+                            const v = decOnly(e.target.value);
                             const n = v === "" ? 0 : parseFloat(v) || 0;
                             setFee((f) => ({ ...f, sellPct: Math.min(5, Math.max(0, n)) }));
                           }}
