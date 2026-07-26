@@ -192,15 +192,19 @@ export function Calculator() {
   // Announce result summary to screen readers when it appears/changes.
   useEffect(() => {
     if (!result) return;
-    const dirWord =
-      result.status === "down" ? t.turun : result.status === "up" ? t.naik : t.flat;
+    const trend =
+      result.status === "down"
+        ? t.averagingDown
+        : result.status === "up"
+        ? t.averagingUp
+        : t.averagingFlat;
     const head = result.mode === "new-avg" ? t.avgBaru : t.lotDiperlukan;
     const headValue =
       result.mode === "new-avg"
         ? formatRupiah(result.newAvgPrice)
         : `${result.lotDelta} ${t.lotBaru.toLowerCase()}`;
     setAnnounce(
-      `${head}: ${headValue}. ${dirWord} ${result.percentage.toFixed(2)}%. ${t.totalModal}: ${formatRupiah(result.totalModal)}.`,
+      `${t.resultSummaryLabel}. ${trend} ${result.percentage.toFixed(2)}%. ${head}: ${headValue}. ${t.totalModal}: ${formatRupiah(result.totalModal)}.`,
     );
   }, [result, t]);
 
