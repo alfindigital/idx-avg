@@ -115,7 +115,7 @@ async def main() -> int:
 
         # 3. Switch mode → result clears; recompute in lots-needed.
         # target=1800 with avg=2000, lot=10 → needs extra lots to reach 1800.
-        await page.locator('[role="tab"][value="lots-needed"]').click()
+        await page.locator('[role="tab"][data-tab-value="lots-needed"]').click()
         await page.wait_for_timeout(200)
         if await page.locator(CARD_SEL).count() != 0:
             # mode switch doesn't strictly clear if inputs unchanged; that's OK
