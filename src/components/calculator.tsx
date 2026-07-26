@@ -950,37 +950,54 @@ export function Calculator() {
                     </p>
                   ) : (
                     history.map((h) => (
-                      <button
+                      <div
                         key={h.id}
-                        onClick={() => loadHistory(h)}
-                        className="w-full rounded-2xl border border-border bg-secondary/40 p-3 text-left transition-colors hover:border-primary/40 hover:bg-accent"
+                        className="group relative rounded-2xl border border-border bg-secondary/40 transition-colors hover:border-primary/40 hover:bg-accent focus-within:border-primary/60"
                       >
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="font-display text-sm font-bold tabular text-foreground">
-                            {formatRupiah(h.avgSekarang)} → {formatRupiah(h.newAvgPrice)}
-                          </span>
-                          <span className="text-xs font-medium text-muted-foreground">
-                            {new Date(h.timestamp).toLocaleDateString(
-                              lang === "id" ? "id-ID" : "en-US",
-                            )}
-                          </span>
-                        </div>
-                        <div className="mt-1 flex items-center justify-between text-xs font-medium text-muted-foreground tabular">
-                          <span>
-                            {h.lotSekarang} → {h.totalLotBaru} lot
-                          </span>
-                          <span
-                            className={cn(
-                              "font-bold tabular",
-                              h.status === "down" && "text-destructive-strong",
-                              h.status === "up" && "text-success-strong",
-                            )}
-                          >
-                            {h.status === "down" ? "↓" : h.status === "up" ? "↑" : "→"}{" "}
-                            {h.percentage.toFixed(2)}%
-                          </span>
-                        </div>
-                      </button>
+                        <button
+                          onClick={() => loadHistory(h)}
+                          className="w-full rounded-2xl p-3 pr-11 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                        >
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="font-display text-sm font-bold tabular text-foreground">
+                              {formatRupiah(h.avgSekarang)} → {formatRupiah(h.newAvgPrice)}
+                            </span>
+                            <span className="text-xs font-medium text-muted-foreground">
+                              {new Date(h.timestamp).toLocaleDateString(
+                                lang === "id" ? "id-ID" : "en-US",
+                              )}
+                            </span>
+                          </div>
+                          <div className="mt-1 flex items-center justify-between text-xs font-medium text-muted-foreground tabular">
+                            <span>
+                              {h.lotSekarang} → {h.totalLotBaru} lot
+                            </span>
+                            <span
+                              className={cn(
+                                "font-bold tabular",
+                                h.status === "down" && "text-destructive-strong",
+                                h.status === "up" && "text-success-strong",
+                              )}
+                            >
+                              {h.status === "down" ? "↓" : h.status === "up" ? "↑" : "→"}{" "}
+                              {h.percentage.toFixed(2)}%
+                            </span>
+                          </div>
+                        </button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            copyResult(h);
+                          }}
+                          aria-label={`${t.copy}: ${formatRupiah(h.newAvgPrice)}`}
+                          title={t.copy}
+                          className="absolute right-1.5 top-1/2 h-8 w-8 -translate-y-1/2 rounded-lg text-muted-foreground hover:bg-primary/10 hover:text-primary"
+                        >
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                      </div>
                     ))
                   )}
                 </div>
