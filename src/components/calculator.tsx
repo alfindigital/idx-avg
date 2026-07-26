@@ -419,7 +419,7 @@ export function Calculator() {
 
 
   const saveHistory = (r: CalcResult) => {
-    const next = [r, ...history].slice(0, 20);
+    const next = [r, ...history].slice(0, 10);
     setHistory(next);
     try {
       localStorage.setItem(HISTORY_KEY, JSON.stringify(next));
