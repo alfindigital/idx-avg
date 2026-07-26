@@ -192,15 +192,19 @@ export function Calculator() {
   // Announce result summary to screen readers when it appears/changes.
   useEffect(() => {
     if (!result) return;
-    const dirWord =
-      result.status === "down" ? t.turun : result.status === "up" ? t.naik : t.flat;
+    const trend =
+      result.status === "down"
+        ? t.averagingDown
+        : result.status === "up"
+        ? t.averagingUp
+        : t.averagingFlat;
     const head = result.mode === "new-avg" ? t.avgBaru : t.lotDiperlukan;
     const headValue =
       result.mode === "new-avg"
         ? formatRupiah(result.newAvgPrice)
         : `${result.lotDelta} ${t.lotBaru.toLowerCase()}`;
     setAnnounce(
-      `${head}: ${headValue}. ${dirWord} ${result.percentage.toFixed(2)}%. ${t.totalModal}: ${formatRupiah(result.totalModal)}.`,
+      `${t.resultSummaryLabel}. ${trend} ${result.percentage.toFixed(2)}%. ${head}: ${headValue}. ${t.totalModal}: ${formatRupiah(result.totalModal)}.`,
     );
   }, [result, t]);
 
@@ -1317,6 +1321,24 @@ export function Calculator() {
                   data-result-card
                   className="overflow-hidden rounded-3xl border border-white/70 bg-card shadow-sm dark:border-white/5"
                 >
+                  <p className="sr-only">
+                    {t.resultSummaryLabel}.{" "}
+                    {result.status === "down"
+                      ? t.averagingDown
+                      : result.status === "up"
+                      ? t.averagingUp
+                      : t.averagingFlat}{" "}
+                    {result.percentage.toFixed(2)}%.{" "}
+                    {result.mode === "new-avg" ? t.avgBaru : t.lotDiperlukan}:{" "}
+                    {result.mode === "new-avg"
+                      ? formatRupiah(result.newAvgPrice)
+                      : `${result.lotDelta} ${t.lotBaru.toLowerCase()}`}
+                    . {t.avgSekarangRow}: {formatRupiah(result.avgSekarang)}.{" "}
+                    {t.hargaAveragingRow}: {formatRupiah(result.hargaAveraging)}.{" "}
+                    {t.lotBaru}: {result.totalLotBaru.toLocaleString("id-ID")} (+
+                    {result.lotDelta.toLocaleString("id-ID")}). {t.totalModal}:{" "}
+                    {formatRupiah(result.totalModal)}.
+                  </p>
                   <div className="bg-primary/10 px-4 pt-4 pb-3">
                     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
                       <div className="min-w-0">
@@ -1342,6 +1364,13 @@ export function Calculator() {
                       </div>
                       <Badge
                         variant="secondary"
+                        aria-label={`${
+                          result.status === "down"
+                            ? t.averagingDown
+                            : result.status === "up"
+                            ? t.averagingUp
+                            : t.averagingFlat
+                        } ${result.percentage.toFixed(2)}%`}
                         className={cn(
                           "inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-bold leading-none ring-1 ring-inset transition-colors",
                           result.status === "down" &&
@@ -1355,7 +1384,7 @@ export function Calculator() {
                         ) : (
                           <TrendingUp className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                         )}
-                        <span className="tabular">{result.percentage.toFixed(2)}%</span>
+                        <span className="tabular" aria-hidden="true">{result.percentage.toFixed(2)}%</span>
                       </Badge>
                     </div>
                   </div>
