@@ -674,27 +674,35 @@ export function Calculator() {
     }
   };
 
-  const copySummary = async () => {
-    if (!result) return;
-    const arrow = result.status === "down" ? "↓" : result.status === "up" ? "↑" : "→";
-    const head = result.mode === "new-avg" ? t.avgBaru : t.lotDiperlukan;
+  const buildSummary = (r: CalcResult) => {
+    const arrow = r.status === "down" ? "↓" : r.status === "up" ? "↑" : "→";
+    const head = r.mode === "new-avg" ? t.avgBaru : t.lotDiperlukan;
     const lines = [
-      new Date(result.timestamp).toLocaleString(lang === "id" ? "id-ID" : "en-US"),
-      `${head}: ${formatRupiah(result.newAvgPrice)} (${arrow} ${result.percentage.toFixed(2)}%)`,
-      `${t.lotBaru}: ${result.totalLotBaru} (+${result.lotDelta})`,
-      `${t.modalTambahan}: ${formatRupiah(result.modalTambahan)}`,
-      `${t.totalModal}: ${formatRupiah(result.totalModal)}`,
+      new Date(r.timestamp).toLocaleString(lang === "id" ? "id-ID" : "en-US"),
+      `${head}: ${formatRupiah(r.newAvgPrice)} (${arrow} ${r.percentage.toFixed(2)}%)`,
+      `${t.lotBaru}: ${r.totalLotBaru} (+${r.lotDelta})`,
+      `${t.modalTambahan}: ${formatRupiah(r.modalTambahan)}`,
+      `${t.totalModal}: ${formatRupiah(r.totalModal)}`,
     ];
-    if (result.feeEnabled) {
-      lines.push(`${t.feeBeliLabel}: ${formatRupiah(result.feeBeli ?? 0)}`);
-      lines.push(`${t.breakEven}: ${formatRupiah(result.breakEvenPrice ?? 0)}`);
+    if (r.feeEnabled) {
+      lines.push(`${t.feeBeliLabel}: ${formatRupiah(r.feeBeli ?? 0)}`);
+      lines.push(`${t.breakEven}: ${formatRupiah(r.breakEvenPrice ?? 0)}`);
     }
+    return lines.join("\n");
+  };
+
+  const copyResult = async (r: CalcResult) => {
     try {
-      await navigator.clipboard.writeText(lines.join("\n"));
+      await navigator.clipboard.writeText(buildSummary(r));
       toast.success(t.summaryCopied);
     } catch {
       toast.error(t.copyFail);
     }
+  };
+
+  const copySummary = async () => {
+    if (!result) return;
+    await copyResult(result);
   };
 
   const saveImage = async () => {
