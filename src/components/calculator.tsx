@@ -1346,6 +1346,13 @@ export function Calculator() {
                       </div>
                       <Badge
                         variant="secondary"
+                        aria-label={`${
+                          result.status === "down"
+                            ? t.averagingDown
+                            : result.status === "up"
+                            ? t.averagingUp
+                            : t.averagingFlat
+                        } ${result.percentage.toFixed(2)}%`}
                         className={cn(
                           "inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-bold leading-none ring-1 ring-inset transition-colors",
                           result.status === "down" &&
@@ -1359,7 +1366,7 @@ export function Calculator() {
                         ) : (
                           <TrendingUp className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                         )}
-                        <span className="tabular">{result.percentage.toFixed(2)}%</span>
+                        <span className="tabular" aria-hidden="true">{result.percentage.toFixed(2)}%</span>
                       </Badge>
                     </div>
                   </div>
