@@ -99,28 +99,23 @@ async def main() -> int:
         await page.screenshot(path=str(SHOTS / "1_new_avg.png"))
 
         must_have_1 = [
-            "Ringkasan hasil",
-            "Averaging Turun",
+            "Result summary",
+            "Averaging Down",
             "12.50%",
-            "Avg Baru",
-            "Rp1.750",
-            "Total Modal",
+            "New Avg",
+            "Rp 1.750",
+            "Total Capital",
         ]
         for token in must_have_1:
             if token not in summary1:
                 failures.append(f"[new-avg summary] missing {token!r}: {summary1!r}")
-        for token in ("Averaging Turun", "12.50%", "Avg Baru", "Rp1.750"):
+        for token in ("Averaging Down", "12.50%", "New Avg", "Rp 1.750"):
             if token not in live1:
                 failures.append(f"[new-avg live] missing {token!r}: {live1!r}")
 
-        # 3. Switch mode → result clears; recompute in lots-needed.
-        # target=1800 with avg=2000, lot=10 → needs extra lots to reach 1800.
+        # 3. Switch mode → recompute in lots-needed.
         await page.locator('[role="tab"][data-tab-value="lots-needed"]').click()
         await page.wait_for_timeout(200)
-        if await page.locator(CARD_SEL).count() != 0:
-            # mode switch doesn't strictly clear if inputs unchanged; that's OK
-            # as long as the summary matches. Just note it.
-            pass
 
         await page.locator("#target-avg-input").fill("1800")
         await page.locator("#target-avg-input").blur()
@@ -130,17 +125,17 @@ async def main() -> int:
         live2 = await live_text(page)
         await page.screenshot(path=str(SHOTS / "2_lots_needed.png"))
 
-        if "Lot Diperlukan" not in summary2:
-            failures.append(f"[lots-needed summary] missing 'Lot Diperlukan': {summary2!r}")
-        if "Avg Baru" in summary2.split("Total Modal")[0]:
-            # "Avg Baru" heading shouldn't be the head label in this mode.
-            failures.append(f"[lots-needed summary] unexpected 'Avg Baru' head: {summary2!r}")
-        if not re.search(r"\d+\s+lot baru", summary2):
-            failures.append(f"[lots-needed summary] missing '<n> lot baru': {summary2!r}")
-        if "Lot Diperlukan" not in live2:
-            failures.append(f"[lots-needed live] missing 'Lot Diperlukan': {live2!r}")
+        if "Lots Needed" not in summary2:
+            failures.append(f"[lots-needed summary] missing 'Lots Needed': {summary2!r}")
+        if re.search(r"New Avg:\s", summary2):
+            failures.append(f"[lots-needed summary] unexpected 'New Avg' head: {summary2!r}")
+        if not re.search(r"\d+\s+new lots", summary2):
+            failures.append(f"[lots-needed summary] missing '<n> new lots': {summary2!r}")
+        if "Lots Needed" not in live2:
+            failures.append(f"[lots-needed live] missing 'Lots Needed': {live2!r}")
         if live2 == live1:
             failures.append("[lots-needed live] text did not change after mode switch")
+
 
         # 4. Changing an input removes the result card.
         await page.locator("#avg-now-input").fill("2100")
