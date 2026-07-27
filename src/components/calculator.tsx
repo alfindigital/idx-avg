@@ -181,7 +181,9 @@ export function Calculator() {
   const [flashField, setFlashField] = useState<string | null>(null);
   const flashTimeoutRef = useRef<number | null>(null);
   const resultInputsRef = useRef<string>("");
+  const shouldFocusResultRef = useRef(false);
   const [announce, setAnnounce] = useState("");
+
   
   const hydratedRef = useRef(false);
   const [showRecovered, setShowRecovered] = useState(false);
@@ -213,6 +215,26 @@ export function Calculator() {
       `${t.resultSummaryLabel}. ${trend} ${result.percentage.toFixed(2)}%. ${head}: ${headValue}. ${t.totalModal}: ${formatRupiah(result.totalModal)}.`,
     );
   }, [result, t]);
+
+  // Move keyboard/screen-reader focus to the result card when a new
+  // calculation completes so users are taken directly to the update.
+  useEffect(() => {
+    if (!result) return;
+    if (!shouldFocusResultRef.current) return;
+    shouldFocusResultRef.current = false;
+    const node = resultRef.current;
+    if (!node) return;
+    const id = window.requestAnimationFrame(() => {
+      try {
+        node.focus({ preventScroll: false });
+        node.scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch {
+        node.focus();
+      }
+    });
+    return () => window.cancelAnimationFrame(id);
+  }, [result]);
+
 
   // Init
   useEffect(() => {
@@ -450,6 +472,7 @@ export function Calculator() {
         fee,
       });
       resultInputsRef.current = snapshot;
+      shouldFocusResultRef.current = true;
       setResult(r);
       saveHistory(r);
     } else {
@@ -465,10 +488,12 @@ export function Calculator() {
         return;
       }
       resultInputsRef.current = snapshot;
+      shouldFocusResultRef.current = true;
       setResult(out.result);
       saveHistory(out.result);
     }
   };
+
   const runCalcRef = useRef(runCalc);
   runCalcRef.current = runCalc;
 
@@ -1350,8 +1375,11 @@ export function Calculator() {
                 <div
                   ref={ref}
                   data-result-card
-                  className="overflow-hidden rounded-3xl border border-white/70 bg-card shadow-sm dark:border-white/5"
+                  tabIndex={-1}
+                  aria-labelledby="result-heading"
+                  className="overflow-hidden rounded-3xl border border-white/70 bg-card shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:border-white/5"
                 >
+
                   <p className="sr-only">
                     {t.resultSummaryLabel}.{" "}
                     {result.status === "down"
