@@ -163,7 +163,17 @@ async def scenario_reload(page: Page, base_url: str) -> None:
     # Prefer clicking the Calculate button (locale-agnostic via a stable
     # attribute) over Ctrl+Enter to avoid focus-scope flakes right after reload.
     calc_btn = page.locator('button:has-text("Calculate"), button:has-text("Hitung")').first
+    # Wait for the button to become enabled after the input state settles.
+    await page.wait_for_function(
+        """() => {
+            const btns = Array.from(document.querySelectorAll('button'));
+            const b = btns.find(x => /Calculate|Hitung/.test(x.textContent || ''));
+            return b && b.getAttribute('aria-disabled') !== 'true';
+        }""",
+        timeout=5000,
+    )
     await calc_btn.click()
+
     await page.locator('[aria-labelledby="result-heading"]').first.wait_for(
         state="visible", timeout=5000
     )
