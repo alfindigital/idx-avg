@@ -132,7 +132,7 @@ async def scenario_seed(page: Page, base_url: str) -> None:
         f"newest entry should be marker, got id={stored[0].get('id')!r}"
     )
     tail_ids = [e["id"] for e in stored[1:]]
-    expected_tail = [f"seed-{i}" for i in range(11, 3, -1)]  # 11..4 (9 items)
+    expected_tail = [f"seed-{i}" for i in range(11, 2, -1)]  # 11..3 (9 items)
     assert tail_ids == expected_tail, (
         f"tail mismatch\n  expected: {expected_tail}\n  got: {tail_ids}"
     )
