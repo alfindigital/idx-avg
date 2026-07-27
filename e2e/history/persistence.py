@@ -157,26 +157,20 @@ async def scenario_reload(page: Page, base_url: str) -> None:
         ("harga-avg-input", "1500"),
         ("lot-tambah-input", "10"),
     ]:
-        await page.locator(f"#{id_}").fill(v)
-    await page.locator("#lot-tambah-input").blur()
-    await page.wait_for_timeout(200)
-    # Prefer clicking the Calculate button (locale-agnostic via a stable
-    # attribute) over Ctrl+Enter to avoid focus-scope flakes right after reload.
+        loc = page.locator(f"#{id_}")
+        await loc.click()
+        await loc.fill(v)
+        await loc.press("Tab")
+    await page.wait_for_timeout(400)
+    await page.screenshot(path=str(SHOTS / "reload_after_fill.png"))
     calc_btn = page.locator('button:has-text("Calculate"), button:has-text("Hitung")').first
-    # Wait for the button to become enabled after the input state settles.
-    await page.wait_for_function(
-        """() => {
-            const btns = Array.from(document.querySelectorAll('button'));
-            const b = btns.find(x => /Calculate|Hitung/.test(x.textContent || ''));
-            return b && b.getAttribute('aria-disabled') !== 'true';
-        }""",
-        timeout=5000,
-    )
+    ad = await calc_btn.get_attribute("aria-disabled")
+    print(f"[reload] Calculate aria-disabled after fill: {ad!r}")
     await calc_btn.click()
-
     await page.locator('[aria-labelledby="result-heading"]').first.wait_for(
         state="visible", timeout=5000
     )
+
 
 
     before_raw = await page.evaluate("(k) => localStorage.getItem(k)", HISTORY_KEY)
