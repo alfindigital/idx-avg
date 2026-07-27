@@ -151,18 +151,19 @@ async def scenario_reload(page: Page, base_url: str) -> None:
     await page.reload(wait_until="domcontentloaded")
     await page.wait_for_timeout(200)
 
+    # Wait for hydration (language effect etc.) before filling.
+    await page.wait_for_timeout(500)
     for id_, v in [
         ("avg-now-input", "2000"),
         ("total-lot-input", "10"),
         ("harga-avg-input", "1500"),
         ("lot-tambah-input", "10"),
     ]:
-        loc = page.locator(f"#{id_}")
-        await loc.click()
-        await loc.fill(v)
-        await loc.press("Tab")
+        await page.locator(f"#{id_}").fill(v)
+    await page.locator("#lot-tambah-input").blur()
     await page.wait_for_timeout(400)
     await page.screenshot(path=str(SHOTS / "reload_after_fill.png"))
+
     calc_btn = page.locator('button:has-text("Calculate"), button:has-text("Hitung")').first
     ad = await calc_btn.get_attribute("aria-disabled")
     print(f"[reload] Calculate aria-disabled after fill: {ad!r}")
