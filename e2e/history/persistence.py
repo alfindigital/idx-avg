@@ -63,12 +63,18 @@ def make_entry(i: int) -> dict:
 async def open_history(page: Page) -> None:
     btn = page.locator('button[title="Alt+H"]').first
     await btn.wait_for(state="visible", timeout=5000)
-    await page.screenshot(path=str(SHOTS / "debug_before_click.png"))
-    await btn.click()
-    await page.wait_for_timeout(500)
+    # Retry to survive hydration timing right after reload.
+    for _ in range(3):
+        await btn.click()
+        try:
+            await page.locator(DIALOG_SEL).wait_for(state="visible", timeout=2000)
+            await page.wait_for_timeout(200)
+            return
+        except Exception:
+            await page.wait_for_timeout(400)
     await page.screenshot(path=str(SHOTS / "debug_after_click.png"))
-    await page.locator(DIALOG_SEL).wait_for(state="visible", timeout=5000)
-    await page.wait_for_timeout(200)
+    raise AssertionError("History dialog did not open after clicking Alt+H button")
+
 
 
 
