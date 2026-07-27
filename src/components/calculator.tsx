@@ -216,6 +216,26 @@ export function Calculator() {
     );
   }, [result, t]);
 
+  // Move keyboard/screen-reader focus to the result card when a new
+  // calculation completes so users are taken directly to the update.
+  useEffect(() => {
+    if (!result) return;
+    if (!shouldFocusResultRef.current) return;
+    shouldFocusResultRef.current = false;
+    const node = resultRef.current;
+    if (!node) return;
+    const id = window.requestAnimationFrame(() => {
+      try {
+        node.focus({ preventScroll: false });
+        node.scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch {
+        node.focus();
+      }
+    });
+    return () => window.cancelAnimationFrame(id);
+  }, [result]);
+
+
   // Init
   useEffect(() => {
     const th = localStorage.getItem(THEME_KEY);
