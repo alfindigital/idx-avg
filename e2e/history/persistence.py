@@ -61,9 +61,13 @@ def make_entry(i: int) -> dict:
 async def open_history(page: Page) -> None:
     btn = page.locator('button[title="Alt+H"]').first
     await btn.wait_for(state="visible", timeout=5000)
+    await page.screenshot(path=str(SHOTS / "debug_before_click.png"))
     await btn.click()
+    await page.wait_for_timeout(500)
+    await page.screenshot(path=str(SHOTS / "debug_after_click.png"))
     await page.locator(DIALOG_SEL).wait_for(state="visible", timeout=5000)
     await page.wait_for_timeout(200)
+
 
 
 
