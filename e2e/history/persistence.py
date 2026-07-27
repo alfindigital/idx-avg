@@ -45,6 +45,7 @@ def make_entry(i: int) -> dict:
     return {
         "id": f"seed-{i}",
         "timestamp": 1_700_000_000_000 + i * 1000,
+        "mode": "new-avg",
         "avgSekarang": 2000,
         "lotSekarang": 10,
         "hargaAvg": 1500,
@@ -56,6 +57,7 @@ def make_entry(i: int) -> dict:
         "status": "down",
         "percentage": 12.5,
     }
+
 
 
 async def open_history(page: Page) -> None:
