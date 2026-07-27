@@ -452,6 +452,7 @@ export function Calculator() {
         fee,
       });
       resultInputsRef.current = snapshot;
+      shouldFocusResultRef.current = true;
       setResult(r);
       saveHistory(r);
     } else {
@@ -467,10 +468,12 @@ export function Calculator() {
         return;
       }
       resultInputsRef.current = snapshot;
+      shouldFocusResultRef.current = true;
       setResult(out.result);
       saveHistory(out.result);
     }
   };
+
   const runCalcRef = useRef(runCalc);
   runCalcRef.current = runCalc;
 
