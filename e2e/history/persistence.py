@@ -75,20 +75,19 @@ async def open_history(page: Page) -> None:
 
 
 async def read_rendered_new_avgs(page: Page) -> list[int]:
-    """Extract the newAvgPrice from each rendered history row by reading the
-    'Rp X → Rp Y' span inside each row's load button. Locale-agnostic."""
-    spans = await page.locator(f'{DIALOG_SEL} span:has-text("→")').all()
+    """Extract newAvgPrice from each history row (the 'Rp X → Rp Y' span)."""
+    spans = await page.locator(f'{DIALOG_SEL} span:has-text("Rp"):has-text("→")').all()
     out: list[int] = []
     for s in spans:
         text = (await s.inner_text()).strip()
-        # "Rp 2.000 → Rp 1.011"  → take part after arrow
-        if "→" not in text:
+        if "Rp" not in text or "→" not in text:
             continue
         right = text.split("→", 1)[1]
         digits = "".join(ch for ch in right if ch.isdigit())
         if digits:
             out.append(int(digits))
     return out
+
 
 
 
