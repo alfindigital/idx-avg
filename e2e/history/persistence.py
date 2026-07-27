@@ -59,9 +59,12 @@ def make_entry(i: int) -> dict:
 
 
 async def open_history(page: Page) -> None:
-    await page.locator('button[aria-label="History"], button[title="Alt+H"]').first.click()
+    btn = page.locator('button[title="Alt+H"]').first
+    await btn.wait_for(state="visible", timeout=5000)
+    await btn.click()
     await page.locator(DIALOG_SEL).wait_for(state="visible", timeout=5000)
     await page.wait_for_timeout(200)
+
 
 
 
