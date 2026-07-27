@@ -138,24 +138,31 @@ async def main() -> int:
         if not failures:
             notes.append(f"[clipboard] contains expected summary tokens ({len(clip)} chars)")
 
-        # Accessible feedback: Sonner renders each toast with role=status +
-        # aria-live=polite. We match either language.
-        toast = page.locator(
-            '[role="status"]:has-text("Summary copied"), '
-            '[role="status"]:has-text("Ringkasan disalin")'
-        ).first
+        # Accessible feedback: Sonner mounts toasts inside a
+        # <section aria-live="polite" aria-label="Notifications ..."> region;
+        # each toast is a <li data-sonner-toast data-type="success">.
+        region = page.locator('section[aria-live][aria-label*="Notifications"]').first
         try:
-            await toast.wait_for(state="visible", timeout=2000)
-            live = await toast.get_attribute("aria-live")
+            await region.wait_for(state="attached", timeout=2000)
+            live = await region.get_attribute("aria-live")
             if live not in ("polite", "assertive"):
-                failures.append(
-                    f"[a11y-toast] toast missing aria-live (got {live!r})"
-                )
+                failures.append(f"[a11y-toast] region aria-live={live!r}")
             else:
-                notes.append(f"[a11y-toast] role=status aria-live={live} visible")
+                notes.append(f"[a11y-toast] toast region aria-live={live}")
+
+            toast_li = region.locator(
+                'li[data-sonner-toast]:has-text("Summary copied"), '
+                'li[data-sonner-toast]:has-text("Ringkasan disalin")'
+            ).first
+            await toast_li.wait_for(state="visible", timeout=2000)
+            dtype = await toast_li.get_attribute("data-type")
+            if dtype != "success":
+                failures.append(f"[a11y-toast] toast data-type={dtype!r}, want 'success'")
+            else:
+                notes.append("[a11y-toast] success toast visible inside live region")
             await page.screenshot(path=str(SHOTS / "1_toast.png"))
-        except Exception:
-            failures.append("[a11y-toast] no accessible 'copied' toast appeared")
+        except Exception as e:
+            failures.append(f"[a11y-toast] no accessible 'copied' toast appeared: {e}")
             await page.screenshot(path=str(SHOTS / "1_no_toast.png"))
 
         # 5. Dialog stays open; form + card unchanged.
