@@ -264,7 +264,7 @@ export function Calculator() {
       if (h) {
         const parsed = JSON.parse(h);
         if (Array.isArray(parsed)) {
-          setHistory(parsed.filter(isValidHistoryItem).slice(0, 20));
+          setHistory(parsed.filter(isValidHistoryItem).slice(0, 10));
         }
       }
     } catch {}
