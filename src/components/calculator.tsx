@@ -1375,8 +1375,11 @@ export function Calculator() {
                 <div
                   ref={ref}
                   data-result-card
-                  className="overflow-hidden rounded-3xl border border-white/70 bg-card shadow-sm dark:border-white/5"
+                  tabIndex={-1}
+                  aria-labelledby="result-heading"
+                  className="overflow-hidden rounded-3xl border border-white/70 bg-card shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:border-white/5"
                 >
+
                   <p className="sr-only">
                     {t.resultSummaryLabel}.{" "}
                     {result.status === "down"
