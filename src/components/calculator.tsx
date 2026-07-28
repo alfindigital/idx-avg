@@ -1147,7 +1147,7 @@ export function Calculator() {
                   </p>
                 </div>
               </div>
-              <div className="mt-3 flex items-center justify-between rounded-xl border border-white/70 bg-primary/[0.04] px-4 py-2.5 dark:border-white/5">
+              <div className="mt-3 flex items-center justify-between rounded-xl border border-white/70 bg-primary/[0.04] px-4 py-2.5 dark:border-white/10 dark:bg-primary/10">
                 <span className="text-sm font-semibold text-primary">
                   {t.modalAwal}
                 </span>
