@@ -1423,6 +1423,7 @@ export function Calculator() {
                       </div>
                       <Badge
                         variant="secondary"
+                        role="img"
                         aria-label={`${
                           result.status === "down"
                             ? t.averagingDown
