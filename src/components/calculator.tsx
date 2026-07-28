@@ -1377,7 +1377,7 @@ export function Calculator() {
                   data-result-card
                   tabIndex={-1}
                   aria-labelledby="result-heading"
-                  className="overflow-hidden rounded-3xl border border-white/70 bg-card shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:border-white/5"
+                  className="overflow-hidden rounded-3xl border border-white/70 bg-card shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:border-white/10"
                 >
 
                   <p className="sr-only">
