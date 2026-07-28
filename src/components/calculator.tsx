@@ -847,13 +847,13 @@ export function Calculator() {
 
 
   const inputCls =
-    "h-11 w-full rounded-xl border-2 border-transparent bg-card px-3.5 text-base font-bold text-foreground shadow-none transition-all scroll-mt-24 focus-visible:border-primary focus-visible:ring-0 placeholder:text-muted-foreground";
+    "h-11 w-full rounded-xl border-2 border-transparent bg-card px-3.5 text-base font-bold text-foreground shadow-none transition-all scroll-mt-24 focus-visible:border-primary focus-visible:ring-0 placeholder:text-muted-foreground dark:border-white/10";
   const labelCls =
-    "mb-1 ml-0.5 flex h-8 items-end text-xs font-semibold leading-tight text-foreground/70";
+    "mb-1 ml-0.5 flex h-8 items-end text-xs font-semibold leading-tight text-foreground/70 dark:text-foreground/85";
   const sectionHead =
     "mb-3 font-display text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground";
   const cardCls =
-    "rounded-2xl border border-white/70 bg-secondary/60 p-4 shadow-sm dark:border-white/5 border-l-2 border-l-primary/15";
+    "rounded-2xl border border-white/70 bg-secondary/60 p-4 shadow-sm dark:border-white/10 dark:bg-card/80 border-l-2 border-l-primary/15 dark:border-l-primary/40";
   const flashCls = "border-destructive ring-2 ring-destructive/40 animate-pulse";
 
   // Enter → jump to next input; last input → submit form.
@@ -1147,7 +1147,7 @@ export function Calculator() {
                   </p>
                 </div>
               </div>
-              <div className="mt-3 flex items-center justify-between rounded-xl border border-white/70 bg-primary/[0.04] px-4 py-2.5 dark:border-white/5">
+              <div className="mt-3 flex items-center justify-between rounded-xl border border-white/70 bg-primary/[0.04] px-4 py-2.5 dark:border-white/10 dark:bg-primary/10">
                 <span className="text-sm font-semibold text-primary">
                   {t.modalAwal}
                 </span>
@@ -1377,7 +1377,7 @@ export function Calculator() {
                   data-result-card
                   tabIndex={-1}
                   aria-labelledby="result-heading"
-                  className="overflow-hidden rounded-3xl border border-white/70 bg-card shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:border-white/5"
+                  className="overflow-hidden rounded-3xl border border-white/70 bg-card shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:border-white/10"
                 >
 
                   <p className="sr-only">
