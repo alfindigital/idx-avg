@@ -1,24 +1,43 @@
 import { useEffect, useState } from "react";
-import { Send, X } from "lucide-react";
+import { Send, X, TrendingUp, Bell } from "lucide-react";
 
 const KEY = "idxavg-tg-popup-v1";
 const TG_URL = "https://t.me/lotmetrik";
+const DURATION_MS = 5000;
 
 export function TelegramPopup() {
   const [open, setOpen] = useState(false);
+  const [progress, setProgress] = useState(100);
 
   useEffect(() => {
     try {
       if (localStorage.getItem(KEY)) return;
     } catch {}
+
     const showTimer = setTimeout(() => setOpen(true), 600);
-    const hideTimer = setTimeout(() => close(), 5600);
-    return () => {
-      clearTimeout(showTimer);
-      clearTimeout(hideTimer);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => clearTimeout(showTimer);
   }, []);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const start = performance.now();
+    let raf = 0;
+
+    const tick = (now: number) => {
+      const elapsed = now - start;
+      const remaining = Math.max(0, DURATION_MS - elapsed);
+      setProgress((remaining / DURATION_MS) * 100);
+      if (remaining > 0) {
+        raf = requestAnimationFrame(tick);
+      } else {
+        close();
+      }
+    };
+
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [open]);
 
   function close() {
     try {
@@ -32,34 +51,79 @@ export function TelegramPopup() {
   return (
     <div
       role="dialog"
-      aria-label="Join Telegram channel"
-      className="fixed bottom-4 left-1/2 z-50 w-[min(92vw,360px)] -translate-x-1/2 animate-in fade-in slide-in-from-bottom-4 duration-300"
+      aria-modal="true"
+      aria-label="Ajakan bergabung channel Telegram"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4 backdrop-blur-sm animate-in fade-in duration-300"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) close();
+      }}
     >
-      <div className="relative flex items-center gap-3 rounded-2xl border border-primary/30 bg-card/95 p-3 pr-9 shadow-xl shadow-primary/20 backdrop-blur dark:border-white/10">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-          <Send className="h-5 w-5" aria-hidden />
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold leading-tight">Gabung channel Telegram</p>
-          <p className="truncate text-xs text-muted-foreground">Update & tips saham dari @lotmetrik</p>
-        </div>
-        <a
-          href={TG_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={close}
-          className="shrink-0 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      <div className="relative w-[min(92vw,380px)] overflow-hidden rounded-3xl border border-primary/40 bg-card/95 p-6 pt-7 shadow-2xl shadow-primary/25 backdrop-blur-xl animate-in zoom-in-95 slide-in-from-bottom-6 duration-300 dark:border-white/15">
+        {/* Countdown bar */}
+        <div
+          role="timer"
+          aria-label="Waktu tersisa sebelum popup tertutup"
+          className="absolute left-0 top-0 h-1 w-full bg-secondary"
         >
-          Join
-        </a>
+          <div
+            className="h-full bg-gradient-to-r from-primary to-success transition-[width] ease-linear"
+            style={{ width: `${progress}%`, transitionDuration: "100ms" }}
+          />
+        </div>
+
         <button
           type="button"
           onClick={close}
-          aria-label="Close"
-          className="absolute right-1.5 top-1.5 flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          aria-label="Tutup"
+          className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
-          <X className="h-3.5 w-3.5" aria-hidden />
+          <X className="h-4 w-4" aria-hidden />
         </button>
+
+        <div className="flex flex-col items-center text-center">
+          <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/30">
+            <Send className="h-8 w-8" aria-hidden />
+            <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-success text-[10px] font-bold text-success-foreground">
+              <Bell className="h-3 w-3" aria-hidden />
+            </span>
+          </div>
+
+          <h2 className="mt-4 text-lg font-bold leading-tight text-foreground">
+            Mau sinyal cuan lebih dulu?
+          </h2>
+
+          <p className="mt-2 text-sm text-muted-foreground">
+            Gabung channel Telegram{" "}
+            <span className="font-semibold text-primary">@lotmetrik</span> —
+            update saham, tips averaging, dan peluang momentum langsung ke HP-mu.
+          </p>
+
+          <div className="mt-4 flex w-full items-center gap-2 rounded-xl border border-success/30 bg-success/10 px-3 py-2 text-left dark:border-success/20">
+            <TrendingUp className="h-5 w-5 shrink-0 text-success" aria-hidden />
+            <p className="text-xs leading-snug text-success-strong dark:text-success-foreground">
+              Gratis. Tanpa spam. Cukup 1 klik untuk ikut komunitas trader Indonesia.
+            </p>
+          </div>
+
+          <a
+            href={TG_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={close}
+            className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/25 transition-transform hover:scale-[1.02] hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98]"
+          >
+            <Send className="h-4 w-4" aria-hidden />
+            Join Sekarang — Gratis
+          </a>
+
+          <button
+            type="button"
+            onClick={close}
+            className="mt-3 text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          >
+            Nanti aja
+          </button>
+        </div>
       </div>
     </div>
   );
