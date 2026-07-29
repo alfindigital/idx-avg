@@ -83,8 +83,8 @@ export const dict = {
     footerBy: "by",
   },
   en: {
-    appTitle: "IDXAvg",
-    appTagline: "IDX averaging calculator",
+    appTitle: "IDX Averaging Calculator",
+    appTagline: "by @lotmetrik",
     history: "History",
     clearHistory: "Clear",
     exportHistory: "Export",
