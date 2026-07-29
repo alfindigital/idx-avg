@@ -5,6 +5,18 @@ const KEY = "idxavg-tg-popup-v1";
 const TG_URL = "https://t.me/lotmetrik";
 const DURATION_MS = 5000;
 
+type ClarityWindow = Window & {
+  clarity?: (...args: unknown[]) => void;
+};
+
+function trackClarityEvent(name: string) {
+  if (typeof window === "undefined") return;
+  const cw = window as ClarityWindow;
+  if (typeof cw.clarity === "function") {
+    cw.clarity("event", name);
+  }
+}
+
 export function TelegramPopup() {
   const [open, setOpen] = useState(false);
   const [progress, setProgress] = useState(100);
@@ -21,6 +33,8 @@ export function TelegramPopup() {
   useEffect(() => {
     if (!open) return;
 
+    trackClarityEvent("telegram_popup_impression");
+
     const start = performance.now();
     let raf = 0;
 
@@ -31,7 +45,7 @@ export function TelegramPopup() {
       if (remaining > 0) {
         raf = requestAnimationFrame(tick);
       } else {
-        close();
+        close("auto");
       }
     };
 
@@ -39,10 +53,14 @@ export function TelegramPopup() {
     return () => cancelAnimationFrame(raf);
   }, [open]);
 
-  function close() {
+  function close(source: "x" | "later" | "backdrop" | "auto" = "auto") {
     try {
       localStorage.setItem(KEY, "1");
     } catch {}
+
+    if (source === "x") trackClarityEvent("telegram_popup_click_close");
+    if (source === "later") trackClarityEvent("telegram_popup_click_later");
+
     setOpen(false);
   }
 
@@ -55,7 +73,7 @@ export function TelegramPopup() {
       aria-label="Ajakan bergabung channel Telegram"
       className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4 backdrop-blur-sm animate-in fade-in duration-300"
       onClick={(e) => {
-        if (e.target === e.currentTarget) close();
+        if (e.target === e.currentTarget) close("backdrop");
       }}
     >
       <div className="relative w-[min(92vw,380px)] overflow-hidden rounded-3xl border border-primary/40 bg-card/95 p-6 pt-7 shadow-2xl shadow-primary/25 backdrop-blur-xl animate-in zoom-in-95 slide-in-from-bottom-6 duration-300 dark:border-white/15">
@@ -73,7 +91,7 @@ export function TelegramPopup() {
 
         <button
           type="button"
-          onClick={close}
+          onClick={() => close("x")}
           aria-label="Tutup"
           className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
@@ -109,7 +127,10 @@ export function TelegramPopup() {
             href={TG_URL}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={close}
+            onClick={() => {
+              trackClarityEvent("telegram_popup_click_join");
+              close("auto");
+            }}
             className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/25 transition-transform hover:scale-[1.02] hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98]"
           >
             <Send className="h-4 w-4" aria-hidden />
@@ -118,7 +139,7 @@ export function TelegramPopup() {
 
           <button
             type="button"
-            onClick={close}
+            onClick={() => close("later")}
             className="mt-3 text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
             Nanti aja
