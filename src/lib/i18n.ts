@@ -169,8 +169,6 @@ export function useLang() {
       const saved = localStorage.getItem(LANG_KEY) as Lang | null;
       if (saved === "id" || saved === "en") {
         setLang(saved);
-      } else if (typeof navigator !== "undefined" && navigator.language?.toLowerCase().startsWith("en")) {
-        setLang("en");
       }
     } catch {}
   }, []);
