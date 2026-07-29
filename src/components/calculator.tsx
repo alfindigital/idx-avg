@@ -41,6 +41,7 @@ import { Tabs, TabList, TabIndicator, TabButton, TabPanel } from "@/components/u
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { SiteFooter } from "@/components/site-footer";
+import { TelegramPopup } from "@/components/telegram-popup";
 import { formatRupiah, getTickSize, roundToTick } from "@/lib/idx-tick";
 import {
   type CalcMode,
@@ -1575,6 +1576,7 @@ export function Calculator() {
         <div className="mx-auto mt-auto w-full max-w-[480px]">
           <SiteFooter />
         </div>
+        <TelegramPopup />
       </div>
     </TooltipProvider>
   );

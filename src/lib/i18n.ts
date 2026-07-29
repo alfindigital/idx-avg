@@ -8,8 +8,8 @@ const LANG_KEY = "idxavg-lang";
 
 export const dict = {
   id: {
-    appTitle: "IDXAvg",
-    appTagline: "Kalkulator rata-rata IDX",
+    appTitle: "IDX Averaging Calculator",
+    appTagline: "by @lotmetrik",
     history: "Riwayat",
     clearHistory: "Hapus",
     exportHistory: "Ekspor",
@@ -83,8 +83,8 @@ export const dict = {
     footerBy: "by",
   },
   en: {
-    appTitle: "IDXAvg",
-    appTagline: "IDX averaging calculator",
+    appTitle: "IDX Averaging Calculator",
+    appTagline: "by @lotmetrik",
     history: "History",
     clearHistory: "Clear",
     exportHistory: "Export",
@@ -169,8 +169,6 @@ export function useLang() {
       const saved = localStorage.getItem(LANG_KEY) as Lang | null;
       if (saved === "id" || saved === "en") {
         setLang(saved);
-      } else if (typeof navigator !== "undefined" && navigator.language?.toLowerCase().startsWith("en")) {
-        setLang("en");
       }
     } catch {}
   }, []);
