@@ -127,7 +127,10 @@ export function TelegramPopup() {
             href={TG_URL}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={close}
+            onClick={() => {
+              trackClarityEvent("telegram_popup_click_join");
+              close("auto");
+            }}
             className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/25 transition-transform hover:scale-[1.02] hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98]"
           >
             <Send className="h-4 w-4" aria-hidden />
@@ -136,7 +139,7 @@ export function TelegramPopup() {
 
           <button
             type="button"
-            onClick={close}
+            onClick={() => close("later")}
             className="mt-3 text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
             Nanti aja
