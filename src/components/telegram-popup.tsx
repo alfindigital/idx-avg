@@ -33,6 +33,8 @@ export function TelegramPopup() {
   useEffect(() => {
     if (!open) return;
 
+    trackClarityEvent("telegram_popup_impression");
+
     const start = performance.now();
     let raf = 0;
 
@@ -43,7 +45,7 @@ export function TelegramPopup() {
       if (remaining > 0) {
         raf = requestAnimationFrame(tick);
       } else {
-        close();
+        close("auto");
       }
     };
 
@@ -51,10 +53,14 @@ export function TelegramPopup() {
     return () => cancelAnimationFrame(raf);
   }, [open]);
 
-  function close() {
+  function close(source: "x" | "later" | "backdrop" | "auto" = "auto") {
     try {
       localStorage.setItem(KEY, "1");
     } catch {}
+
+    if (source === "x") trackClarityEvent("telegram_popup_click_close");
+    if (source === "later") trackClarityEvent("telegram_popup_click_later");
+
     setOpen(false);
   }
 
