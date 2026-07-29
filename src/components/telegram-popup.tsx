@@ -5,6 +5,18 @@ const KEY = "idxavg-tg-popup-v1";
 const TG_URL = "https://t.me/lotmetrik";
 const DURATION_MS = 5000;
 
+type ClarityWindow = Window & {
+  clarity?: (...args: unknown[]) => void;
+};
+
+function trackClarityEvent(name: string) {
+  if (typeof window === "undefined") return;
+  const cw = window as ClarityWindow;
+  if (typeof cw.clarity === "function") {
+    cw.clarity("event", name);
+  }
+}
+
 export function TelegramPopup() {
   const [open, setOpen] = useState(false);
   const [progress, setProgress] = useState(100);
