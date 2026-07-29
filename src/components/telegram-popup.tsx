@@ -73,7 +73,7 @@ export function TelegramPopup() {
       aria-label="Ajakan bergabung channel Telegram"
       className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4 backdrop-blur-sm animate-in fade-in duration-300"
       onClick={(e) => {
-        if (e.target === e.currentTarget) close();
+        if (e.target === e.currentTarget) close("backdrop");
       }}
     >
       <div className="relative w-[min(92vw,380px)] overflow-hidden rounded-3xl border border-primary/40 bg-card/95 p-6 pt-7 shadow-2xl shadow-primary/25 backdrop-blur-xl animate-in zoom-in-95 slide-in-from-bottom-6 duration-300 dark:border-white/15">
