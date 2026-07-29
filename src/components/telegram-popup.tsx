@@ -91,7 +91,7 @@ export function TelegramPopup() {
 
         <button
           type="button"
-          onClick={close}
+          onClick={() => close("x")}
           aria-label="Tutup"
           className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
