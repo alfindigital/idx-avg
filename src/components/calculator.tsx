@@ -490,6 +490,7 @@ export function Calculator() {
       shouldFocusResultRef.current = true;
       setResult(r);
       saveHistory(r);
+      trackFunnelStep(FUNNEL.resultShown);
     } else {
       const out = calcLotsNeeded({
         avgSekarang: a,
@@ -499,6 +500,7 @@ export function Calculator() {
         fee,
       });
       if ("error" in out) {
+        trackEvent("calculate_error");
         toast.error(t[out.error]);
         return;
       }
@@ -506,6 +508,7 @@ export function Calculator() {
       shouldFocusResultRef.current = true;
       setResult(out.result);
       saveHistory(out.result);
+      trackFunnelStep(FUNNEL.resultShown);
     }
   };
 
