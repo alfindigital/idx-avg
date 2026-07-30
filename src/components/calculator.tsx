@@ -40,7 +40,7 @@ import { Tabs, TabList, TabIndicator, TabButton, TabPanel } from "@/components/u
 
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { trackEvent } from "@/lib/analytics";
+import { FUNNEL, trackEvent, trackFunnelStep } from "@/lib/analytics";
 import { SiteFooter } from "@/components/site-footer";
 import { TelegramPopup } from "@/components/telegram-popup";
 import { formatRupiah, getTickSize, roundToTick } from "@/lib/idx-tick";
@@ -150,6 +150,7 @@ export function Calculator() {
   const [pickedMode, setPickedMode] = useState<CalcMode>("new-avg");
 
   const selectMode = (m: CalcMode) => {
+    trackFunnelStep(FUNNEL.modeSelected);
     setPickedMode(m);
     if (m === "new-avg") setTargetAvg("");
     else setLotTambah("");
@@ -164,6 +165,18 @@ export function Calculator() {
   useEffect(() => {
     pickedModeRef.current = pickedMode;
   }, [pickedMode]);
+
+  // Clarity funnel: step 1 fires once the calculator is actually rendered.
+  useEffect(() => {
+    trackFunnelStep(FUNNEL.pageView);
+  }, []);
+
+  // Clarity funnel: step 3 fires the first time any calculator field has a value.
+  useEffect(() => {
+    if (avgPrice || totalLot || hargaAvg || lotTambah || targetAvg) {
+      trackFunnelStep(FUNNEL.inputStarted);
+    }
+  }, [avgPrice, totalLot, hargaAvg, lotTambah, targetAvg]);
 
   // Fee
   const [fee, setFee] = useState<FeeOptions>(DEFAULT_FEE);
@@ -477,6 +490,7 @@ export function Calculator() {
       shouldFocusResultRef.current = true;
       setResult(r);
       saveHistory(r);
+      trackFunnelStep(FUNNEL.resultShown);
     } else {
       const out = calcLotsNeeded({
         avgSekarang: a,
@@ -486,6 +500,7 @@ export function Calculator() {
         fee,
       });
       if ("error" in out) {
+        trackEvent("calculate_error");
         toast.error(t[out.error]);
         return;
       }
@@ -493,6 +508,7 @@ export function Calculator() {
       shouldFocusResultRef.current = true;
       setResult(out.result);
       saveHistory(out.result);
+      trackFunnelStep(FUNNEL.resultShown);
     }
   };
 
@@ -539,12 +555,14 @@ export function Calculator() {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    trackFunnelStep(FUNNEL.calculateAttempt);
     const active = document.activeElement as HTMLElement | null;
     if (active && typeof active.blur === "function") active.blur();
     setTimeout(() => {
       if (canCalculateRef.current) {
         runCalcRef.current();
       } else {
+        trackEvent("calculate_validation_error");
         focusFirstInvalidRef.current();
       }
     }, 0);
@@ -747,6 +765,7 @@ export function Calculator() {
     stamp.style.cssText =
       "text-align:center;font-size:12px;font-weight:600;letter-spacing:.04em;padding:10px 0 2px;opacity:.75;";
     trackEvent("download_image_click");
+    trackFunnelStep(FUNNEL.downloadClick);
     try {
       const { toPng } = await import("html-to-image");
       node.appendChild(stamp);
@@ -760,6 +779,7 @@ export function Calculator() {
       link.href = dataUrl;
       link.click();
       trackEvent("download_image_success");
+      trackFunnelStep(FUNNEL.downloadSuccess);
       toast.success(t.imgSaved);
     } catch (err) {
       console.error(err);
