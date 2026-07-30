@@ -40,6 +40,7 @@ import { Tabs, TabList, TabIndicator, TabButton, TabPanel } from "@/components/u
 
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { trackEvent } from "@/lib/analytics";
 import { SiteFooter } from "@/components/site-footer";
 import { TelegramPopup } from "@/components/telegram-popup";
 import { formatRupiah, getTickSize, roundToTick } from "@/lib/idx-tick";
@@ -745,6 +746,7 @@ export function Calculator() {
     stamp.textContent = "by @lotmetrik";
     stamp.style.cssText =
       "text-align:center;font-size:12px;font-weight:600;letter-spacing:.04em;padding:10px 0 2px;opacity:.75;";
+    trackEvent("download_image_click");
     try {
       const { toPng } = await import("html-to-image");
       node.appendChild(stamp);
@@ -757,9 +759,11 @@ export function Calculator() {
       link.download = `IDXAvg-${todayISO()}.png`;
       link.href = dataUrl;
       link.click();
+      trackEvent("download_image_success");
       toast.success(t.imgSaved);
     } catch (err) {
       console.error(err);
+      trackEvent("download_image_error");
       toast.error(t.imgFail);
     } finally {
       stamp.remove();
