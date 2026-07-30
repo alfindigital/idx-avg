@@ -555,12 +555,14 @@ export function Calculator() {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    trackFunnelStep(FUNNEL.calculateAttempt);
     const active = document.activeElement as HTMLElement | null;
     if (active && typeof active.blur === "function") active.blur();
     setTimeout(() => {
       if (canCalculateRef.current) {
         runCalcRef.current();
       } else {
+        trackEvent("calculate_validation_error");
         focusFirstInvalidRef.current();
       }
     }, 0);
