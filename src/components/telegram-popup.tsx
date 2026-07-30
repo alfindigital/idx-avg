@@ -3,7 +3,7 @@ import { Send, X, TrendingUp, Bell } from "lucide-react";
 
 const KEY = "idxavg-tg-popup-v1";
 const TG_URL = "https://t.me/lotmetrik";
-const DURATION_MS = 5000;
+const DURATION_MS = 10000;
 
 type ClarityWindow = Window & {
   clarity?: (...args: unknown[]) => void;
