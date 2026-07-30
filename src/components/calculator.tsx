@@ -40,7 +40,7 @@ import { Tabs, TabList, TabIndicator, TabButton, TabPanel } from "@/components/u
 
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { trackEvent } from "@/lib/analytics";
+import { FUNNEL, trackEvent, trackFunnelStep } from "@/lib/analytics";
 import { SiteFooter } from "@/components/site-footer";
 import { TelegramPopup } from "@/components/telegram-popup";
 import { formatRupiah, getTickSize, roundToTick } from "@/lib/idx-tick";
