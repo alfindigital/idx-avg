@@ -779,6 +779,7 @@ export function Calculator() {
       link.href = dataUrl;
       link.click();
       trackEvent("download_image_success");
+      trackFunnelStep(FUNNEL.downloadSuccess);
       toast.success(t.imgSaved);
     } catch (err) {
       console.error(err);
