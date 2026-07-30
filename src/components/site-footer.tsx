@@ -102,7 +102,7 @@ export function SiteFooter() {
       <span className="afd-cr">
         © {year}
         <a
-          href="https://lotmetrik.com"
+          href="https://lotmetrik.my.id"
           target="_blank"
           rel="noopener noreferrer"
           className="afd-brand"
