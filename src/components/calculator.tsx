@@ -166,6 +166,18 @@ export function Calculator() {
     pickedModeRef.current = pickedMode;
   }, [pickedMode]);
 
+  // Clarity funnel: step 1 fires once the calculator is actually rendered.
+  useEffect(() => {
+    trackFunnelStep(FUNNEL.pageView);
+  }, []);
+
+  // Clarity funnel: step 3 fires the first time any calculator field has a value.
+  useEffect(() => {
+    if (avgPrice || totalLot || hargaAvg || lotTambah || targetAvg) {
+      trackFunnelStep(FUNNEL.inputStarted);
+    }
+  }, [avgPrice, totalLot, hargaAvg, lotTambah, targetAvg]);
+
   // Fee
   const [fee, setFee] = useState<FeeOptions>(DEFAULT_FEE);
 
