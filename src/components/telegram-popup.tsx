@@ -107,13 +107,13 @@ export function TelegramPopup() {
           </div>
 
           <h2 className="mt-4 text-lg font-bold leading-tight text-foreground">
-            Mau sinyal cuan lebih dulu?
+            Update seputar pasar saham IDX
           </h2>
 
           <p className="mt-2 text-sm text-muted-foreground">
             Gabung channel Telegram{" "}
             <span className="font-semibold text-primary">@lotmetrik</span> —
-            update saham, tips averaging, dan peluang momentum langsung ke HP-mu.
+            bahas indeks, strategi averaging, dan info bursa langsung ke HP-mu.
           </p>
 
           <div className="mt-4 flex w-full items-center gap-2 rounded-xl border border-success/30 bg-success/10 px-3 py-2 text-left dark:border-success/20">
