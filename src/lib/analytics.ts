@@ -9,3 +9,29 @@ export function trackEvent(name: string) {
     cw.clarity("event", name);
   }
 }
+
+/**
+ * Funnel: open calculator -> pick mode -> fill inputs -> calculate -> result -> download.
+ * Each step fires at most once per browser session so Clarity funnel drop-off
+ * rates stay meaningful (no double counting from repeated interactions).
+ */
+export const FUNNEL = {
+  pageView: "funnel_1_calculator_view",
+  modeSelected: "funnel_2_mode_selected",
+  inputStarted: "funnel_3_input_started",
+  calculateAttempt: "funnel_4_calculate_attempt",
+  resultShown: "funnel_5_result_shown",
+  downloadClick: "funnel_6_download_click",
+  downloadSuccess: "funnel_7_download_success",
+} as const;
+
+export type FunnelStep = (typeof FUNNEL)[keyof typeof FUNNEL];
+
+const fired = new Set<string>();
+
+export function trackFunnelStep(step: FunnelStep) {
+  if (typeof window === "undefined") return;
+  if (fired.has(step)) return;
+  fired.add(step);
+  trackEvent(step);
+}
