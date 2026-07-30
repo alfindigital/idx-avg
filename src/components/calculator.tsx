@@ -765,6 +765,7 @@ export function Calculator() {
     stamp.style.cssText =
       "text-align:center;font-size:12px;font-weight:600;letter-spacing:.04em;padding:10px 0 2px;opacity:.75;";
     trackEvent("download_image_click");
+    trackFunnelStep(FUNNEL.downloadClick);
     try {
       const { toPng } = await import("html-to-image");
       node.appendChild(stamp);
