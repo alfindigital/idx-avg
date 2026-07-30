@@ -741,8 +741,13 @@ export function Calculator() {
     if (!result) return;
     const node = resultRef.current;
     if (!node) return;
+    const stamp = document.createElement("div");
+    stamp.textContent = "by @lotmetrik";
+    stamp.style.cssText =
+      "text-align:center;font-size:12px;font-weight:600;letter-spacing:.04em;padding:10px 0 2px;opacity:.75;";
     try {
       const { toPng } = await import("html-to-image");
+      node.appendChild(stamp);
       const dataUrl = await toPng(node, {
         pixelRatio: 2,
         cacheBust: true,
@@ -756,8 +761,11 @@ export function Calculator() {
     } catch (err) {
       console.error(err);
       toast.error(t.imgFail);
+    } finally {
+      stamp.remove();
     }
   };
+
 
   const clearHistory = () => {
     setHistory([]);
