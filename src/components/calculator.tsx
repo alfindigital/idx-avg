@@ -150,6 +150,7 @@ export function Calculator() {
   const [pickedMode, setPickedMode] = useState<CalcMode>("new-avg");
 
   const selectMode = (m: CalcMode) => {
+    trackFunnelStep(FUNNEL.modeSelected);
     setPickedMode(m);
     if (m === "new-avg") setTargetAvg("");
     else setLotTambah("");
