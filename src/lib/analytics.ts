@@ -29,7 +29,7 @@ export type FunnelStep = (typeof FUNNEL)[keyof typeof FUNNEL];
 
 const fired = new Set<string>();
 
-export function trackFundepStep(step: FunnelStep) {
+export function trackFunnelStep(step: FunnelStep) {
   if (typeof window === "undefined") return;
   if (fired.has(step)) return;
   fired.add(step);
