@@ -541,6 +541,16 @@ export function Calculator() {
     }
     const first = checks.find((c) => c.bad);
     if (!first) return false;
+
+    // Track the specific validation failure so drop-off reasons are visible in Clarity.
+    if (!first.err) {
+      trackValidation(VALIDATION.requiredField);
+    } else if (first.key === "lot" || first.key === "lotTambah") {
+      trackValidation(VALIDATION.lotInvalid);
+    } else {
+      trackValidation(VALIDATION.priceInvalid);
+    }
+
     const el = first.ref.current;
     if (el) {
       try {
