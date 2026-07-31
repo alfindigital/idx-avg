@@ -40,7 +40,7 @@ import { Tabs, TabList, TabIndicator, TabButton, TabPanel } from "@/components/u
 
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { FUNNEL, VALIDATION, trackEvent, trackFunnelStep, trackValidation } from "@/lib/analytics";
+import { EVENTS, FUNNEL, VALIDATION, trackEvent, trackFunnelStep, trackGeneralEvent, trackValidation } from "@/lib/analytics";
 import { SiteFooter } from "@/components/site-footer";
 import { TelegramPopup } from "@/components/telegram-popup";
 import { formatRupiah, getTickSize, roundToTick } from "@/lib/idx-tick";
@@ -456,8 +456,15 @@ export function Calculator() {
   const handlePriceBlur = (value: string, setter: (v: string) => void) => {
     const n = parseFloat(value);
     if (!isFinite(n) || n <= 0 || n > MAX_PRICE) return;
+    trackGeneralEvent(EVENTS.priceChanged);
     const rounded = roundToTick(n);
     if (rounded !== n) setter(String(rounded));
+  };
+
+  const handleLotBlur = (value: string) => {
+    const n = Number(value);
+    if (!Number.isInteger(n) || n <= 0 || n > MAX_LOT) return;
+    trackGeneralEvent(EVENTS.lotChanged);
   };
 
 
@@ -694,6 +701,7 @@ export function Calculator() {
   };
 
   const resetAll = () => {
+    trackGeneralEvent(EVENTS.formReset);
     setAvgPrice("");
     setTotalLot("");
     setHargaAvg("");
@@ -1174,6 +1182,7 @@ export function Calculator() {
                     onKeyDown={advanceOnEnter(hargaRef)}
                     value={totalLot}
                     onChange={(e) => setTotalLot(intOnly(e.target.value))}
+                    onBlur={(e) => handleLotBlur(e.target.value)}
                     placeholder="0"
                     aria-invalid={!!errLot}
                     aria-describedby={"total-lot-error"}
@@ -1287,6 +1296,7 @@ export function Calculator() {
                       autoComplete="off"
                       value={lotTambah}
                       onChange={(e) => setLotTambah(intOnly(e.target.value))}
+                      onBlur={(e) => handleLotBlur(e.target.value)}
                       placeholder="0"
                       aria-invalid={!!errLotTambah}
                       aria-describedby={"lot-tambah-error"}

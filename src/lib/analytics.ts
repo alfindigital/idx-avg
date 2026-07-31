@@ -52,3 +52,15 @@ export type ValidationEvent = (typeof VALIDATION)[keyof typeof VALIDATION];
 export function trackValidation(event: ValidationEvent) {
   trackEvent(event);
 }
+
+export const EVENTS = {
+  formReset: "form_reset",
+  priceChanged: "input_price_changed",
+  lotChanged: "input_lot_changed",
+} as const;
+
+export type GeneralEvent = (typeof EVENTS)[keyof typeof EVENTS];
+
+export function trackGeneralEvent(event: GeneralEvent) {
+  trackEvent(event);
+}
