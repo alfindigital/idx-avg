@@ -461,6 +461,12 @@ export function Calculator() {
     if (rounded !== n) setter(String(rounded));
   };
 
+  const handleLotBlur = (value: string) => {
+    const n = Number(value);
+    if (!Number.isInteger(n) || n <= 0 || n > MAX_LOT) return;
+    trackGeneralEvent(EVENTS.lotChanged);
+  };
+
 
   const saveHistory = (r: CalcResult) => {
     const next = [r, ...history].slice(0, 10);
