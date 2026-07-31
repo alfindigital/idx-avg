@@ -701,6 +701,7 @@ export function Calculator() {
   };
 
   const resetAll = () => {
+    trackGeneralEvent(EVENTS.formReset);
     setAvgPrice("");
     setTotalLot("");
     setHargaAvg("");
