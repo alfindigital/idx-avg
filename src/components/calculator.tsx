@@ -1181,6 +1181,7 @@ export function Calculator() {
                     onKeyDown={advanceOnEnter(hargaRef)}
                     value={totalLot}
                     onChange={(e) => setTotalLot(intOnly(e.target.value))}
+                    onBlur={(e) => handleLotBlur(e.target.value)}
                     placeholder="0"
                     aria-invalid={!!errLot}
                     aria-describedby={"total-lot-error"}
