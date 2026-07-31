@@ -57,6 +57,8 @@ export const EVENTS = {
   formReset: "form_reset",
   priceChanged: "input_price_changed",
   lotChanged: "input_lot_changed",
+  calculateAttempt: "calculate_attempt",
+  modeChanged: "mode_changed",
 } as const;
 
 export type GeneralEvent = (typeof EVENTS)[keyof typeof EVENTS];
