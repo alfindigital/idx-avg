@@ -500,7 +500,11 @@ export function Calculator() {
         fee,
       });
       if ("error" in out) {
-        trackEvent("calculate_error");
+        if (out.error === "targetEqualsHarga") {
+          trackValidation(VALIDATION.targetEqualsHarga);
+        } else {
+          trackValidation(VALIDATION.targetUnreachable);
+        }
         toast.error(t[out.error]);
         return;
       }
