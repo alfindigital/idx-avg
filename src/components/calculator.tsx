@@ -151,6 +151,7 @@ export function Calculator() {
 
   const selectMode = (m: CalcMode) => {
     trackFunnelStep(FUNNEL.modeSelected);
+    trackGeneralEvent(EVENTS.modeChanged);
     setPickedMode(m);
     if (m === "new-avg") setTargetAvg("");
     else setLotTambah("");
@@ -576,6 +577,7 @@ export function Calculator() {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    trackGeneralEvent(EVENTS.calculateAttempt);
     trackFunnelStep(FUNNEL.calculateAttempt);
     const active = document.activeElement as HTMLElement | null;
     if (active && typeof active.blur === "function") active.blur();
