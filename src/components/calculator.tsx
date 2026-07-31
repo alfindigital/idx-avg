@@ -456,6 +456,7 @@ export function Calculator() {
   const handlePriceBlur = (value: string, setter: (v: string) => void) => {
     const n = parseFloat(value);
     if (!isFinite(n) || n <= 0 || n > MAX_PRICE) return;
+    trackGeneralEvent(EVENTS.priceChanged);
     const rounded = roundToTick(n);
     if (rounded !== n) setter(String(rounded));
   };
