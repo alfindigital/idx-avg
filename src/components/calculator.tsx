@@ -40,7 +40,7 @@ import { Tabs, TabList, TabIndicator, TabButton, TabPanel } from "@/components/u
 
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { FUNNEL, trackEvent, trackFunnelStep } from "@/lib/analytics";
+import { FUNNEL, VALIDATION, trackEvent, trackFunnelStep, trackValidation } from "@/lib/analytics";
 import { SiteFooter } from "@/components/site-footer";
 import { TelegramPopup } from "@/components/telegram-popup";
 import { formatRupiah, getTickSize, roundToTick } from "@/lib/idx-tick";
@@ -500,7 +500,11 @@ export function Calculator() {
         fee,
       });
       if ("error" in out) {
-        trackEvent("calculate_error");
+        if (out.error === "targetEqualsHarga") {
+          trackValidation(VALIDATION.targetEqualsHarga);
+        } else {
+          trackValidation(VALIDATION.targetUnreachable);
+        }
         toast.error(t[out.error]);
         return;
       }
@@ -537,6 +541,16 @@ export function Calculator() {
     }
     const first = checks.find((c) => c.bad);
     if (!first) return false;
+
+    // Track the specific validation failure so drop-off reasons are visible in Clarity.
+    if (!first.err) {
+      trackValidation(VALIDATION.requiredField);
+    } else if (first.key === "lot" || first.key === "lotTambah") {
+      trackValidation(VALIDATION.lotInvalid);
+    } else {
+      trackValidation(VALIDATION.priceInvalid);
+    }
+
     const el = first.ref.current;
     if (el) {
       try {

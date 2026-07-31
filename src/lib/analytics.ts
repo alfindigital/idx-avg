@@ -35,3 +35,20 @@ export function trackFunnelStep(step: FunnelStep) {
   fired.add(step);
   trackEvent(step);
 }
+
+export const VALIDATION = {
+  requiredField: "validation_error_required_field",
+  priceInvalid: "validation_error_price_invalid",
+  lotInvalid: "validation_error_lot_invalid",
+  tickInvalid: "validation_error_tick_invalid",
+  targetEqualsHarga: "validation_error_target_equals_harga",
+  targetUnreachable: "validation_error_target_unreachable",
+  maxPrice: "validation_error_max_price",
+  maxLot: "validation_error_max_lot",
+} as const;
+
+export type ValidationEvent = (typeof VALIDATION)[keyof typeof VALIDATION];
+
+export function trackValidation(event: ValidationEvent) {
+  trackEvent(event);
+}
