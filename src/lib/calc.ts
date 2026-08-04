@@ -36,7 +36,7 @@ function computeFees(
   totalLotBaru: number,
   hargaAveraging: number,
   lotDelta: number,
-  fee?: FeeOptions
+  fee?: FeeOptions,
 ): Partial<CalcResult> {
   if (!fee || !fee.enabled) return {};
   const buy = fee.buyPct / 100;
@@ -44,7 +44,7 @@ function computeFees(
   const feeBeli = hargaAveraging * lotDelta * 100 * buy;
   // Estimate sell fee if everything sold at new avg
   const feeJualEst = avgBaru * totalLotBaru * 100 * sell;
-  const breakEvenPrice = (1 - sell) > 0 ? (avgBaru * (1 + buy)) / (1 - sell) : avgBaru;
+  const breakEvenPrice = 1 - sell > 0 ? (avgBaru * (1 + buy)) / (1 - sell) : avgBaru;
   return {
     feeEnabled: true,
     buyPct: fee.buyPct,
@@ -64,8 +64,7 @@ export function calcNewAvg(args: {
 }): CalcResult {
   const { avgSekarang, lotSekarang, hargaAveraging, lotTambah, fee } = args;
   const totalLotBaru = lotSekarang + lotTambah;
-  const newAvg =
-    (avgSekarang * lotSekarang + hargaAveraging * lotTambah) / totalLotBaru;
+  const newAvg = (avgSekarang * lotSekarang + hargaAveraging * lotTambah) / totalLotBaru;
   const modalAwal = avgSekarang * lotSekarang * 100;
   const modalTambahan = hargaAveraging * lotTambah * 100;
   const status: CalcResult["status"] =
@@ -102,14 +101,11 @@ export function calcLotsNeeded(args: {
   fee?: FeeOptions;
 }): { result: CalcResult } | { error: CalcErrorCode } {
   const { avgSekarang, lotSekarang, hargaAveraging, targetAvg, fee } = args;
-  if (hargaAveraging === targetAvg)
-    return { error: "targetEqualsHarga" as const };
+  if (hargaAveraging === targetAvg) return { error: "targetEqualsHarga" as const };
   const lotDibutuhkan = Math.round(
-    (targetAvg * lotSekarang - avgSekarang * lotSekarang) /
-      (hargaAveraging - targetAvg)
+    (targetAvg * lotSekarang - avgSekarang * lotSekarang) / (hargaAveraging - targetAvg),
   );
-  if (lotDibutuhkan < 0)
-    return { error: "targetUnreachable" as const };
+  if (lotDibutuhkan < 0) return { error: "targetUnreachable" as const };
   const totalLotBaru = lotSekarang + lotDibutuhkan;
   const newAvg =
     totalLotBaru === 0

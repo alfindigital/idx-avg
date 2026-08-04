@@ -24,7 +24,9 @@ export function TelegramPopup() {
   useEffect(() => {
     try {
       if (localStorage.getItem(KEY)) return;
-    } catch {}
+    } catch {
+      /* ignore */
+    }
 
     const showTimer = setTimeout(() => setOpen(true), 600);
     return () => clearTimeout(showTimer);
@@ -53,10 +55,26 @@ export function TelegramPopup() {
     return () => cancelAnimationFrame(raf);
   }, [open]);
 
+  // Escape closes the promo without leaking the key event to the calculator
+  // (Esc there resets the form).
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      e.preventDefault();
+      e.stopPropagation();
+      close("x");
+    };
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
+  }, [open]);
+
   function close(source: "x" | "later" | "backdrop" | "auto" = "auto") {
     try {
       localStorage.setItem(KEY, "1");
-    } catch {}
+    } catch {
+      /* ignore */
+    }
 
     if (source === "x") trackClarityEvent("telegram_popup_click_close");
     if (source === "later") trackClarityEvent("telegram_popup_click_later");
@@ -111,8 +129,7 @@ export function TelegramPopup() {
           </h2>
 
           <p className="mt-2 text-sm text-muted-foreground">
-            Gabung channel Telegram{" "}
-            <span className="font-semibold text-primary">@lotmetrik</span> —
+            Gabung channel Telegram <span className="font-semibold text-primary">@lotmetrik</span> —
             bahas indeks, strategi averaging, dan info bursa langsung ke HP-mu.
           </p>
 

@@ -10,7 +10,7 @@ export function registerPWA() {
   const isPreviewHost =
     host.includes("id-preview--") ||
     host.includes("lovableproject.com") ||
-    host.includes("lovable.app") === false && host.endsWith(".lovable.dev");
+    (host.includes("lovable.app") === false && host.endsWith(".lovable.dev"));
 
   let isInIframe = false;
   try {
@@ -28,10 +28,7 @@ export function registerPWA() {
   }
 
   // Register Workbox-generated SW (vite-plugin-pwa output).
-  Promise.all([
-    import("virtual:pwa-register"),
-    import("sonner"),
-  ])
+  Promise.all([import("virtual:pwa-register"), import("sonner")])
     .then(([{ registerSW }, { toast }]) => {
       const updateSW = registerSW({
         immediate: true,

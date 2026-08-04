@@ -48,7 +48,10 @@ async function fill(user: ReturnType<typeof userEvent.setup>) {
   const harga = screen.getByLabelText(/Harga Beli Tambahan/i) as HTMLInputElement;
   await user.click(harga);
   await user.keyboard("900");
-  const lotTambah = screen.getByLabelText(/^Lot Tambah$/i) as HTMLInputElement;
+  // Scope to the textbox: the tabpanel is also labelled by the "Lot Tambah" tab.
+  const lotTambah = screen.getByRole("textbox", {
+    name: /^Lot Tambah$/i,
+  }) as HTMLInputElement;
   await user.click(lotTambah);
   await user.keyboard("5");
   return { avg, lot, harga, lotTambah };

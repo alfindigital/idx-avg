@@ -125,6 +125,9 @@ async def main() -> int:
         await ctx.add_init_script(
             "try { localStorage.removeItem('idxavg-history-v1'); } catch(e) {}"
         )
+        await ctx.add_init_script(
+            "try { localStorage.setItem('idxavg-tg-popup-v1','1'); } catch(e) {}"
+        )
         page = await ctx.new_page()
         await page.goto(args.base_url, wait_until="domcontentloaded")
         await settle(page)

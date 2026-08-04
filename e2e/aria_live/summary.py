@@ -77,6 +77,12 @@ async def main() -> int:
     async with async_playwright() as pw:
         browser = await pw.chromium.launch(headless=True)
         ctx = await browser.new_context(viewport={"width": 390, "height": 900})
+        await ctx.add_init_script(
+            "try { localStorage.setItem('idxavg-tg-popup-v1','1'); } catch(e) {}"
+        )
+        await ctx.add_init_script(
+            "try { localStorage.setItem('idxavg-lang','en'); } catch(e) {}"
+        )
         page = await ctx.new_page()
         await page.goto(args.base_url, wait_until="domcontentloaded")
         await settle(page)

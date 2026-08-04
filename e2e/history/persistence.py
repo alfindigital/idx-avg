@@ -196,11 +196,17 @@ async def main(base_url: str) -> int:
         browser = await pw.chromium.launch(headless=True)
         try:
             ctx = await browser.new_context(viewport={"width": 390, "height": 1800})
+            await ctx.add_init_script(
+                "try { localStorage.setItem('idxavg-tg-popup-v1','1'); } catch(e) {}"
+            )
             page = await ctx.new_page()
             await scenario_seed(page, base_url)
             await ctx.close()
 
             ctx = await browser.new_context(viewport={"width": 390, "height": 1800})
+            await ctx.add_init_script(
+                "try { localStorage.setItem('idxavg-tg-popup-v1','1'); } catch(e) {}"
+            )
             page = await ctx.new_page()
             await scenario_reload(page, base_url)
             await ctx.close()

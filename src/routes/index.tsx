@@ -4,14 +4,16 @@ import { Calculator } from "@/components/calculator";
 
 const numish = z.union([z.string(), z.number()]).optional().catch(undefined);
 
-const searchSchema = z.object({
-  avg: numish,
-  lot: numish,
-  harga: numish,
-  lotTambah: numish,
-  target: numish,
-  t: z.string().optional().catch(undefined),
-}).catch({});
+const searchSchema = z
+  .object({
+    avg: numish,
+    lot: numish,
+    harga: numish,
+    lotTambah: numish,
+    target: numish,
+    t: z.string().optional().catch(undefined),
+  })
+  .catch({});
 
 const SITE = "https://idx-avg.lovable.app";
 const OG_IMAGE = `${SITE}/og.jpg`;
