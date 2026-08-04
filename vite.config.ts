@@ -40,8 +40,7 @@ export default defineConfig({
               options: { cacheName: "assets" },
             },
             {
-              urlPattern: ({ request }) =>
-                ["image", "font"].includes(request.destination),
+              urlPattern: ({ request }) => ["image", "font"].includes(request.destination),
               handler: "CacheFirst",
               options: {
                 cacheName: "media",

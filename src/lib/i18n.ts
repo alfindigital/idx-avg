@@ -27,7 +27,8 @@ export const dict = {
     totalLot: "Total Lot",
     modalAwal: "Modal Awal",
     averagingTitle: "Pembelian Tambahan",
-    averagingTip: "Isi Lot Tambah untuk hitung rata-rata baru, atau Target Rata-rata untuk hitung lot yang dibutuhkan.",
+    averagingTip:
+      "Isi Lot Tambah untuk hitung rata-rata baru, atau Target Rata-rata untuk hitung lot yang dibutuhkan.",
     hargaAvg: "Harga Beli Tambahan (Rp)",
     lotTambah: "Lot Tambah",
     targetAvg: "Target Rata-rata (Rp)",
@@ -170,7 +171,9 @@ export function useLang() {
       if (saved === "id" || saved === "en") {
         setLang(saved);
       }
-    } catch {}
+    } catch {
+      /* ignore */
+    }
   }, []);
 
   useEffect(() => {
@@ -179,7 +182,9 @@ export function useLang() {
       if (typeof document !== "undefined") {
         document.documentElement.lang = lang;
       }
-    } catch {}
+    } catch {
+      /* ignore */
+    }
   }, [lang]);
 
   const toggle = () => setLang((l) => (l === "id" ? "en" : "id"));

@@ -1,6 +1,15 @@
 "use client";
 
-import { type FormEvent, type KeyboardEvent as ReactKeyboardEvent, type RefObject, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import {
+  type FormEvent,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type RefObject,
+  type ReactNode,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   Moon,
   Sun,
@@ -40,7 +49,15 @@ import { Tabs, TabList, TabIndicator, TabButton, TabPanel } from "@/components/u
 
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { EVENTS, FUNNEL, VALIDATION, trackEvent, trackFunnelStep, trackGeneralEvent, trackValidation } from "@/lib/analytics";
+import {
+  EVENTS,
+  FUNNEL,
+  VALIDATION,
+  trackEvent,
+  trackFunnelStep,
+  trackGeneralEvent,
+  trackValidation,
+} from "@/lib/analytics";
 import { SiteFooter } from "@/components/site-footer";
 import { TelegramPopup } from "@/components/telegram-popup";
 import { formatRupiah, getTickSize, roundToTick } from "@/lib/idx-tick";
@@ -119,7 +136,12 @@ function CopyRow({
   onCopy: (label: string, value: string) => void;
 }) {
   return (
-    <div className={cn("flex items-center justify-between", border && "border-t border-border/70 pt-2.5")}>
+    <div
+      className={cn(
+        "flex items-center justify-between",
+        border && "border-t border-border/70 pt-2.5",
+      )}
+    >
       <span className="text-sm font-medium text-muted-foreground">{label}</span>
       <button
         type="button"
@@ -133,7 +155,6 @@ function CopyRow({
     </div>
   );
 }
-
 
 export function Calculator() {
   const { lang, toggle: toggleLang, t } = useLang();
@@ -200,7 +221,6 @@ export function Calculator() {
   const shouldFocusResultRef = useRef(false);
   const [announce, setAnnounce] = useState("");
 
-  
   const hydratedRef = useRef(false);
   const [showRecovered, setShowRecovered] = useState(false);
   const recoveredTimeoutRef = useRef<number | null>(null);
@@ -220,8 +240,8 @@ export function Calculator() {
       result.status === "down"
         ? t.averagingDown
         : result.status === "up"
-        ? t.averagingUp
-        : t.averagingFlat;
+          ? t.averagingUp
+          : t.averagingFlat;
     const head = result.mode === "new-avg" ? t.avgBaru : t.lotDiperlukan;
     const headValue =
       result.mode === "new-avg"
@@ -250,7 +270,6 @@ export function Calculator() {
     });
     return () => window.cancelAnimationFrame(id);
   }, [result]);
-
 
   // Init
   useEffect(() => {
@@ -305,7 +324,9 @@ export function Calculator() {
           setHistory(parsed.filter(isValidHistoryItem).slice(0, 10));
         }
       }
-    } catch {}
+    } catch {
+      /* ignore */
+    }
     try {
       const f = localStorage.getItem(FEE_KEY);
       if (f) {
@@ -318,7 +339,9 @@ export function Calculator() {
           sellPct: clampPct(v.sellPct, 0.25),
         });
       }
-    } catch {}
+    } catch {
+      /* ignore */
+    }
 
     let recovered = false;
     try {
@@ -348,7 +371,9 @@ export function Calculator() {
         }
         recovered = !!(sAvg || sLot || sHarga || sLotTambah || sTarget);
       }
-    } catch {}
+    } catch {
+      /* ignore */
+    }
 
     if (recovered) {
       setShowRecovered(true);
@@ -409,7 +434,9 @@ export function Calculator() {
           INPUTS_KEY,
           JSON.stringify({ avgPrice, totalLot, hargaAvg, lotTambah, targetAvg, mode }),
         );
-      } catch {}
+      } catch {
+        /* ignore */
+      }
       saveTimeoutRef.current = null;
     }, 800);
     return () => {
@@ -422,7 +449,9 @@ export function Calculator() {
     if (!hydratedRef.current) return;
     try {
       localStorage.setItem(FEE_KEY, JSON.stringify(fee));
-    } catch {}
+    } catch {
+      /* ignore */
+    }
   }, [fee]);
 
   const errAvg = useMemo(() => validatePrice(avgPrice, t), [avgPrice, t]);
@@ -467,7 +496,6 @@ export function Calculator() {
     if (!Number.isInteger(n) || n <= 0 || n > MAX_LOT) return;
     trackGeneralEvent(EVENTS.lotChanged);
   };
-
 
   const saveHistory = (r: CalcResult) => {
     const next = [r, ...history].slice(0, 10);
@@ -538,14 +566,38 @@ export function Calculator() {
     const checks: FieldCheck[] = [
       { key: "avg", bad: !avgPrice || !!errAvg, ref: firstInputRef, label: t.avgNow, err: errAvg },
       { key: "lot", bad: !totalLot || !!errLot, ref: lotRef, label: t.totalLot, err: errLot },
-      { key: "harga", bad: !hargaAvg || !!errHarga, ref: hargaRef, label: t.hargaAvg, err: errHarga },
+      {
+        key: "harga",
+        bad: !hargaAvg || !!errHarga,
+        ref: hargaRef,
+        label: t.hargaAvg,
+        err: errHarga,
+      },
     ];
     if (mode === "new-avg") {
-      checks.push({ key: "lotTambah", bad: !lotTambah || !!errLotTambah, ref: lotTambahRef, label: t.lotTambah, err: errLotTambah });
+      checks.push({
+        key: "lotTambah",
+        bad: !lotTambah || !!errLotTambah,
+        ref: lotTambahRef,
+        label: t.lotTambah,
+        err: errLotTambah,
+      });
     } else if (mode === "lots-needed") {
-      checks.push({ key: "target", bad: !targetAvg || !!errTarget, ref: targetRef, label: t.targetAvg, err: errTarget });
+      checks.push({
+        key: "target",
+        bad: !targetAvg || !!errTarget,
+        ref: targetRef,
+        label: t.targetAvg,
+        err: errTarget,
+      });
     } else {
-      checks.push({ key: "lotTambah", bad: true, ref: lotTambahRef, label: t.lotTambah, err: null });
+      checks.push({
+        key: "lotTambah",
+        bad: true,
+        ref: lotTambahRef,
+        label: t.lotTambah,
+        err: null,
+      });
     }
     const first = checks.find((c) => c.bad);
     if (!first) return false;
@@ -563,7 +615,9 @@ export function Calculator() {
     if (el) {
       try {
         el.scrollIntoView({ behavior: "smooth", block: "center" });
-      } catch {}
+      } catch {
+        /* ignore */
+      }
       window.setTimeout(() => el.focus({ preventScroll: true }), 150);
     }
     setFlashField(first.key);
@@ -712,7 +766,9 @@ export function Calculator() {
     setResult(null);
     try {
       localStorage.removeItem(INPUTS_KEY);
-    } catch {}
+    } catch {
+      /* ignore */
+    }
     toast(t.formReset);
   };
   resetAllRef.current = resetAll;
@@ -814,7 +870,6 @@ export function Calculator() {
     }
   };
 
-
   const clearHistory = () => {
     setHistory([]);
     localStorage.removeItem(HISTORY_KEY);
@@ -878,7 +933,9 @@ export function Calculator() {
       setHistory(merged);
       try {
         localStorage.setItem(HISTORY_KEY, JSON.stringify(merged));
-      } catch {}
+      } catch {
+        /* ignore */
+      }
       toast.success(t.historyImported(valid.length));
     } catch {
       toast.error(t.historyImportFail);
@@ -902,7 +959,6 @@ export function Calculator() {
     setHistoryOpen(false);
   };
 
-
   const inputCls =
     "h-11 w-full rounded-xl border-2 border-transparent bg-card px-3.5 text-base font-bold text-foreground shadow-none transition-all scroll-mt-24 focus-visible:border-primary focus-visible:ring-0 placeholder:text-muted-foreground dark:border-white/10";
   const labelCls =
@@ -915,8 +971,7 @@ export function Calculator() {
 
   // Enter → jump to next input; last input → submit form.
   const advanceOnEnter =
-    (next?: RefObject<HTMLInputElement | null>) =>
-    (e: ReactKeyboardEvent<HTMLInputElement>) => {
+    (next?: RefObject<HTMLInputElement | null>) => (e: ReactKeyboardEvent<HTMLInputElement>) => {
       if (e.key !== "Enter") return;
       if (e.nativeEvent.isComposing) return;
       if (!next) return; // let the form's onSubmit handle it
@@ -925,7 +980,9 @@ export function Calculator() {
       if (!el) return;
       try {
         el.scrollIntoView({ behavior: "smooth", block: "center" });
-      } catch {}
+      } catch {
+        /* ignore */
+      }
       el.focus({ preventScroll: true });
     };
   const lastInputRef = pickedMode === "new-avg" ? lotTambahRef : targetRef;
@@ -1113,12 +1170,7 @@ export function Calculator() {
               </span>
             </div>
           )}
-          <div
-            role="status"
-            aria-live="polite"
-            aria-atomic="true"
-            className="sr-only"
-          >
+          <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
             {announce}
           </div>
           <form onSubmit={handleSubmit} noValidate className="space-y-3">
@@ -1206,9 +1258,7 @@ export function Calculator() {
                 </div>
               </div>
               <div className="mt-3 flex items-center justify-between rounded-xl border border-white/70 bg-primary/[0.04] px-4 py-2.5 dark:border-white/10 dark:bg-primary/10">
-                <span className="text-sm font-semibold text-primary">
-                  {t.modalAwal}
-                </span>
+                <span className="text-sm font-semibold text-primary">{t.modalAwal}</span>
                 <button
                   type="button"
                   onClick={() => copyValue(t.modalAwal, formatRupiah(modalAwal))}
@@ -1276,7 +1326,11 @@ export function Calculator() {
                 </div>
 
                 {/* Mode picker — these two calculations are mutually exclusive */}
-                <Tabs value={pickedMode} onValueChange={(v) => selectMode(v as CalcMode)} id="calc-mode">
+                <Tabs
+                  value={pickedMode}
+                  onValueChange={(v) => selectMode(v as CalcMode)}
+                  id="calc-mode"
+                >
                   <TabList tabCount={2} aria-label={t.averagingTip}>
                     <TabIndicator activeIndex={pickedMode === "lots-needed" ? 1 : 0} />
                     <TabButton value="new-avg" title="Alt+1">
@@ -1438,29 +1492,31 @@ export function Calculator() {
                   aria-labelledby="result-heading"
                   className="overflow-hidden rounded-3xl border border-white/70 bg-card shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:border-white/10"
                 >
-
                   <p className="sr-only">
                     {t.resultSummaryLabel}.{" "}
                     {result.status === "down"
                       ? t.averagingDown
                       : result.status === "up"
-                      ? t.averagingUp
-                      : t.averagingFlat}{" "}
+                        ? t.averagingUp
+                        : t.averagingFlat}{" "}
                     {result.percentage.toFixed(2)}%.{" "}
                     {result.mode === "new-avg" ? t.avgBaru : t.lotDiperlukan}:{" "}
                     {result.mode === "new-avg"
                       ? formatRupiah(result.newAvgPrice)
                       : `${result.lotDelta} ${t.lotBaru.toLowerCase()}`}
-                    . {t.avgSekarangRow}: {formatRupiah(result.avgSekarang)}.{" "}
-                    {t.hargaAveragingRow}: {formatRupiah(result.hargaAveraging)}.{" "}
-                    {t.lotBaru}: {result.totalLotBaru.toLocaleString("id-ID")} (+
+                    . {t.avgSekarangRow}: {formatRupiah(result.avgSekarang)}. {t.hargaAveragingRow}:{" "}
+                    {formatRupiah(result.hargaAveraging)}. {t.lotBaru}:{" "}
+                    {result.totalLotBaru.toLocaleString("id-ID")} (+
                     {result.lotDelta.toLocaleString("id-ID")}). {t.totalModal}:{" "}
                     {formatRupiah(result.totalModal)}.
                   </p>
                   <div className="bg-primary/10 px-4 pt-4 pb-3">
                     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
                       <div className="min-w-0">
-                        <h2 id="result-heading" className="font-display text-[11px] font-extrabold uppercase tracking-[0.22em] text-primary">
+                        <h2
+                          id="result-heading"
+                          className="font-display text-[11px] font-extrabold uppercase tracking-[0.22em] text-primary"
+                        >
                           {headLabel}
                         </h2>
                         <button
@@ -1487,8 +1543,8 @@ export function Calculator() {
                           result.status === "down"
                             ? t.averagingDown
                             : result.status === "up"
-                            ? t.averagingUp
-                            : t.averagingFlat
+                              ? t.averagingUp
+                              : t.averagingFlat
                         } ${result.percentage.toFixed(2)}%`}
                         className={cn(
                           "inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-bold leading-none ring-1 ring-inset transition-colors",
@@ -1503,7 +1559,9 @@ export function Calculator() {
                         ) : (
                           <TrendingUp className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                         )}
-                        <span className="tabular" aria-hidden="true">{result.percentage.toFixed(2)}%</span>
+                        <span className="tabular" aria-hidden="true">
+                          {result.percentage.toFixed(2)}%
+                        </span>
                       </Badge>
                     </div>
                   </div>
@@ -1615,17 +1673,10 @@ export function Calculator() {
               );
 
               return (
-                <>
-                  <section
-                    className="mt-4"
-                    aria-live="polite"
-                    aria-atomic="false"
-                    aria-labelledby="result-heading"
-                  >
-                    {resultCard(resultRef)}
-                    {actions}
-                  </section>
-                </>
+                <section className="mt-4" aria-live="polite" aria-atomic="false">
+                  {resultCard(resultRef)}
+                  {actions}
+                </section>
               );
             })()}
         </main>

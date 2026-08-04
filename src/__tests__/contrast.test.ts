@@ -27,7 +27,10 @@ function extractBlock(selector: string): Record<string, string> {
   if (!m) throw new Error(`Missing CSS block: ${selector}`);
   const out: Record<string, string> = {};
   for (const line of m[1].split("\n")) {
-    const decl = line.trim().replace(/\/\*.*?\*\//g, "").trim();
+    const decl = line
+      .trim()
+      .replace(/\/\*.*?\*\//g, "")
+      .trim();
     const kv = decl.match(/^(--[\w-]+)\s*:\s*(.+)$/);
     if (kv) out[kv[1]] = kv[2].replace(/;+\s*$/, "").trim();
   }
@@ -86,16 +89,16 @@ function solid(token: string, vars: Record<string, string>): Rgb {
 
 const AA = 4.5;
 
-function check(
-  name: string,
-  fgToken: string,
-  bg: Rgb,
-  vars: Record<string, string>,
-  min = AA,
-) {
+function check(name: string, fgToken: string, bg: Rgb, vars: Record<string, string>, min = AA) {
   const fg = solid(fgToken, vars);
   const ratio = contrast(fg, bg);
-  return { name, fg: formatRgb({ mode: "rgb", ...fg }), bg: formatRgb({ mode: "rgb", ...bg }), ratio, min };
+  return {
+    name,
+    fg: formatRgb({ mode: "rgb", ...fg }),
+    bg: formatRgb({ mode: "rgb", ...bg }),
+    ratio,
+    min,
+  };
 }
 
 function runSuite(label: "light" | "dark", vars: Record<string, string>) {
@@ -115,9 +118,19 @@ function runSuite(label: "light" | "dark", vars: Record<string, string>) {
     check("primary label on background", "--primary", bg, vars),
     check("destructive-strong error on background", "--destructive-strong", bg, vars),
     check("destructive-strong error on card", "--destructive-strong", card, vars),
-    check("badge Averaging Down (destructive-strong on tint)", "--destructive-strong", destBadgeBg, vars),
+    check(
+      "badge Averaging Down (destructive-strong on tint)",
+      "--destructive-strong",
+      destBadgeBg,
+      vars,
+    ),
     check("badge Averaging Up (success-strong on tint)", "--success-strong", succBadgeBg, vars),
-    check("primary-foreground on primary (submit button)", "--primary-foreground", solid("--primary", vars), vars),
+    check(
+      "primary-foreground on primary (submit button)",
+      "--primary-foreground",
+      solid("--primary", vars),
+      vars,
+    ),
   ];
 
   describe(`${label} mode WCAG AA (>= ${AA}:1)`, () => {

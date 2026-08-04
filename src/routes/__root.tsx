@@ -14,10 +14,7 @@ import "../styles.css";
 import appCss from "../styles.css?url";
 import { registerPWA } from "@/lib/pwa-register";
 
-class AppErrorBoundary extends Component<
-  { children: ReactNode },
-  { error: Error | null }
-> {
+class AppErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
   state: { error: Error | null } = { error: null };
   static getDerivedStateFromError(error: Error) {
     return { error };
@@ -59,8 +56,6 @@ class AppErrorBoundary extends Component<
     );
   }
 }
-
-
 
 function NotFoundComponent() {
   return (
@@ -173,7 +168,8 @@ function RootShell({ children }: { children: React.ReactNode }) {
         <script
           type="text/javascript"
           dangerouslySetInnerHTML={{
-            __html: `(function(c,l,a,r,i,t,y){\n` +
+            __html:
+              `(function(c,l,a,r,i,t,y){\n` +
               `  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};\n` +
               `  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;\n` +
               `  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);\n` +

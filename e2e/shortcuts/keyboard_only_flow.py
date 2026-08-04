@@ -125,6 +125,9 @@ async def main() -> int:
         await ctx.add_init_script(
             "try { localStorage.removeItem('idxavg-history-v1'); } catch(e) {}"
         )
+        await ctx.add_init_script(
+            "try { localStorage.setItem('idxavg-tg-popup-v1','1'); } catch(e) {}"
+        )
         page = await ctx.new_page()
         await page.goto(args.base_url, wait_until="domcontentloaded")
         await settle(page)
@@ -175,7 +178,7 @@ async def main() -> int:
 
         # Verify the seeded entry is present.
         entry_count = await page.evaluate(
-            """() => document.querySelectorAll('[role="dialog"] [class*="max-h-"] > button').length"""
+            """() => document.querySelectorAll('[role="dialog"] [class*="max-h-"] > div').length"""
         )
         if entry_count < 1:
             failures.append(f"[seed] no history entries visible in dialog (found {entry_count})")
@@ -246,7 +249,7 @@ async def main() -> int:
         try:
             await page.locator('[role="dialog"]').first.wait_for(state="visible", timeout=2000)
             entry_count2 = await page.evaluate(
-                """() => document.querySelectorAll('[role="dialog"] [class*="max-h-"] > button').length"""
+                """() => document.querySelectorAll('[role="dialog"] [class*="max-h-"] > div').length"""
             )
             if entry_count2 < 2:
                 failures.append(f"[history-grow] expected ≥2 entries after 2 calcs, got {entry_count2}")

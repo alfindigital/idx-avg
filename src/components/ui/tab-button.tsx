@@ -162,8 +162,10 @@ export const TabIndicator = ({ activeIndex, className, ...rest }: TabIndicatorPr
 
 // ------------------------------ trigger ------------------------------
 
-export interface TabButtonProps
-  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "value" | "role" | "aria-selected"> {
+export interface TabButtonProps extends Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  "value" | "role" | "aria-selected"
+> {
   value: string;
 }
 
