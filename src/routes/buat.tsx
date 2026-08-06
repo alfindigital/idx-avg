@@ -23,8 +23,7 @@ export const Route = createFileRoute("/buat")({
       { property: "og:url", content: "https://idx-avg.lovable.app/buat" },
       { property: "og:type", content: "website" },
     ],
-    // Canonical points to "/" so the duplicate /buat shortcut entry doesn't fragment SEO.
-    links: [{ rel: "canonical", href: "https://idx-avg.lovable.app/" }],
+    links: [{ rel: "canonical", href: "https://idx-avg.lovable.app/buat" }],
     scripts: [
       {
         type: "application/ld+json",
