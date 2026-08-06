@@ -5,7 +5,6 @@ const BASE_URL = "https://idx-avg.lovable.app";
 
 interface SitemapEntry {
   path: string;
-  lastmod?: string;
   changefreq?: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
   priority?: string;
 }
@@ -15,15 +14,14 @@ export const Route = createFileRoute("/sitemap.xml")({
     handlers: {
       GET: async () => {
         const entries: SitemapEntry[] = [
-          { path: "/", lastmod: "2026-06-08", changefreq: "weekly", priority: "1.0" },
-          { path: "/buat", lastmod: "2026-06-08", changefreq: "weekly", priority: "0.8" },
+          { path: "/", changefreq: "weekly", priority: "1.0" },
+          { path: "/buat", changefreq: "weekly", priority: "0.8" },
         ];
 
         const urls = entries.map((e) =>
           [
             `  <url>`,
             `    <loc>${BASE_URL}${e.path}</loc>`,
-            e.lastmod ? `    <lastmod>${e.lastmod}</lastmod>` : null,
             e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
             e.priority ? `    <priority>${e.priority}</priority>` : null,
             `  </url>`,
