@@ -56,7 +56,7 @@ export const dict = {
     copy: "Salin",
     share: "Salin link",
     savePng: "Simpan PNG",
-    reset: "Reset",
+    reset: "Reset formulir",
     resultTitle: "Hasil Perhitungan",
     naik: "Naik",
     turun: "Turun",
