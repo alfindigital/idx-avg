@@ -131,7 +131,7 @@ export const dict = {
     copy: "Copy",
     share: "Copy link",
     savePng: "Save PNG",
-    reset: "Reset",
+    reset: "Reset form",
     resultTitle: "Calculation Result",
     naik: "Up",
     turun: "Down",
