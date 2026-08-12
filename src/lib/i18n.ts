@@ -164,7 +164,14 @@ export const dict = {
     targetEqualsHarga: "Target cannot equal averaging price",
     targetUnreachable: "Cannot reach target at this price",
     footerBy: "by",
+    copyValue: (label: string, value: string) => `Copy ${label}: ${value}`,
+    infoAbout: (section: string) => `Info about ${section}`,
+    toggleLang: "Switch language (Indonesian/English)",
+    toggleThemeToDark: "Switch to dark mode",
+    toggleThemeToLight: "Switch to light mode",
+    openHistoryEntry: (avg: string) => `Open calculation history ${avg}`,
   },
+
 };
 
 export type Dict = typeof dict.id;
