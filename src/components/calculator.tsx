@@ -147,7 +147,7 @@ function CopyRow({
         type="button"
         onClick={() => onCopy(label, valueToCopy)}
         className="group flex items-center gap-1 rounded-lg px-1.5 py-0.5 text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
-        aria-label={`${label}: ${valueToCopy}`}
+        aria-label={copyLabel(label, valueToCopy)}
       >
         <span className={cn("font-bold tabular text-foreground", valueClassName)}>{value}</span>
         <Copy className="h-3.5 w-3.5 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
@@ -1017,7 +1017,7 @@ export function Calculator() {
               variant="ghost"
               size="sm"
               onClick={toggleLang}
-              aria-label="Toggle language"
+              aria-label={t.toggleLang}
               title="Alt+L"
               className="h-10 gap-1 rounded-xl px-2 text-xs font-bold uppercase hover:bg-secondary hover:text-primary"
             >
@@ -1101,6 +1101,9 @@ export function Calculator() {
                       >
                         <button
                           onClick={() => loadHistory(h)}
+                          aria-label={t.openHistoryEntry(
+                            `${formatRupiah(h.avgSekarang)} → ${formatRupiah(h.newAvgPrice)}`,
+                          )}
                           className="w-full rounded-2xl p-3 pr-11 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                         >
                           <div className="flex items-center justify-between text-sm">
@@ -1136,7 +1139,7 @@ export function Calculator() {
                             e.stopPropagation();
                             copyResult(h);
                           }}
-                          aria-label={`${t.copy}: ${formatRupiah(h.newAvgPrice)}`}
+                          aria-label={t.copyValue(t.avgBaru, formatRupiah(h.newAvgPrice))}
                           title={t.copy}
                           className="absolute right-1.5 top-1/2 h-8 w-8 -translate-y-1/2 rounded-lg text-muted-foreground hover:bg-primary/10 hover:text-primary"
                         >
@@ -1153,7 +1156,7 @@ export function Calculator() {
               size="icon"
               className="h-10 w-10 rounded-xl hover:bg-secondary hover:text-primary"
               onClick={toggleTheme}
-              aria-label="Toggle theme"
+              aria-label={isDark ? t.toggleThemeToLight : t.toggleThemeToDark}
               title="Alt+T"
             >
               {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
@@ -1181,8 +1184,14 @@ export function Calculator() {
                   {t.positionTitle}
                 </h2>
                 <Tooltip>
-                  <TooltipTrigger asChild aria-label="Info">
-                    <Info className="h-4 w-4 cursor-help text-primary/60" />
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      aria-label={t.infoAbout(t.positionTitle)}
+                      className="inline-flex h-6 w-6 items-center justify-center rounded-md text-primary/60 transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                    >
+                      <Info className="h-4 w-4" aria-hidden="true" />
+                    </button>
                   </TooltipTrigger>
                   <TooltipContent side="left" className="max-w-[220px] text-xs">
                     {t.positionTip}
@@ -1263,7 +1272,7 @@ export function Calculator() {
                   type="button"
                   onClick={() => copyValue(t.modalAwal, formatRupiah(modalAwal))}
                   className="group flex items-center gap-1 rounded-lg px-1.5 py-0.5 text-foreground transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
-                  aria-label={`${t.modalAwal}: ${t.copy}`}
+                  aria-label={t.copyValue(t.modalAwal, formatRupiah(modalAwal))}
                 >
                   <span className="font-display text-base font-extrabold tabular text-foreground">
                     {formatRupiah(modalAwal)}
@@ -1280,8 +1289,14 @@ export function Calculator() {
                   {t.averagingTitle}
                 </h2>
                 <Tooltip>
-                  <TooltipTrigger asChild aria-label="Info">
-                    <Info className="h-4 w-4 cursor-help text-primary/60" />
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      aria-label={t.infoAbout(t.averagingTitle)}
+                      className="inline-flex h-6 w-6 items-center justify-center rounded-md text-primary/60 transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                    >
+                      <Info className="h-4 w-4" aria-hidden="true" />
+                    </button>
                   </TooltipTrigger>
                   <TooltipContent side="left" className="max-w-[220px] text-xs">
                     {t.averagingTip}
@@ -1523,7 +1538,7 @@ export function Calculator() {
                           type="button"
                           onClick={() => copyValue(headLabel, headValue)}
                           className="group mt-2 flex items-center gap-2 rounded-xl p-1 -ml-1 text-left transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
-                          aria-label={`${headLabel}: ${t.copy}`}
+                          aria-label={t.copyValue(headLabel, headValue)}
                         >
                           <span className="font-display text-3xl font-extrabold leading-none tabular text-foreground break-words">
                             {headValue}
