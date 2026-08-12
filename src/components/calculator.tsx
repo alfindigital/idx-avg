@@ -1631,7 +1631,6 @@ export function Calculator() {
                       <>
                         <CopyRow
                           copyLabel={t.copyValue}
-                      copyLabel={t.copyValue}
                           label={`${t.feeBeliLabel} (${result.buyPct}%)`}
                           value={formatRupiah(result.feeBeli ?? 0)}
                           valueToCopy={formatRupiah(result.feeBeli ?? 0)}
@@ -1639,7 +1638,6 @@ export function Calculator() {
                         />
                         <CopyRow
                           copyLabel={t.copyValue}
-                      copyLabel={t.copyValue}
                           label={`${t.feeJualLabel} (${result.sellPct}%)`}
                           value={formatRupiah(result.feeJualEst ?? 0)}
                           valueToCopy={formatRupiah(result.feeJualEst ?? 0)}
@@ -1647,7 +1645,6 @@ export function Calculator() {
                         />
                         <CopyRow
                           copyLabel={t.copyValue}
-                      copyLabel={t.copyValue}
                           label={t.breakEven}
                           value={formatRupiah(result.breakEvenPrice ?? 0)}
                           valueToCopy={formatRupiah(result.breakEvenPrice ?? 0)}
