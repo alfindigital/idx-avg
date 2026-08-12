@@ -127,6 +127,7 @@ function CopyRow({
   valueClassName,
   border = false,
   onCopy,
+  copyLabel,
 }: {
   label: string;
   value: ReactNode;
@@ -134,6 +135,7 @@ function CopyRow({
   valueClassName?: string;
   border?: boolean;
   onCopy: (label: string, value: string) => void;
+  copyLabel: (label: string, value: string) => string;
 }) {
   return (
     <div
@@ -1583,24 +1585,28 @@ export function Calculator() {
 
                   <div className="space-y-2.5 px-4 py-4 text-sm font-medium">
                     <CopyRow
+                      copyLabel={t.copyValue}
                       label={t.avgSekarangRow}
                       value={formatRupiah(result.avgSekarang)}
                       valueToCopy={formatRupiah(result.avgSekarang)}
                       onCopy={copyValue}
                     />
                     <CopyRow
+                      copyLabel={t.copyValue}
                       label={t.totalLot}
                       value={result.lotSekarang.toLocaleString("id-ID")}
                       valueToCopy={result.lotSekarang.toLocaleString("id-ID")}
                       onCopy={copyValue}
                     />
                     <CopyRow
+                      copyLabel={t.copyValue}
                       label={t.hargaAveragingRow}
                       value={formatRupiah(result.hargaAveraging)}
                       valueToCopy={formatRupiah(result.hargaAveraging)}
                       onCopy={copyValue}
                     />
                     <CopyRow
+                      copyLabel={t.copyValue}
                       label={t.lotBaru}
                       value={
                         <>
@@ -1615,6 +1621,7 @@ export function Calculator() {
                       border
                     />
                     <CopyRow
+                      copyLabel={t.copyValue}
                       label={t.modalTambahan}
                       value={formatRupiah(result.modalTambahan)}
                       valueToCopy={formatRupiah(result.modalTambahan)}
@@ -1623,18 +1630,24 @@ export function Calculator() {
                     {result.feeEnabled && (
                       <>
                         <CopyRow
+                          copyLabel={t.copyValue}
+                      copyLabel={t.copyValue}
                           label={`${t.feeBeliLabel} (${result.buyPct}%)`}
                           value={formatRupiah(result.feeBeli ?? 0)}
                           valueToCopy={formatRupiah(result.feeBeli ?? 0)}
                           onCopy={copyValue}
                         />
                         <CopyRow
+                          copyLabel={t.copyValue}
+                      copyLabel={t.copyValue}
                           label={`${t.feeJualLabel} (${result.sellPct}%)`}
                           value={formatRupiah(result.feeJualEst ?? 0)}
                           valueToCopy={formatRupiah(result.feeJualEst ?? 0)}
                           onCopy={copyValue}
                         />
                         <CopyRow
+                          copyLabel={t.copyValue}
+                      copyLabel={t.copyValue}
                           label={t.breakEven}
                           value={formatRupiah(result.breakEvenPrice ?? 0)}
                           valueToCopy={formatRupiah(result.breakEvenPrice ?? 0)}
@@ -1643,6 +1656,7 @@ export function Calculator() {
                       </>
                     )}
                     <CopyRow
+                      copyLabel={t.copyValue}
                       label={t.totalModal}
                       value={formatRupiah(result.totalModal)}
                       valueToCopy={formatRupiah(result.totalModal)}
