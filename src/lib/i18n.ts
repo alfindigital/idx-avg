@@ -82,7 +82,14 @@ export const dict = {
     targetEqualsHarga: "Target tidak boleh sama dengan harga averaging",
     targetUnreachable: "Tidak bisa mencapai target dengan harga ini",
     footerBy: "by",
+    copyValue: (label: string, value: string) => `Salin ${label}: ${value}`,
+    infoAbout: (section: string) => `Info tentang ${section}`,
+    toggleLang: "Ganti bahasa (Indonesia/English)",
+    toggleThemeToDark: "Aktifkan mode gelap",
+    toggleThemeToLight: "Aktifkan mode terang",
+    openHistoryEntry: (avg: string) => `Buka riwayat perhitungan ${avg}`,
   },
+
   en: {
     appTitle: "IDX Averaging Calculator",
     appTagline: "by @lotmetrik",
@@ -157,7 +164,14 @@ export const dict = {
     targetEqualsHarga: "Target cannot equal averaging price",
     targetUnreachable: "Cannot reach target at this price",
     footerBy: "by",
+    copyValue: (label: string, value: string) => `Copy ${label}: ${value}`,
+    infoAbout: (section: string) => `Info about ${section}`,
+    toggleLang: "Switch language (Indonesian/English)",
+    toggleThemeToDark: "Switch to dark mode",
+    toggleThemeToLight: "Switch to light mode",
+    openHistoryEntry: (avg: string) => `Open calculation history ${avg}`,
   },
+
 };
 
 export type Dict = typeof dict.id;
