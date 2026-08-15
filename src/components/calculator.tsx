@@ -1178,7 +1178,7 @@ export function Calculator() {
           <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
             {announce}
           </div>
-          <form onSubmit={handleSubmit} noValidate className="space-y-3">
+          <form onSubmit={handleSubmit} noValidate className="space-y-3.5">
             {/* Position */}
             <section aria-labelledby="posisi-heading" className={cardCls}>
               <div className="mb-3 flex items-center justify-between">
