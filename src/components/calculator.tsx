@@ -962,9 +962,9 @@ export function Calculator() {
   };
 
   const inputCls =
-    "h-11 w-full rounded-xl border-2 border-transparent bg-card px-3.5 text-base font-bold text-foreground shadow-none transition-all scroll-mt-24 focus-visible:border-primary focus-visible:ring-0 placeholder:text-muted-foreground dark:border-white/10";
+    "h-12 w-full rounded-xl border-2 border-transparent bg-card px-4 text-base font-bold text-foreground shadow-none transition-all scroll-mt-24 focus-visible:border-primary focus-visible:ring-0 placeholder:text-muted-foreground dark:border-white/10 sm:h-11 sm:px-3.5";
   const labelCls =
-    "mb-1 ml-0.5 flex h-8 items-end text-xs font-semibold leading-tight text-foreground/70 dark:text-foreground/85";
+    "mb-1.5 ml-0.5 flex items-end text-xs font-semibold leading-tight text-foreground/70 dark:text-foreground/85 sm:mb-1 sm:h-8";
   const sectionHead =
     "mb-3 font-display text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground";
   const cardCls =
