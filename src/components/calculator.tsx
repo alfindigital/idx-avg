@@ -1444,7 +1444,7 @@ export function Calculator() {
                     <span className="text-sm font-semibold text-foreground">{t.feeInclude}</span>
                   </label>
                   {fee.enabled && (
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                       <div>
                         <Label htmlFor="fee-buy-input" className={labelCls}>
                           {t.feeBuy} (%)
