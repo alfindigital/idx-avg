@@ -1200,7 +1200,8 @@ export function Calculator() {
                   </TooltipContent>
                 </Tooltip>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-1 sm:grid-cols-2 sm:gap-3">
+
                 <div>
                   <Label htmlFor="avg-now-input" className={labelCls}>
                     {t.avgNow}
