@@ -962,9 +962,9 @@ export function Calculator() {
   };
 
   const inputCls =
-    "h-11 w-full rounded-xl border-2 border-transparent bg-card px-3.5 text-base font-bold text-foreground shadow-none transition-all scroll-mt-24 focus-visible:border-primary focus-visible:ring-0 placeholder:text-muted-foreground dark:border-white/10";
+    "h-12 w-full rounded-xl border-2 border-transparent bg-card px-4 text-base font-bold text-foreground shadow-none transition-all scroll-mt-24 focus-visible:border-primary focus-visible:ring-0 placeholder:text-muted-foreground dark:border-white/10 sm:h-11 sm:px-3.5";
   const labelCls =
-    "mb-1 ml-0.5 flex h-8 items-end text-xs font-semibold leading-tight text-foreground/70 dark:text-foreground/85";
+    "mb-1.5 ml-0.5 flex items-end text-xs font-semibold leading-tight text-foreground/70 dark:text-foreground/85 sm:mb-1 sm:h-8";
   const sectionHead =
     "mb-3 font-display text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground";
   const cardCls =
@@ -1178,7 +1178,7 @@ export function Calculator() {
           <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
             {announce}
           </div>
-          <form onSubmit={handleSubmit} noValidate className="space-y-3">
+          <form onSubmit={handleSubmit} noValidate className="space-y-3.5">
             {/* Position */}
             <section aria-labelledby="posisi-heading" className={cardCls}>
               <div className="mb-3 flex items-center justify-between">
@@ -1200,7 +1200,8 @@ export function Calculator() {
                   </TooltipContent>
                 </Tooltip>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-1 sm:grid-cols-2 sm:gap-3">
+
                 <div>
                   <Label htmlFor="avg-now-input" className={labelCls}>
                     {t.avgNow}
@@ -1268,7 +1269,7 @@ export function Calculator() {
                   </p>
                 </div>
               </div>
-              <div className="mt-3 flex items-center justify-between rounded-xl border border-white/70 bg-primary/[0.04] px-4 py-2.5 dark:border-white/10 dark:bg-primary/10">
+              <div className="mt-3 flex items-center justify-between rounded-xl border border-white/70 bg-primary/[0.04] px-4 py-3 dark:border-white/10 dark:bg-primary/10 sm:py-2.5">
                 <span className="text-sm font-semibold text-primary">{t.modalAwal}</span>
                 <button
                   type="button"
@@ -1443,7 +1444,7 @@ export function Calculator() {
                     <span className="text-sm font-semibold text-foreground">{t.feeInclude}</span>
                   </label>
                   {fee.enabled && (
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                       <div>
                         <Label htmlFor="fee-buy-input" className={labelCls}>
                           {t.feeBuy} (%)
@@ -1486,7 +1487,7 @@ export function Calculator() {
               type={canCalculate ? "submit" : "button"}
               onClick={canCalculate ? undefined : () => focusFirstInvalid()}
               title="Ctrl/Cmd+Enter"
-              className="font-display flex h-12 w-full items-center justify-center gap-2 rounded-2xl text-base font-extrabold uppercase tracking-[0.15em] shadow-lg shadow-primary/25 transition-all active:scale-[0.98] disabled:opacity-50"
+              className="font-display flex h-14 w-full items-center justify-center gap-2 rounded-2xl text-base font-extrabold uppercase tracking-[0.15em] shadow-lg shadow-primary/25 transition-all active:scale-[0.98] disabled:opacity-50 sm:h-12"
               aria-disabled={!canCalculate}
             >
               <span>{t.hitung}</span>
