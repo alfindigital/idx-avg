@@ -1487,7 +1487,7 @@ export function Calculator() {
               type={canCalculate ? "submit" : "button"}
               onClick={canCalculate ? undefined : () => focusFirstInvalid()}
               title="Ctrl/Cmd+Enter"
-              className="font-display flex h-12 w-full items-center justify-center gap-2 rounded-2xl text-base font-extrabold uppercase tracking-[0.15em] shadow-lg shadow-primary/25 transition-all active:scale-[0.98] disabled:opacity-50"
+              className="font-display flex h-14 w-full items-center justify-center gap-2 rounded-2xl text-base font-extrabold uppercase tracking-[0.15em] shadow-lg shadow-primary/25 transition-all active:scale-[0.98] disabled:opacity-50 sm:h-12"
               aria-disabled={!canCalculate}
             >
               <span>{t.hitung}</span>
