@@ -1124,10 +1124,17 @@ export function Calculator() {
                             </span>
                             <span
                               className={cn(
-                                "font-bold tabular",
+                                "inline-flex items-center gap-0.5 font-bold tabular",
                                 h.status === "down" && "text-destructive-strong",
                                 h.status === "up" && "text-success-strong",
                               )}
+                              aria-label={`${
+                                h.status === "down"
+                                  ? t.averagingDown
+                                  : h.status === "up"
+                                    ? t.averagingUp
+                                    : t.averagingFlat
+                              } ${h.percentage.toFixed(2)}%`}
                             >
                               {h.status === "down" ? "↓" : h.status === "up" ? "↑" : "→"}{" "}
                               {h.percentage.toFixed(2)}%
