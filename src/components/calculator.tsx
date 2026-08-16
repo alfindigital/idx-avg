@@ -1124,10 +1124,17 @@ export function Calculator() {
                             </span>
                             <span
                               className={cn(
-                                "font-bold tabular",
+                                "inline-flex items-center gap-0.5 font-bold tabular",
                                 h.status === "down" && "text-destructive-strong",
                                 h.status === "up" && "text-success-strong",
                               )}
+                              aria-label={`${
+                                h.status === "down"
+                                  ? t.averagingDown
+                                  : h.status === "up"
+                                    ? t.averagingUp
+                                    : t.averagingFlat
+                              } ${h.percentage.toFixed(2)}%`}
                             >
                               {h.status === "down" ? "↓" : h.status === "up" ? "↑" : "→"}{" "}
                               {h.percentage.toFixed(2)}%
@@ -1556,28 +1563,31 @@ export function Calculator() {
                       </div>
                       <Badge
                         variant="secondary"
-                        role="img"
-                        aria-label={`${
-                          result.status === "down"
-                            ? t.averagingDown
-                            : result.status === "up"
-                              ? t.averagingUp
-                              : t.averagingFlat
-                        } ${result.percentage.toFixed(2)}%`}
                         className={cn(
-                          "inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-bold leading-none ring-1 ring-inset transition-colors",
+                          "inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold leading-none ring-1 ring-inset transition-colors sm:whitespace-nowrap sm:text-xs",
                           result.status === "down" &&
                             "bg-destructive/15 text-destructive-strong ring-destructive/30 hover:bg-destructive/20 dark:bg-destructive/20 dark:text-destructive-strong dark:ring-destructive/40 dark:hover:bg-destructive/25",
                           result.status === "up" &&
                             "bg-success/15 text-success-strong ring-success/30 hover:bg-success/20 dark:bg-success/20 dark:text-success-strong dark:ring-success/40 dark:hover:bg-success/25",
+                          result.status === "flat" &&
+                            "bg-muted text-muted-foreground ring-border hover:bg-muted/80",
                         )}
                       >
                         {result.status === "down" ? (
                           <TrendingDown className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-                        ) : (
+                        ) : result.status === "up" ? (
                           <TrendingUp className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                        ) : (
+                          <span className="h-3.5 w-3.5 shrink-0" aria-hidden="true">
+                            →
+                          </span>
                         )}
-                        <span className="tabular" aria-hidden="true">
+                        <span className="tabular">
+                          {result.status === "down"
+                            ? t.averagingDown
+                            : result.status === "up"
+                              ? t.averagingUp
+                              : t.averagingFlat}{" "}
                           {result.percentage.toFixed(2)}%
                         </span>
                       </Badge>
