@@ -8,7 +8,7 @@ const LANG_KEY = "idxavg-lang";
 
 export const dict = {
   id: {
-    appTitle: "IDX Averaging Calculator",
+    appTitle: "IDXAvg Cal.",
     appTagline: "by @lotmetrik",
     history: "Riwayat",
     clearHistory: "Hapus",
@@ -91,7 +91,7 @@ export const dict = {
   },
 
   en: {
-    appTitle: "IDX Averaging Calculator",
+    appTitle: "IDXAvg Cal.",
     appTagline: "by @lotmetrik",
     history: "History",
     clearHistory: "Clear",
