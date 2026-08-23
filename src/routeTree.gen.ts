@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as KalkulatorAraArbRouteImport } from './routes/kalkulator-ara-arb'
 import { Route as BuatRouteImport } from './routes/buat'
 import { Route as IndexRouteImport } from './routes/index'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KalkulatorAraArbRoute = KalkulatorAraArbRouteImport.update({
+  id: '/kalkulator-ara-arb',
+  path: '/kalkulator-ara-arb',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BuatRoute = BuatRouteImport.update({
@@ -32,30 +38,34 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/buat': typeof BuatRoute
+  '/kalkulator-ara-arb': typeof KalkulatorAraArbRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/buat': typeof BuatRoute
+  '/kalkulator-ara-arb': typeof KalkulatorAraArbRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/buat': typeof BuatRoute
+  '/kalkulator-ara-arb': typeof KalkulatorAraArbRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/buat' | '/sitemap.xml'
+  fullPaths: '/' | '/buat' | '/kalkulator-ara-arb' | '/sitemap.xml'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/buat' | '/sitemap.xml'
-  id: '__root__' | '/' | '/buat' | '/sitemap.xml'
+  to: '/' | '/buat' | '/kalkulator-ara-arb' | '/sitemap.xml'
+  id: '__root__' | '/' | '/buat' | '/kalkulator-ara-arb' | '/sitemap.xml'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BuatRoute: typeof BuatRoute
+  KalkulatorAraArbRoute: typeof KalkulatorAraArbRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
 
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kalkulator-ara-arb': {
+      id: '/kalkulator-ara-arb'
+      path: '/kalkulator-ara-arb'
+      fullPath: '/kalkulator-ara-arb'
+      preLoaderRoute: typeof KalkulatorAraArbRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/buat': {
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BuatRoute: BuatRoute,
+  KalkulatorAraArbRoute: KalkulatorAraArbRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
