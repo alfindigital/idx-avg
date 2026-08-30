@@ -183,26 +183,61 @@ export function AraArbCalculator() {
           <h2 className="font-display text-base font-extrabold tracking-tight">
             Persentase ARA & ARB per Rentang Harga
           </h2>
-          <table className="mt-3 w-full text-sm">
-            <thead>
-              <tr className="border-b border-border text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                <th scope="col" className="pb-2 pr-2">Harga Penutupan</th>
-                <th scope="col" className="pb-2 pr-2">ARA</th>
-                <th scope="col" className="pb-2">ARB</th>
-              </tr>
-            </thead>
-            <tbody className="tabular">
-              {TIERS.map((t) => (
-                <tr key={t.range} className="border-b border-border/60 last:border-0">
-                  <td className="py-2 pr-2 font-medium">{t.range}</td>
-                  <td className="py-2 pr-2 font-bold text-success-strong dark:text-success-foreground">
-                    {t.ara}
-                  </td>
-                  <td className="py-2 font-bold text-destructive-strong">15%</td>
+
+          {/* Mobile-first stacked cards: no horizontal scroll */}
+          <div className="mt-3 space-y-2 sm:hidden">
+            {TIERS.map((t) => (
+              <div
+                key={t.range}
+                className="rounded-2xl border border-border bg-background p-3"
+              >
+                <div className="text-sm font-semibold text-foreground">{t.range}</div>
+                <div className="mt-2 grid grid-cols-2 gap-2">
+                  <div className="rounded-xl border border-success/30 bg-success/10 p-2.5 dark:border-success/20">
+                    <div className="text-[10px] font-bold uppercase tracking-wide text-success-strong dark:text-success-foreground">
+                      ARA
+                    </div>
+                    <div className="font-display mt-0.5 text-base font-extrabold tabular text-foreground">
+                      {t.ara}
+                    </div>
+                  </div>
+                  <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-2.5 dark:border-destructive/20">
+                    <div className="text-[10px] font-bold uppercase tracking-wide text-destructive-strong">
+                      ARB
+                    </div>
+                    <div className="font-display mt-0.5 text-base font-extrabold tabular text-foreground">
+                      15%
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Tablet/desktop: clean table */}
+          <div className="mt-3 hidden sm:block">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border text-left text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  <th scope="col" className="pb-2 pr-2">Harga Penutupan</th>
+                  <th scope="col" className="pb-2 pr-2">ARA</th>
+                  <th scope="col" className="pb-2">ARB</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="tabular">
+                {TIERS.map((t) => (
+                  <tr key={t.range} className="border-b border-border/60 last:border-0">
+                    <td className="py-2 pr-2 font-medium">{t.range}</td>
+                    <td className="py-2 pr-2 font-bold text-success-strong dark:text-success-foreground">
+                      {t.ara}
+                    </td>
+                    <td className="py-2 font-bold text-destructive-strong">15%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
           <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
             Catatan: persentase mengikuti aturan auto rejection Bursa Efek Indonesia di pasar
             reguler dan dapat berubah sewaktu-waktu. Selalu cek pengumuman resmi IDX untuk
