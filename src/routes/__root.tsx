@@ -134,7 +134,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-title", content: "IDXAvg" },
       { name: "apple-mobile-web-app-status-bar-style", content: "default" },
-      { name: "google-site-verification", content: "J-Czc4w4Dto_XXTUZfW8lAMoT45CpTWqZ72Nt91yFbw" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -201,3 +200,4 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
+
