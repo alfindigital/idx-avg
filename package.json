@@ -1,6 +1,7 @@
 {
-  "name": "tanstack_start_ts",
-  "private": true,
+  "name": "idx-avg",
+  "private": false,
+  "license": "MIT",
   "sideEffects": false,
   "type": "module",
   "scripts": {
