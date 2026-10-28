@@ -39,8 +39,13 @@ jobs:
       - name: Build app
         run: bun run build
       - name: Start preview server
+        # Build pakai nitro preset cloudflare-module -> output di .output/, bukan
+        # dist/server/server.js yang dicari `vite preview`. Jalankan worker hasil
+        # build lewat wrangler dev (lokal, tanpa akun Cloudflare).
+        env:
+          WRANGLER_SEND_METRICS: "false"
         run: |
-          bun run preview --port 8080 --host 127.0.0.1 &
+          node node_modules/wrangler/bin/wrangler.js dev --config .output/server/wrangler.json --ip 127.0.0.1 --port 8080 &
           echo $! > .preview.pid
           for i in $(seq 1 60); do
             if curl -sf http://127.0.0.1:8080 > /dev/null; then
