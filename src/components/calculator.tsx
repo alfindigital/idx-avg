@@ -1722,7 +1722,7 @@ export function Calculator() {
         <div className="mx-auto mt-auto w-full max-w-[480px]">
           <SiteFooter />
         </div>
-        <TelegramPopup />
+        <TelegramPopup ready={result !== null} />
       </div>
     </TooltipProvider>
   );

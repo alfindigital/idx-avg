@@ -4,6 +4,8 @@ import { Send, X, TrendingUp, Bell } from "lucide-react";
 const KEY = "idxavg-tg-popup-v1";
 const TG_URL = "https://t.me/lotmetrik";
 const DURATION_MS = 10000;
+// Give the visitor time to read their first result before the promo appears.
+const SHOW_DELAY_MS = 4000;
 
 type ClarityWindow = Window & {
   clarity?: (...args: unknown[]) => void;
@@ -17,20 +19,31 @@ function trackClarityEvent(name: string) {
   }
 }
 
-export function TelegramPopup() {
+/**
+ * `ready` = the page has produced its first result. The promo never opens on
+ * load (it used to cover the calculator on the first visit); it waits for the
+ * first result, then SHOW_DELAY_MS more.
+ */
+export function TelegramPopup({ ready = false }: { ready?: boolean }) {
   const [open, setOpen] = useState(false);
   const [progress, setProgress] = useState(100);
+  const [armed, setArmed] = useState(false);
 
   useEffect(() => {
+    if (ready) setArmed(true);
+  }, [ready]);
+
+  useEffect(() => {
+    if (!armed) return;
     try {
       if (localStorage.getItem(KEY)) return;
     } catch {
       /* ignore */
     }
 
-    const showTimer = setTimeout(() => setOpen(true), 600);
+    const showTimer = setTimeout(() => setOpen(true), SHOW_DELAY_MS);
     return () => clearTimeout(showTimer);
-  }, []);
+  }, [armed]);
 
   useEffect(() => {
     if (!open) return;
